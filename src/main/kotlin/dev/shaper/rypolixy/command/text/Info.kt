@@ -7,7 +7,7 @@ import dev.shaper.rypolixy.utils.CheckNetwork
 import java.lang.management.ManagementFactory
 import kotlin.time.Duration.Companion.seconds
 
-class Info(private val client: dev.shaper.rypolixy.config.Client) : TextCommand() {
+class Info(private val client: Client) : TextCommand() {
 
     override val name       : String
         get()          = "info"

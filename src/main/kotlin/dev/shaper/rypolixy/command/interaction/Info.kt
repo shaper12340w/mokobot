@@ -4,8 +4,7 @@ import dev.shaper.rypolixy.config.Client
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.rest.builder.interaction.ChatInputCreateBuilder
 
-class Info(private val client: dev.shaper.rypolixy.config.Client):
-    dev.shaper.rypolixy.command.interaction.InteractionCommand() {
+class Info(private val client: Client): InteractionCommand() {
 
     override val name       : String
         get() = "info"

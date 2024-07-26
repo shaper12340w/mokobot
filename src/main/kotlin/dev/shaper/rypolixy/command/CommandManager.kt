@@ -8,10 +8,10 @@ import dev.shaper.rypolixy.config.Client
 
 import dev.kord.core.event.message.MessageCreateEvent
 
-class CommandManager(private val client: dev.shaper.rypolixy.config.Client) {
+class CommandManager(private val client: Client) {
     private val textCommand         :MutableList<TextCommand>        = mutableListOf()
     private val messageCommand      :MutableList<MessageCommand>     = mutableListOf()
-    private val interactionCommand  :MutableList<dev.shaper.rypolixy.command.interaction.InteractionCommand> = mutableListOf()
+    private val interactionCommand  :MutableList<InteractionCommand> = mutableListOf()
 
     suspend fun executeTextCommand(event:MessageCreateEvent){
         val input  = event.message.content
@@ -56,7 +56,7 @@ class CommandManager(private val client: dev.shaper.rypolixy.config.Client) {
             when(command) {
                 is TextCommand        -> textCommand       .add(command)
                 is MessageCommand     -> messageCommand    .add(command)
-                is dev.shaper.rypolixy.command.interaction.InteractionCommand -> interactionCommand.add(command)
+                is InteractionCommand -> interactionCommand.add(command)
             }
         }
     }

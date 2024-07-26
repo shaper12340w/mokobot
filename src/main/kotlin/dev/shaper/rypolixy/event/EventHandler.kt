@@ -5,7 +5,7 @@ import dev.kord.core.event.gateway.ReadyEvent
 import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
 
-class EventHandler(private val client: dev.shaper.rypolixy.config.Client) {
+class EventHandler(private val client: Client) {
 
     suspend fun onMessageEvent(event: MessageCreateEvent){
         client.commandManager.executeTextCommand(event)
