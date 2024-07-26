@@ -1,0 +1,27 @@
+<configuration>
+    <!-- Define properties -->
+    <property name="LOG_DATEFORMAT_PATTERN" value="yyyy-MM-dd' 'HH:mm:ss.SSSXXX" />
+    <property name="LOG_LEVEL_PATTERN" value="%5p" />
+    <property name="LOG_EXCEPTION_CONVERSION_WORD" value="%ex" />
+    <property name="APPLICATION_NAME" value="MyApp" />
+    <property name="APPLICATION_GROUP" value="MyGroup" />
+    <property name="PID" value="${PID:-}" />
+    <property name="THREAD_NAME_PATTERN" value="%30.-30t" />
+    <property name="LOGGER_PATTERN" value="%-60.60logger" />
+
+    <!-- Console Log Pattern -->
+    <property name="CONSOLE_LOG_PATTERN"
+              value="%d{${LOG_DATEFORMAT_PATTERN}} ${LOG_LEVEL_PATTERN} ${PID} --- [${THREAD_NAME_PATTERN}] ${LOGGER_PATTERN} : %m%n${LOG_EXCEPTION_CONVERSION_WORD} " />
+
+    <!-- Console Appender -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Root Logger -->
+    <root level="DEBUG">
+        <appender-ref ref="CONSOLE" />
+    </root>
+</configuration>
