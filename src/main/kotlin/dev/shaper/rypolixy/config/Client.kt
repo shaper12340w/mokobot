@@ -1,18 +1,18 @@
 package dev.shaper.rypolixy.config
 
-import dev.shaper.rypolixy.command.CommandManager
-import dev.shaper.rypolixy.command.text.Info
 import dev.shaper.rypolixy.event.EventHandler
 import dev.kord.core.Kord
 import dev.kord.core.on
 import dev.kord.gateway.Intent
 import dev.kord.gateway.PrivilegedIntent
-import mu.KLogger
+import dev.shaper.rypolixy.command.types.CommandManager
+import dev.shaper.rypolixy.config.database.Database
+import io.github.oshai.kotlinlogging.KLogger
 
 @OptIn(PrivilegedIntent::class)
-class Client(internal val logger:KLogger,internal val kord:Kord) {
+class Client(internal val logger: KLogger, internal val kord:Kord) {
 
-    val commandManager:CommandManager = CommandManager(this)
+    val commandManager: CommandManager = CommandManager(this)
 
     init {
         logger.info {"Bot started"}
@@ -42,16 +42,12 @@ class Client(internal val logger:KLogger,internal val kord:Kord) {
         kord.on(kord,handler::onCommandInteraction)
     }
 
-    fun registerCommands() = apply {
-        commandManager.collectCommands(
-            listOf(
-                Info(this)
-            )
-        )
+    suspend fun registerCommands() = apply {
+        Register.register(this)
     }
 
     fun registerDatabase() = apply {
-        Database.init()
+        Database.initTable()
     }
 
 

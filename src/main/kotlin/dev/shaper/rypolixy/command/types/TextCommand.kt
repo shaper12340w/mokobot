@@ -1,13 +1,14 @@
-package dev.shaper.rypolixy.command.text
+package dev.shaper.rypolixy.command.types
 
-import dev.shaper.rypolixy.command.CommandStructure
 import dev.kord.core.event.message.MessageCreateEvent
 
-abstract class TextCommand: CommandStructure() {
+interface TextCommand: CommandStructure {
 
-    val commonPrefix:String = "!"
+    companion object{
+        const val commonPrefix:String = "!"
+    }
 
-    abstract val commandType: CommandType
+    val commandType: CommandType
 
 
     data class CommandType(
@@ -21,6 +22,6 @@ abstract class TextCommand: CommandStructure() {
         val commandValue:String?
     )
 
-    abstract suspend fun execute(event: MessageCreateEvent,res:ResponseData?)
+    suspend fun execute(event: MessageCreateEvent,res: ResponseData?)
 
 }

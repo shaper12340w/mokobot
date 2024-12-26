@@ -17,7 +17,7 @@ class EventHandler(private val client: Client) {
     }
 
     suspend fun onCommandInteraction(event: GuildChatInputCommandInteractionCreateEvent){
-
+        client.commandManager.interactionCommand[event.interaction.command.rootName]?.execute(event)
     }
 
 
