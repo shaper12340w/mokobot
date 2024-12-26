@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataSource name="discord@192.168.0.3">
-  <database-model serializer="dbm" dbms="POSTGRES" family-id="POSTGRES" format-version="4.52">
+  <database-model serializer="dbm" dbms="POSTGRES" family-id="POSTGRES" format-version="4.53">
     <root id="1">
       <DateStyle>mdy</DateStyle>
-      <IntrospectionStateNumber>759</IntrospectionStateNumber>
+      <Grants>16389||-9223372036854775808|c|G
+16389||10|c|G
+16389||16388|c|G
+16389||10|C|G
+16389||16388|C|G
+16389||-9223372036854775808|T|G
+16389||10|T|G
+16389||16388|T|G</Grants>
+      <IntrospectionStateNumber>751</IntrospectionStateNumber>
       <ServerVersion>16.3</ServerVersion>
-      <StartupTime>1721935811</StartupTime>
+      <StartupTime>1722294761</StartupTime>
       <TimeZones>true ACDT
 true ACSST
 false ACST
@@ -1389,7 +1397,6 @@ true posixrules
 </TimeZones>
     </root>
     <database id="2" parent="1" name="discord">
-      <Comment>save properties of guild,user,etc</Comment>
       <Current>1</Current>
       <Grants>11||10|C|G
 11||-9223372036854775808|U|G
@@ -1400,7 +1407,7 @@ true posixrules
 13212||10|C|G
 13212||-9223372036854775808|U|G
 13212||10|U|G</Grants>
-      <IntrospectionStateNumber>759</IntrospectionStateNumber>
+      <IntrospectionStateNumber>751</IntrospectionStateNumber>
       <ObjectId>16389</ObjectId>
       <OwnerName>postgres</OwnerName>
     </database>
@@ -4830,140 +4837,161 @@ true posixrules
     <schema id="265" parent="2" name="public">
       <Comment>standard public schema</Comment>
       <Current>1</Current>
-      <IntrospectionStateNumber>759</IntrospectionStateNumber>
-      <LastIntrospectionLocalTimestamp>2024-07-26.03:49:05</LastIntrospectionLocalTimestamp>
+      <IntrospectionStateNumber>751</IntrospectionStateNumber>
+      <LastIntrospectionLocalTimestamp>2024-08-03.13:52:26</LastIntrospectionLocalTimestamp>
       <ObjectId>2200</ObjectId>
       <StateNumber>524</StateNumber>
       <OwnerName>pg_database_owner</OwnerName>
     </schema>
     <sequence id="266" parent="265" name="guilds_id_seq">
-      <DasType>integer|0s</DasType>
-      <ObjectId>16412</ObjectId>
+      <ObjectId>16390</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
-      <StateNumber>758</StateNumber>
+      <StateNumber>750</StateNumber>
+      <StoredType>bigint|0s</StoredType>
       <OwnerName>shaper</OwnerName>
     </sequence>
     <sequence id="267" parent="265" name="users_id_seq">
-      <DasType>integer|0s</DasType>
-      <ObjectId>16401</ObjectId>
+      <ObjectId>16399</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
-      <StateNumber>758</StateNumber>
+      <StateNumber>750</StateNumber>
+      <StoredType>bigint|0s</StoredType>
       <OwnerName>shaper</OwnerName>
     </sequence>
     <table id="268" parent="265" name="guilds">
-      <ObjectId>16413</ObjectId>
-      <StateNumber>758</StateNumber>
+      <ObjectId>16391</ObjectId>
+      <StateNumber>750</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>shaper</OwnerName>
     </table>
     <table id="269" parent="265" name="users">
-      <ObjectId>16402</ObjectId>
-      <StateNumber>758</StateNumber>
+      <ObjectId>16400</ObjectId>
+      <StateNumber>750</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>shaper</OwnerName>
     </table>
     <column id="270" parent="268" name="id">
-      <DasType>integer|0s</DasType>
       <DefaultExpression>nextval(&apos;guilds_id_seq&apos;::regclass)</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>1</Position>
-      <StateNumber>758</StateNumber>
-      <SequenceId>16412</SequenceId>
-      <TypeId>23</TypeId>
+      <StateNumber>750</StateNumber>
+      <StoredType>bigint|0s</StoredType>
+      <SequenceId>16390</SequenceId>
+      <TypeId>20</TypeId>
     </column>
-    <column id="271" parent="268" name="name">
-      <DasType>varchar(255)|0s</DasType>
+    <column id="271" parent="268" name="did">
       <NotNull>1</NotNull>
       <Position>2</Position>
-      <StateNumber>758</StateNumber>
+      <StateNumber>750</StateNumber>
+      <StoredType>bigint|0s</StoredType>
+      <TypeId>20</TypeId>
+    </column>
+    <column id="272" parent="268" name="name">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StateNumber>750</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="272" parent="268" name="admin">
-      <DasType>varchar(25) []|0s</DasType>
-      <Position>3</Position>
-      <StateNumber>758</StateNumber>
+    <column id="273" parent="268" name="admin">
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StateNumber>750</StateNumber>
+      <StoredType>varchar(25) []|0s</StoredType>
       <TypeId>1015</TypeId>
     </column>
-    <index id="273" parent="268" name="guilds_pkey">
+    <index id="274" parent="268" name="guilds_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16419</ObjectId>
+      <ObjectId>16397</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>758</StateNumber>
+      <StateNumber>750</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <key id="274" parent="268" name="guilds_pkey">
+    <key id="275" parent="268" name="guilds_pkey">
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16420</ObjectId>
+      <ObjectId>16398</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>758</StateNumber>
-      <UnderlyingIndexId>16419</UnderlyingIndexId>
+      <StateNumber>750</StateNumber>
+      <UnderlyingIndexId>16397</UnderlyingIndexId>
     </key>
-    <column id="275" parent="269" name="id">
-      <DasType>integer|0s</DasType>
+    <column id="276" parent="269" name="id">
       <DefaultExpression>nextval(&apos;users_id_seq&apos;::regclass)</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>1</Position>
-      <StateNumber>758</StateNumber>
-      <SequenceId>16401</SequenceId>
-      <TypeId>23</TypeId>
+      <StateNumber>750</StateNumber>
+      <StoredType>bigint|0s</StoredType>
+      <SequenceId>16399</SequenceId>
+      <TypeId>20</TypeId>
     </column>
-    <column id="276" parent="269" name="name">
-      <DasType>varchar(255)|0s</DasType>
+    <column id="277" parent="269" name="did">
       <NotNull>1</NotNull>
       <Position>2</Position>
-      <StateNumber>758</StateNumber>
-      <TypeId>1043</TypeId>
+      <StateNumber>750</StateNumber>
+      <StoredType>bigint|0s</StoredType>
+      <TypeId>20</TypeId>
     </column>
-    <column id="277" parent="269" name="terms">
-      <DasType>boolean|0s</DasType>
+    <column id="278" parent="269" name="name">
       <NotNull>1</NotNull>
       <Position>3</Position>
-      <StateNumber>758</StateNumber>
-      <TypeId>16</TypeId>
-    </column>
-    <column id="278" parent="269" name="email">
-      <DasType>varchar(255)|0s</DasType>
-      <NotNull>1</NotNull>
-      <Position>4</Position>
-      <StateNumber>758</StateNumber>
+      <StateNumber>750</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <index id="279" parent="269" name="users_pkey">
+    <column id="279" parent="269" name="terms">
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StateNumber>750</StateNumber>
+      <StoredType>boolean|0s</StoredType>
+      <TypeId>16</TypeId>
+    </column>
+    <column id="280" parent="269" name="email">
+      <Position>5</Position>
+      <StateNumber>750</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="281" parent="269" name="level">
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+      <StateNumber>750</StateNumber>
+      <StoredType>smallint|0s</StoredType>
+      <TypeId>21</TypeId>
+    </column>
+    <index id="282" parent="269" name="users_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16408</ObjectId>
+      <ObjectId>16406</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>758</StateNumber>
+      <StateNumber>750</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <index id="280" parent="269" name="users_email_key">
+    <index id="283" parent="269" name="users_email_key">
       <ColNames>email</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16410</ObjectId>
-      <StateNumber>758</StateNumber>
+      <ObjectId>16408</ObjectId>
+      <StateNumber>750</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
       <CollationNames>default</CollationNames>
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <key id="281" parent="269" name="users_pkey">
+    <key id="284" parent="269" name="users_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>16407</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>750</StateNumber>
+      <UnderlyingIndexId>16406</UnderlyingIndexId>
+    </key>
+    <key id="285" parent="269" name="users_email_key">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16409</ObjectId>
-      <Primary>1</Primary>
-      <StateNumber>758</StateNumber>
+      <StateNumber>750</StateNumber>
       <UnderlyingIndexId>16408</UnderlyingIndexId>
-    </key>
-    <key id="282" parent="269" name="users_email_key">
-      <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16411</ObjectId>
-      <StateNumber>758</StateNumber>
-      <UnderlyingIndexId>16410</UnderlyingIndexId>
     </key>
   </database-model>
 </dataSource>
