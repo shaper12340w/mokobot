@@ -2,11 +2,11 @@ package dev.shaper.rypolixy.command.types
 
 import dev.shaper.rypolixy.command.types.TextCommand.ResponseData
 import dev.shaper.rypolixy.config.Client
-
 import dev.kord.core.event.message.MessageCreateEvent
 
 class CommandManager(private val client: Client) {
     val textCommand         = HashMap<String, TextCommand>        ()
+    val mutualCommand       = HashMap<String, MutualCommand>      ()
     val messageCommand      = HashMap<String, MessageCommand>     ()
     val interactionCommand  = HashMap<String, InteractionCommand> ()
 
@@ -21,7 +21,10 @@ class CommandManager(private val client: Client) {
                 val remainingValue = matchResult.groupValues[2]
 
                 if (textCommand[keyword] != null)
-                    textCommand[keyword]!!.execute(event, ResponseData(keyword, remainingValue))
+                    textCommand[keyword]?.execute(event, ResponseData(keyword, remainingValue))
+
+                if(mutualCommand[keyword] != null)
+                    mutualCommand[keyword]?.execute(ContextType.Message(event), ResponseData(keyword, remainingValue))
 
             }
 
@@ -35,14 +38,22 @@ class CommandManager(private val client: Client) {
                 command.setup(this)
             }
         }
+
+        mutualCommand.filterValues{ it.enabled ?: false }.filterValues { it.isInteractive } .forEach { (key,command) ->
+            client.kord.createGlobalChatInputCommand(command.name,command.description){
+                command.setup(this)
+            }
+        }
+
     }
 
     fun collectCommands(commands:Iterable<CommandStructure>){
         commands.forEach{ command ->
             when(command) {
-                is TextCommand -> textCommand         [command.name] = command
-                is MessageCommand -> messageCommand      [command.name] = command
-                is InteractionCommand -> interactionCommand  [command.name] = command
+                is MutualCommand        -> mutualCommand       [command.name] = command
+                is TextCommand          -> textCommand         [command.name] = command
+                is MessageCommand       -> messageCommand      [command.name] = command
+                is InteractionCommand   -> interactionCommand  [command.name] = command
             }
         }
     }

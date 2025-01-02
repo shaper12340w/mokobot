@@ -4,6 +4,7 @@ import dev.shaper.rypolixy.config.Client
 import dev.kord.core.event.gateway.ReadyEvent
 import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
+import dev.shaper.rypolixy.command.types.ContextType
 
 class EventHandler(private val client: Client) {
 
@@ -18,6 +19,7 @@ class EventHandler(private val client: Client) {
 
     suspend fun onCommandInteraction(event: GuildChatInputCommandInteractionCreateEvent){
         client.commandManager.interactionCommand[event.interaction.command.rootName]?.execute(event)
+        client.commandManager.mutualCommand[event.interaction.command.rootName]?.execute(ContextType.Interaction(event),null)
     }
 
 

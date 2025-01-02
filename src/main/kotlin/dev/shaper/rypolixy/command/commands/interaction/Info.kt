@@ -6,7 +6,9 @@ import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.shaper.rypolixy.command.types.InteractionCommand
 import dev.shaper.rypolixy.utils.CheckNetwork
+import dev.shaper.rypolixy.utils.discord.ResponseManager.Companion.createDefer
 import dev.shaper.rypolixy.utils.discord.ResponseManager.Companion.sendRespond
+import dev.shaper.rypolixy.utils.discord.ResponseType
 import java.lang.management.ManagementFactory
 import kotlin.time.Duration.Companion.seconds
 
@@ -23,7 +25,7 @@ class Info(private val client: Client): InteractionCommand {
     override suspend fun execute(context: ChatInputCommandInteractionCreateEvent) {
         val pingResult = CheckNetwork.pingURL("https://www.discord.com") ?: "Error"
         val uptime = ManagementFactory.getRuntimeMXBean().uptime / 1000
-        val response = context.interaction.deferEphemeralResponse()
+        val response = context.createDefer(ResponseType.EPHEMERAL)!!
 
         client.logger.debug { "Called Info" }
         response.sendRespond {
