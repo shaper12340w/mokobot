@@ -11,16 +11,18 @@
 
     <!-- Console Log Pattern -->
     <property name="CONSOLE_LOG_PATTERN"
-              value="%d{${LOG_DATEFORMAT_PATTERN}} ${LOG_LEVEL_PATTERN} ${PID} --- [${THREAD_NAME_PATTERN}] ${LOGGER_PATTERN} : %m%n${LOG_EXCEPTION_CONVERSION_WORD} " />
+              value="%d{${LOG_DATEFORMAT_PATTERN}} %highlight(%5p){DEBUG=cyan, INFO=green, WARN=yellow, ERROR=red, TRACE=blue} ${PID} --- [${THREAD_NAME_PATTERN}] ${LOGGER_PATTERN} : %m%n" />
 
-    <!-- Console Appender -->
+    <property name="CONSOLE_LOG_CHARSET" value="UTF-8"/>
+
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+        <withJansi>true</withJansi>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>${CONSOLE_LOG_CHARSET}</charset>
+            <pattern>%d{${LOG_DATEFORMAT_PATTERN}} %highlight(%5p){DEBUG=cyan, INFO=green, WARN=yellow, ERROR=red, TRACE=blue} ${PID} --- [${THREAD_NAME_PATTERN}] ${LOGGER_PATTERN} : %m%n</pattern>
         </encoder>
     </appender>
 
-    <!-- Root Logger -->
     <root level="DEBUG">
         <appender-ref ref="CONSOLE" />
     </root>
