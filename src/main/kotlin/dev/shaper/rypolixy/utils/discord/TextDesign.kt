@@ -7,8 +7,9 @@ object TextDesign {
         fun EmbedBuilder.title(emoji:String, text:String){
             this.title = "$emoji $text"
         }
-        fun EmbedBuilder.description(text:String){
-            this.description = text.split("\n").joinToString("\n") { " -  $it" }
+        fun EmbedBuilder.description(text:String?){
+            if(text != null)
+                this.description = text.split("\n").joinToString("\n") { " -  $it" }
         }
     }
 }

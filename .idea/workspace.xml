@@ -1,23 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="rypoliz.main:jar" />
+    </artifacts-to-build>
+  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0b668ee2-be12-4801-a854-ee8292272fe7" name="Changes" comment="kord discord bot">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Ping.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/discord/ResponseType.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/discord/ReturnType.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Join.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/discord/ContextManager.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/lavaplayer/Config.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/lavaplayer/LavaClient.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/lavaplayer/PlayerManager.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/lavaplayer/RepeatMode.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/lavaplayer/TrackScheduler.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/META-INF/MANIFEST.MF" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/interaction/Info.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/interaction/Info.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/types/CommandManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/types/CommandManager.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/types/ContextType.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/types/ContextType.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/types/MutualCommand.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/types/MutualCommand.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/config/Register.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/config/Register.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/event/EventHandler.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/event/EventHandler.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/discord/EmbedFrame.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/discord/EmbedFrame.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/discord/ResponseManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/discord/ResponseManager.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/logback.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/logback.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -112,44 +115,45 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Gradle.Build rypoliz.executor": "Run",
-    "Gradle.rypoliz [build].executor": "Run",
-    "Gradle.rypoliz [dependencies].executor": "Run",
-    "Gradle.rypoliz 빌드.executor": "Run",
-    "Gradle.rypoliz.executor": "Run",
-    "Gradle.소스 다운로드.executor": "Run",
-    "Kotlin.Main(Direct).executor": "Run",
-    "Kotlin.MainKt.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/naver/Documents/kordCodeForLearning/BankoBot-1.3.0",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "onboarding.tips.debug.path": "C:/Users/naver/IdeaProjects/rypoliz/src/main/kotlin/Main.kt",
-    "project.structure.last.edited": "모듈",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Gradle.Build rypoliz.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.rypoliz [build].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.rypoliz [dependencies].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.rypoliz [jar].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.rypoliz 빌드.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.rypoliz.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.소스 다운로드.executor&quot;: &quot;Run&quot;,
+    &quot;Kotlin.Main(Direct).executor&quot;: &quot;Run&quot;,
+    &quot;Kotlin.MainKt.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;#3 on master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/naver/IdeaProjects/test&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;C:/Users/naver/IdeaProjects/rypoliz/src/main/kotlin/Main.kt&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.language.and.region&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "postgresql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;postgresql&quot;
     ],
-    "com.intellij.ide.scratch.ScratchImplUtil$2/새 스크래치 파일": [
-      "Properties"
+    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/새 스크래치 파일&quot;: [
+      &quot;Properties&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\naver\IdeaProjects\rypoliz\conf" />
@@ -210,6 +214,28 @@
       <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
+    <configuration name="rypoliz [jar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="jar" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
     <configuration name="MainKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="dev.shaper.rypolixy.MainKt" />
       <module name="rypoliz.main" />
@@ -230,6 +256,7 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="Gradle.rypoliz [jar]" />
       <item itemvalue="Gradle.rypoliz [build]" />
       <item itemvalue="Gradle.rypoliz [dependencies]" />
       <item itemvalue="Kotlin.Main(Direct)" />
@@ -237,6 +264,7 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.rypoliz [jar]" />
         <item itemvalue="Kotlin.MainKt" />
         <item itemvalue="Gradle.rypoliz [build]" />
         <item itemvalue="Gradle.rypoliz [dependencies]" />
@@ -292,7 +320,11 @@
       <workItem from="1734927502719" duration="8810000" />
       <workItem from="1734980585237" duration="15439000" />
       <workItem from="1735023443313" duration="28613000" />
-      <workItem from="1735186475879" duration="7699000" />
+      <workItem from="1735186475879" duration="8437000" />
+      <workItem from="1735232957743" duration="3908000" />
+      <workItem from="1735262070331" duration="8722000" />
+      <workItem from="1735792717858" duration="416000" />
+      <workItem from="1735793152451" duration="4275000" />
     </task>
     <task id="LOCAL-00001" summary="kord discord bot">
       <option name="closed" value="true" />
@@ -318,7 +350,15 @@
       <option name="project" value="LOCAL" />
       <updated>1735172867037</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="kord discord bot">
+      <option name="closed" value="true" />
+      <created>1735226547072</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1735226547072</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
