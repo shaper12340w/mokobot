@@ -5,6 +5,7 @@ import dev.shaper.rypolixy.config.Properties
 import io.github.oshai.kotlinlogging.KotlinLogging
 import dev.kord.core.Kord
 
+
 val tokens = Properties.getProperty("discord.token")
 val logger = KotlinLogging.logger {}
 

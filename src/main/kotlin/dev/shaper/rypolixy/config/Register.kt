@@ -9,6 +9,8 @@ object Register {
                 dev.shaper.rypolixy.command.commands.text.Info(client),
                 dev.shaper.rypolixy.command.commands.mutual.Ping(client),
                 dev.shaper.rypolixy.command.commands.mutual.Join(client),
+                dev.shaper.rypolixy.command.commands.mutual.Leave(client),
+                dev.shaper.rypolixy.command.commands.mutual.Play(client),
             )
         )
 

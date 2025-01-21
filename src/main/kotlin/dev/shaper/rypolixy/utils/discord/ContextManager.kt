@@ -30,8 +30,8 @@ class ContextManager {
             }
         val ContextType.guildId
             get() = when (this) {
-                is ContextType.Interaction -> this.value.interaction.data.guildId
-                is ContextType.Message -> this.value.message.data.guildId
+                is ContextType.Interaction -> this.value.interaction.data.guildId.value!!
+                is ContextType.Message -> this.value.message.data.guildId.value!!
             }
         val ContextType.user
             get() = when (this) {
@@ -70,8 +70,8 @@ class ContextManager {
             }
         suspend fun ContextType.getGuild(): Guild {
             return when (this){
-                is ContextType.Interaction -> this.value.kord.getGuild(guildId.value!!)
-                is ContextType.Message -> this.value.message.kord.getGuild(guildId.value!!)
+                is ContextType.Interaction -> this.value.kord.getGuild(guildId)
+                is ContextType.Message -> this.value.message.kord.getGuild(guildId)
             }
         }
 
