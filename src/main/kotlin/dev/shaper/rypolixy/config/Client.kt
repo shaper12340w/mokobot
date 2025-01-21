@@ -6,13 +6,15 @@ import dev.kord.core.on
 import dev.kord.gateway.Intent
 import dev.kord.gateway.PrivilegedIntent
 import dev.shaper.rypolixy.command.types.CommandManager
-import dev.shaper.rypolixy.config.database.Database
+import dev.shaper.rypolixy.utils.io.database.Database
+import dev.shaper.rypolixy.utils.musicplayer.AudioPlayer
 import io.github.oshai.kotlinlogging.KLogger
 
 @OptIn(PrivilegedIntent::class)
 class Client(internal val logger: KLogger, internal val kord:Kord) {
 
     val commandManager: CommandManager = CommandManager(this)
+    val lavaClient: AudioPlayer = AudioPlayer(this)
 
     init {
         logger.info {"Bot started"}
@@ -49,6 +51,5 @@ class Client(internal val logger: KLogger, internal val kord:Kord) {
     fun registerDatabase() = apply {
         Database.initTable()
     }
-
 
 }

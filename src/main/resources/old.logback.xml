@@ -3,20 +3,17 @@
     <!-- Define properties -->
     <property name="LOG_DATEFORMAT_PATTERN" value="yyyy-MM-dd' 'HH:mm:ss.SSSXXX" />
     <property name="THREAD_NAME_PATTERN" value="%30.-30t" />
+    <property name="LOGGER_PATTERN" value="%-60.60logger" />
     <property name="CONSOLE_LOG_CHARSET" value="UTF-8"/>
 
-    <!-- Console Appender with Custom Format -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>INFO</level>
-        </filter>
         <encoder>
             <charset>${CONSOLE_LOG_CHARSET}</charset>
-            <pattern>%-48(%highlight([*] %-5level){ERROR=red, WARN=yellow, INFO=blue, DEBUG=green} | %-20.20logger{1}) |: %m%n</pattern>
+            <pattern>%d{${LOG_DATEFORMAT_PATTERN}} %highlight(%5p){ERROR=bright red bg_red, WARN=yellow, INFO=blue, DEBUG=gray} --- [${THREAD_NAME_PATTERN}] ${LOGGER_PATTERN} : %m%n</pattern>
         </encoder>
     </appender>
 
-    <!-- File Appender with Original Format -->
+    <!-- File appender for production -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>logs/application.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -26,7 +23,7 @@
         </rollingPolicy>
         <encoder>
             <charset>${CONSOLE_LOG_CHARSET}</charset>
-            <pattern>%d{${LOG_DATEFORMAT_PATTERN}} %5p --- [%thread] %logger : %m%n</pattern>
+            <pattern>%d{${LOG_DATEFORMAT_PATTERN}} %5p --- [${THREAD_NAME_PATTERN}] ${LOGGER_PATTERN} : %m%n</pattern>
         </encoder>
     </appender>
 
