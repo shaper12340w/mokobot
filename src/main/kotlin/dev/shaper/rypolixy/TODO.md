@@ -1,3 +1,9 @@
 ## Lavaplayer and Audio
  - LinkedBlockingDeque 사용하여 Queue 대기 시스템 만들기
- - 
+ - ### Youtube 영상 재생을 위한 대책
+ - 1. Track 검색
+ - 2. 동영상 URL 추출
+ - 3. YT-DLP 정보 가져오기
+ - 4. 정보에서 videoplayback URL 추출
+ - 5. ffmpeg로 Opus 인코딩
+ - 6. loadItem으로 Track으로 다시 wrapping

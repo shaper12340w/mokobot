@@ -13,18 +13,21 @@ class CommandManager(private val client: Client) {
     suspend fun executeTextCommand(event:MessageCreateEvent) {
         val input = event.message.content
         if (input.startsWith(TextCommand.commonPrefix)) {
-            val regex = Regex("^${TextCommand.commonPrefix}(\\w+)\\s*(.*)")
-            val matchResult = regex.find(input)
+            val regex           = Regex("^${TextCommand.commonPrefix}(\\w+)\\s*(.*)")
+            val commandRegex    = Regex("\\S+")
+            val optionRegex     = Regex("--(\\w+)")
+            val matchResult     = regex.find(input)
 
             if (matchResult != null) {
                 val keyword = matchResult.groupValues[1]
-                val remainingValue = matchResult.groupValues[2]
+                val command = commandRegex.find(matchResult.groupValues[2])!!.value
+                val options = optionRegex.findAll(matchResult.groupValues[2]).map{ it.groupValues[1] }.toList()
 
                 if (textCommand[keyword] != null)
-                    textCommand[keyword]?.execute(event, ResponseData(keyword, remainingValue))
+                    textCommand[keyword]?.execute(event, ResponseData(keyword, command, options))
 
                 if(mutualCommand[keyword] != null)
-                    mutualCommand[keyword]?.execute(ContextType.Message(event), ResponseData(keyword, remainingValue))
+                    mutualCommand[keyword]?.execute(ContextType.Message(event), ResponseData(keyword, command, options))
 
             }
 

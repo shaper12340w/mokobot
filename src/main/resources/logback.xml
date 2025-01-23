@@ -2,7 +2,6 @@
 <configuration>
     <!-- Define properties -->
     <property name="LOG_DATEFORMAT_PATTERN" value="yyyy-MM-dd' 'HH:mm:ss.SSSXXX" />
-    <property name="THREAD_NAME_PATTERN" value="%30.-30t" />
     <property name="CONSOLE_LOG_CHARSET" value="UTF-8"/>
 
     <!-- Console Appender with Custom Format -->
@@ -20,7 +19,7 @@
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>logs/application.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/application.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>logs/application.%d{yyyy-MM-dd-HH-mm-ss}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
             <totalSizeCap>3GB</totalSizeCap>
         </rollingPolicy>

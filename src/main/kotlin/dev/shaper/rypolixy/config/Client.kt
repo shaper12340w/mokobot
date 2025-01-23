@@ -21,7 +21,7 @@ class Client(internal val logger: KLogger, internal val kord:Kord) {
     }
 
     suspend fun login() {
-        logger.info("Logging in")
+        logger.info { "Logging in" }
         kord.login {
             @OptIn(PrivilegedIntent::class)
             intents {
@@ -49,7 +49,7 @@ class Client(internal val logger: KLogger, internal val kord:Kord) {
     }
 
     fun registerDatabase() = apply {
-        Database.initTable()
+        //Database.initTable()
     }
 
 }

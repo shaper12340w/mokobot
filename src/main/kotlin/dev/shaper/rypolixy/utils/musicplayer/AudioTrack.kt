@@ -4,14 +4,18 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer
 import dev.shaper.rypolixy.utils.musicplayer.lavaplayer.LavaPlayerManager
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack as LavaTrack
 
-class AudioTrack (private val audioTrack: LavaTrack){
+class AudioTrack (val audioTrack: LavaTrack){
 
     enum class PlayStatus{
         IDLE,PLAYING,END,REMOVED
     }
     var status = PlayStatus.IDLE
 
-    fun playWith(player: AudioPlayer) = player.playTrack(audioTrack)
+    fun playWith(player: AudioPlayer) {
+        status = PlayStatus.PLAYING
+        player.playTrack(audioTrack)
+    }
+
     fun clone() = AudioTrack(audioTrack.makeClone())
 
     fun seek(millis: Long) {
