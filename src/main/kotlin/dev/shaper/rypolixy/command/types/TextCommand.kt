@@ -19,7 +19,8 @@ interface TextCommand: CommandStructure {
 
     data class ResponseData(
         val keyword     :String?,
-        val commandValue:String?
+        val command     :String?,
+        val options     :List<String>?
     )
 
     suspend fun execute(event: MessageCreateEvent,res: ResponseData?)

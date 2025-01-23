@@ -1,5 +1,8 @@
 package dev.shaper.rypolixy.utils.musicplayer
 
+import dev.kord.core.behavior.channel.BaseVoiceChannelBehavior
+import dev.kord.core.behavior.channel.ChannelBehavior
+
 class AudioType {
     enum class Link(
         val url: List<String>,
@@ -28,4 +31,5 @@ class AudioType {
         )
 
     }
+
 }

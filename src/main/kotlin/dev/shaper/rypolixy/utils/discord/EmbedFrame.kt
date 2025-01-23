@@ -3,6 +3,7 @@ package dev.shaper.rypolixy.utils.discord
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.shaper.rypolixy.utils.discord.TextDesign.Embed.description
 import dev.shaper.rypolixy.utils.discord.TextDesign.Embed.title
+import dev.shaper.rypolixy.utils.musicplayer.AudioTrack
 
 object EmbedFrame {
 
@@ -45,6 +46,38 @@ object EmbedFrame {
             color = Colors.DARKGREY
         }.apply(builder)
 
+    }
+
+    fun musicInfo(track: AudioTrack,isRecommend:Boolean):EmbedBuilder {
+        val info = track.audioTrack.info
+        return EmbedBuilder().apply {
+            title = "${if(isRecommend) "✅"  else "🎶"} | ${info.title}"
+            color = if(isRecommend) Colors.GREEN else Colors.BLURLPLE
+            fields = mutableListOf(
+                EmbedBuilder.Field().apply {
+                    name    = "재생시간"
+                    value   = info.length.toString()
+                    inline  = true
+                },
+                EmbedBuilder.Field().apply {
+                    name    = "채널"
+                    value   = info.author
+                    inline  = true
+                },
+                EmbedBuilder.Field().apply {
+                    name    = "링크"
+                    value   = "[링크](${info.uri})"
+                    inline  = true
+                }
+            )
+            thumbnail = EmbedBuilder.Thumbnail().apply {
+                url = info.uri
+            }
+            footer = EmbedBuilder.Footer().apply {
+                text = if(isRecommend)"추천 기능으로 자동 추가됨" else ""
+                icon = ""
+            }
+        }
     }
 
 }
