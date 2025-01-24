@@ -5,20 +5,18 @@ import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Permissions
 import dev.kord.rest.builder.interaction.ChatInputCreateBuilder
 import dev.kord.rest.builder.interaction.string
-import dev.kord.rest.builder.message.EmbedBuilder
 import dev.shaper.rypolixy.command.types.ContextType
 import dev.shaper.rypolixy.command.types.MutualCommand
 import dev.shaper.rypolixy.command.types.TextCommand
 import dev.shaper.rypolixy.config.Client
 import dev.shaper.rypolixy.logger
-import dev.shaper.rypolixy.utils.discord.Colors
 import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.guildId
-import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.interaction
 import dev.shaper.rypolixy.utils.discord.EmbedFrame
 import dev.shaper.rypolixy.utils.discord.ResponseManager.Companion.sendRespond
 import dev.shaper.rypolixy.utils.discord.ResponseType
-import dev.shaper.rypolixy.utils.musicplayer.AudioPlayer
-import dev.shaper.rypolixy.utils.musicplayer.AudioTrack
+import dev.shaper.rypolixy.utils.musicplayer.MediaTrack
+import dev.shaper.rypolixy.utils.musicplayer.MediaType
+import dev.shaper.rypolixy.utils.musicplayer.lavaplayer.LookupResult
 
 
 class Play(private val client: Client): MutualCommand {
@@ -63,14 +61,14 @@ class Play(private val client: Client): MutualCommand {
             logger.info { "Called Joined command" }
         }
 
-        val searchedTrack: List<AudioTrack>? = when(context){
+        val searchedTrack: MediaType.SearchResult? = when(context){
             is ContextType.Message -> {
                 if(res?.command == null){
                     context.sendRespond(ResponseType.NORMAL,EmbedFrame.error("검색어를 입력해주세요",null))
                     null
                 }
                 else{
-                    fun findKeyForInput(optionMap: HashMap<AudioPlayer.SearchOptions, List<String>>, input: String): AudioPlayer.SearchOptions? {
+                    fun findKeyForInput(optionMap: HashMap<MediaType.MediaSource, List<String>>, input: String): MediaType.MediaSource? {
                         for ((key, values) in optionMap) {
                             if (input in values) {
                                 return key
@@ -78,12 +76,12 @@ class Play(private val client: Client): MutualCommand {
                         }
                         return null
                     }
-                    val optionMap = HashMap<AudioPlayer.SearchOptions,List<String>>()
+                    val optionMap = HashMap<MediaType.MediaSource,List<String>>()
                     optionMap.apply{
-                        put(AudioPlayer.SearchOptions.YOUTUBE, listOf("Y", "youtube", "yt"))
-                        put(AudioPlayer.SearchOptions.SOUNDCLOUD, listOf("sc", "soundcloud", "S"))
-                        put(AudioPlayer.SearchOptions.SPOTIFY, listOf("sp", "spotify"))
-                        put(AudioPlayer.SearchOptions.URL, listOf("url","U","uri"))
+                        put(MediaType.MediaSource.YOUTUBE, listOf("Y", "youtube", "yt"))
+                        put(MediaType.MediaSource.SOUNDCLOUD, listOf("sc", "soundcloud", "S"))
+                        put(MediaType.MediaSource.SPOTIFY, listOf("sp", "spotify"))
+                        put(MediaType.MediaSource.UNKNOWN, listOf("url","U","uri"))
                     }
 
 
@@ -102,10 +100,10 @@ class Play(private val client: Client): MutualCommand {
             is ContextType.Interaction -> {
                 val command = context.value.interaction.command
                 val platform = when(command.strings["platform"]){
-                    "youtube"       -> AudioPlayer.SearchOptions.YOUTUBE
-                    "soundcloud"    -> AudioPlayer.SearchOptions.SOUNDCLOUD
-                    "spotify"       -> AudioPlayer.SearchOptions.SPOTIFY
-                    "url"           -> AudioPlayer.SearchOptions.URL
+                    "youtube"       -> MediaType.MediaSource.YOUTUBE
+                    "soundcloud"    -> MediaType.MediaSource.SOUNDCLOUD
+                    "spotify"       -> MediaType.MediaSource.SPOTIFY
+                    "url"           -> MediaType.MediaSource.UNKNOWN
                     else            -> null
                 }
                 if(platform!=null)
@@ -115,9 +113,27 @@ class Play(private val client: Client): MutualCommand {
 
             }
         }
-        if(!searchedTrack.isNullOrEmpty()) {
-            client.lavaClient.play(searchedTrack,context.guildId)
-            context.sendRespond(ResponseType.NORMAL, EmbedFrame.musicInfo(searchedTrack[0],false))
+        if(searchedTrack != null) {
+            when(searchedTrack.result){
+                is LookupResult.Success -> {
+                    when(searchedTrack.data){
+                        is MediaTrack.Track -> {
+                            client.lavaClient.play(listOf(searchedTrack.data),context.guildId)
+                            context.sendRespond(ResponseType.NORMAL, EmbedFrame.musicInfo(searchedTrack.data,false))
+                        }
+                        is MediaTrack.Playlist -> {
+                            val test = searchedTrack.data.tracks[1]
+                            client.lavaClient.play(listOf(test),context.guildId)
+                            context.sendRespond(ResponseType.NORMAL, EmbedFrame.musicInfo(test,false))
+                        }
+                        else -> context.sendRespond(ResponseType.NORMAL,EmbedFrame.warning("검색 결과가 없습니다",null))
+
+                    }
+
+                }
+                is LookupResult.Error       -> context.sendRespond(ResponseType.NORMAL,EmbedFrame.error("에러가 발생했습니다",null))
+                is LookupResult.NoResults   -> context.sendRespond(ResponseType.NORMAL,EmbedFrame.warning("검색 결과가 없습니다",null))
+            }
         }
         else
             context.sendRespond(ResponseType.NORMAL,EmbedFrame.warning("검색 결과가 없습니다",null))

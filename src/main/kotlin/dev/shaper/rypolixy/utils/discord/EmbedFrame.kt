@@ -3,7 +3,9 @@ package dev.shaper.rypolixy.utils.discord
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.shaper.rypolixy.utils.discord.TextDesign.Embed.description
 import dev.shaper.rypolixy.utils.discord.TextDesign.Embed.title
-import dev.shaper.rypolixy.utils.musicplayer.AudioTrack
+import dev.shaper.rypolixy.utils.musicplayer.MediaBehavior
+import dev.shaper.rypolixy.utils.musicplayer.MediaTrack
+import kotlinx.coroutines.flow.asFlow
 
 object EmbedFrame {
 
@@ -48,36 +50,42 @@ object EmbedFrame {
 
     }
 
-    fun musicInfo(track: AudioTrack,isRecommend:Boolean):EmbedBuilder {
-        val info = track.audioTrack.info
+    fun musicInfo(track: MediaTrack.Track, isRecommend:Boolean):EmbedBuilder {
         return EmbedBuilder().apply {
-            title = "${if(isRecommend) "✅"  else "🎶"} | ${info.title}"
+            title = "${if(isRecommend) "✅"  else "🎶"} | ${track.title}"
             color = if(isRecommend) Colors.GREEN else Colors.BLURLPLE
             fields = mutableListOf(
                 EmbedBuilder.Field().apply {
                     name    = "재생시간"
-                    value   = info.length.toString()
+                    value   = track.duration.toString()
                     inline  = true
                 },
                 EmbedBuilder.Field().apply {
                     name    = "채널"
-                    value   = info.author
+                    value   = track.author
                     inline  = true
                 },
                 EmbedBuilder.Field().apply {
                     name    = "링크"
-                    value   = "[링크](${info.uri})"
+                    value   = "[링크](${track.url?.takeIf { it.length > 500 }?.substring(0, 500) ?: track.url ?: "N/A"})"
                     inline  = true
                 }
             )
             thumbnail = EmbedBuilder.Thumbnail().apply {
-                url = info.uri
+                url = track.thumbnail?: ""
             }
             footer = EmbedBuilder.Footer().apply {
                 text = if(isRecommend)"추천 기능으로 자동 추가됨" else ""
                 icon = ""
             }
         }
+    }
+
+    fun list(title: String,des:String,builder:EmbedBuilder.() -> Unit = {}): EmbedBuilder {
+        return EmbedBuilder().apply {
+            title("",title)
+            description = des.split("\n").mapIndexed { index, s -> "${index+1}. $s"  }.joinToString("\n")
+        }.apply(builder)
     }
 
 }

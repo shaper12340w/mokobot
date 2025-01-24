@@ -4,6 +4,7 @@ import dev.shaper.rypolixy.config.Client
 import dev.shaper.rypolixy.config.Properties
 import io.github.oshai.kotlinlogging.KotlinLogging
 import dev.kord.core.Kord
+import dev.shaper.rypolixy.config.Settings
 import dev.shaper.rypolixy.utils.io.json.JsonManager
 import dev.shaper.rypolixy.utils.musicplayer.ytdlp.YtDlpManager
 
@@ -13,8 +14,9 @@ val logger = KotlinLogging.logger {}
 
 suspend fun main(){
 
+    Settings.errorHandler()
     if(false){
-        YtDlpManager.getPlaylistData("https://music.youtube.com/watch?v=JibWhc5kFrM&list=RDAMVMJibWhc5kFrM")
+        YtDlpManager.getPlaylistData("https://www.youtube.com/watch?v=fE9trKOuT3Q")
             .forEach { println(JsonManager.decode(it)) }
     }
     else{
