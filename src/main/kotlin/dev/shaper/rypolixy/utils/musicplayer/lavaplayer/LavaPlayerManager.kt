@@ -8,6 +8,8 @@ import com.sedmelluq.discord.lavaplayer.source.soundcloud.SoundCloudAudioSourceM
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack
+import dev.shaper.rypolixy.logger
+import dev.shaper.rypolixy.utils.musicplayer.MediaType
 import kotlin.coroutines.suspendCoroutine
 import kotlin.coroutines.resume
 
@@ -20,18 +22,22 @@ object LavaPlayerManager: DefaultAudioPlayerManager() {
         registerSourceManager(HttpAudioSourceManager())
     }
 
-    suspend fun loadPlaylist(query: String): List<AudioTrack> = suspendCoroutine {
+    suspend fun load(query: String): LookupResult = suspendCoroutine {
+        logger.debug { "find query : $query" }
         loadItem(query, object : AudioLoadResultHandler {
-            override fun trackLoaded(track: AudioTrack) = it.resume(listOf(track))
-            override fun playlistLoaded(playlist: AudioPlaylist) = it.resume(playlist.tracks)
-            override fun noMatches() = it.resume(emptyList())
+            override fun trackLoaded(track: AudioTrack)             = it.resume(LookupResult.Success(track))
+            override fun playlistLoaded(playlist: AudioPlaylist)    = it.resume(LookupResult.Success(playlist))
+            override fun noMatches()                                = it.resume(LookupResult.NoResults)
             override fun loadFailed(exception: FriendlyException) {
-                println("Load failed. Query: $query, reason: ${exception.stackTraceToString()}")
-                it.resume(emptyList())
+                logger.error { "Load failed. Query: $query, reason: ${exception.stackTraceToString()}" }
+                it.resume(LookupResult.Error)
             }
         })
     }
 
-    suspend fun loadTrack(query: String): AudioTrack? = loadPlaylist(query).firstOrNull()
+    suspend fun optionSearcher(query: String,option: MediaType.MediaSource): LookupResult{
+        return load("${option.option}:$query")
+    }
+
 
 }
