@@ -62,13 +62,10 @@ class MediaPlayer(client:Client) {
         }
     }
 
-    private suspend fun trackConverter(track: MediaTrack):MediaTrack? {
-        when(track) {
-            is MediaTrack.Track ->{
-             null
-            }
-            else -> null
-        }
+
+
+    private suspend fun trackConverter(track: MediaTrack.Track):MediaTrack.Track? {
+        val url = track.url
         return null
     }
 
@@ -92,7 +89,7 @@ class MediaPlayer(client:Client) {
 
     }
 
-    fun play(tracks: List<MediaTrack.Track>, guildId: Snowflake) {
+    suspend fun play(tracks: List<MediaTrack.Track>, guildId: Snowflake) {
         if(tracks.isEmpty()) return
         if(!sessions.containsKey(guildId)) return
         val session = sessions[guildId]!!
@@ -102,8 +99,13 @@ class MediaPlayer(client:Client) {
 
     }
 
-    private fun add(track: MediaTrack.Track, session: MediaData)
-        = session.queue.add(track)
+    private suspend fun add(track: MediaTrack.Track, session: MediaData){
+        if(track.source == MediaType.MediaSource.YOUTUBE)
+            session.queue.add(trackConverter(track)!!)
+        else
+            session.queue.add(track)
+    }
+
 
     private suspend fun playNext(guildId: Snowflake){
 
