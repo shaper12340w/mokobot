@@ -47,6 +47,7 @@ dependencies {
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.2")
     implementation("com.squareup.moshi:moshi:1.15.2")
     implementation("com.squareup.moshi:moshi-kotlin:1.15.2")
+    implementation("com.squareup.moshi:moshi-adapters:1.8.0")
 
 
     // Database
