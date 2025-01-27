@@ -1,5 +1,6 @@
 package dev.shaper.rypolixy.utils.discord
 
+import dev.kord.core.KordObject
 import dev.kord.core.behavior.MessageBehavior
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.interaction.respondEphemeral
@@ -7,6 +8,7 @@ import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.behavior.interaction.response.*
 import dev.kord.core.behavior.reply
 import dev.kord.core.entity.Message
+import dev.kord.core.entity.Strategizable
 import dev.kord.core.event.interaction.ApplicationCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.rest.builder.message.EmbedBuilder
@@ -17,6 +19,7 @@ import dev.shaper.rypolixy.command.types.ContextType
 class ResponseManager{
 
     companion object{
+
 
         suspend fun InteractionResponseBehavior.sendRespond(embed: EmbedBuilder): ReturnType<InteractionResponseBehavior,Message>? = sendRespond(responseType = ResponseType.NORMAL,embed = embed)
 
@@ -32,9 +35,9 @@ class ResponseManager{
                 is DeferredMessageInteractionResponseBehavior   -> {
                     if(this is ChatInputCommandInteractionCreateEvent){
                         when(responseType) {
-                            ResponseType.NORMAL -> return ReturnType.Interaction(this.respond(block))
-                            ResponseType.EPHEMERAL -> return ReturnType.Interaction(this.interaction.respondEphemeral(block))
-                            ResponseType.NO_REPLY -> return ReturnType.Message(this.interaction.channel.createMessage(block))
+                            ResponseType.NORMAL     -> return ReturnType.Interaction(this.respond(block))
+                            ResponseType.EPHEMERAL  -> return ReturnType.Interaction(this.interaction.respondEphemeral(block))
+                            ResponseType.NO_REPLY   -> return ReturnType.Message(this.interaction.channel.createMessage(block))
                             else -> return ReturnType.Interaction(this.respond(block))
                         }
                     }

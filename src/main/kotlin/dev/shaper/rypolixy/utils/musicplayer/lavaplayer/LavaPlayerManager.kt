@@ -9,7 +9,7 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack
 import dev.shaper.rypolixy.logger
-import dev.shaper.rypolixy.utils.musicplayer.MediaType
+import dev.shaper.rypolixy.utils.musicplayer.MediaUtils
 import kotlin.coroutines.suspendCoroutine
 import kotlin.coroutines.resume
 
@@ -22,20 +22,20 @@ object LavaPlayerManager: DefaultAudioPlayerManager() {
         registerSourceManager(HttpAudioSourceManager())
     }
 
-    suspend fun load(query: String): LookupResult = suspendCoroutine {
+    suspend fun load(query: String): LavaResult = suspendCoroutine {
         logger.debug { "find query : $query" }
         loadItem(query, object : AudioLoadResultHandler {
-            override fun trackLoaded(track: AudioTrack)             = it.resume(LookupResult.Success(track))
-            override fun playlistLoaded(playlist: AudioPlaylist)    = it.resume(LookupResult.Success(playlist))
-            override fun noMatches()                                = it.resume(LookupResult.NoResults)
+            override fun trackLoaded(track: AudioTrack)             = it.resume(LavaResult.Success(track))
+            override fun playlistLoaded(playlist: AudioPlaylist)    = it.resume(LavaResult.Success(playlist))
+            override fun noMatches()                                = it.resume(LavaResult.NoResults)
             override fun loadFailed(exception: FriendlyException) {
                 logger.error { "Load failed. Query: $query, reason: ${exception.stackTraceToString()}" }
-                it.resume(LookupResult.Error)
+                it.resume(LavaResult.Error(exception))
             }
         })
     }
 
-    suspend fun optionSearcher(query: String,option: MediaType.MediaSource): LookupResult{
+    suspend fun optionSearcher(query: String,option: MediaUtils.MediaPlatform): LavaResult{
         return load("${option.option}:$query")
     }
 

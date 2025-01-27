@@ -10,6 +10,7 @@ object Emoji {
     }
 
     object Server {
+        const val LOADING: String = "<a:load:1320970189483020309>"
 
     }
 }

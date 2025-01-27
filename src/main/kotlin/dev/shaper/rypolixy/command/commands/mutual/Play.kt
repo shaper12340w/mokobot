@@ -1,22 +1,39 @@
 package dev.shaper.rypolixy.command.commands.mutual
 
-import dev.kord.common.annotation.KordVoice
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Permissions
+import dev.kord.core.behavior.MessageBehavior
+import dev.kord.core.behavior.edit
+import dev.kord.core.behavior.interaction.respondPublic
+import dev.kord.core.behavior.interaction.response.*
+import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
+import dev.kord.core.event.message.MessageCreateEvent
+import dev.kord.rest.Image
 import dev.kord.rest.builder.interaction.ChatInputCreateBuilder
 import dev.kord.rest.builder.interaction.string
+import dev.kord.rest.builder.message.EmbedBuilder
+import dev.kord.rest.route.CdnUrl
 import dev.shaper.rypolixy.command.types.ContextType
 import dev.shaper.rypolixy.command.types.MutualCommand
 import dev.shaper.rypolixy.command.types.TextCommand
 import dev.shaper.rypolixy.config.Client
 import dev.shaper.rypolixy.logger
+import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.getMember
 import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.guildId
+import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.interaction
+import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.member
+import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.user
 import dev.shaper.rypolixy.utils.discord.EmbedFrame
+import dev.shaper.rypolixy.utils.discord.ResponseManager.Companion.createDefer
 import dev.shaper.rypolixy.utils.discord.ResponseManager.Companion.sendRespond
 import dev.shaper.rypolixy.utils.discord.ResponseType
+import dev.shaper.rypolixy.utils.discord.ReturnType
 import dev.shaper.rypolixy.utils.musicplayer.MediaTrack
-import dev.shaper.rypolixy.utils.musicplayer.MediaType
-import dev.shaper.rypolixy.utils.musicplayer.lavaplayer.LookupResult
+import dev.shaper.rypolixy.utils.musicplayer.MediaUtils
+import dev.shaper.rypolixy.utils.musicplayer.lavaplayer.LavaResult
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.take
 
 
 class Play(private val client: Client): MutualCommand {
@@ -53,22 +70,31 @@ class Play(private val client: Client): MutualCommand {
         }
     }
 
-    @OptIn(KordVoice::class)
     override suspend fun execute(context: ContextType, res: TextCommand.ResponseData?) {
         val findPlayer = client.lavaClient.sessions[context.guildId]
+        val waitMessage = context.sendRespond(ResponseType.NORMAL,EmbedFrame.loading("로딩중입니다. 잠시만 기다려 주세요",null).apply { footer = EmbedBuilder.Footer().apply { text = "유튜브의 경우 시간이 다소 소요될 수 있습니다"} })
+        suspend fun respond(emb: EmbedBuilder){
+            when(waitMessage){
+                is ReturnType.Message        -> { waitMessage.data.edit { embeds = listOf(emb).toMutableList() } }
+                is ReturnType.Interaction    -> { (waitMessage.data as PublicMessageInteractionResponseBehavior).edit { embeds = listOf(emb).toMutableList() } }
+                else -> Unit
+            }
+
+        }
         if(findPlayer == null){
             client.commandManager.mutualCommand["join"]!!.execute(context, TextCommand.ResponseData("join",null,listOf("silence")))
             logger.info { "Called Joined command" }
         }
 
-        val searchedTrack: MediaType.SearchResult? = when(context){
+        val searchedTrack: MediaUtils.SearchResult? = when(context){
             is ContextType.Message -> {
+                val response = (waitMessage as ReturnType.Message).data
                 if(res?.command == null){
-                    context.sendRespond(ResponseType.NORMAL,EmbedFrame.error("검색어를 입력해주세요",null))
+                    respond(EmbedFrame.error("검색어를 입력해주세요",null))
                     null
                 }
                 else{
-                    fun findKeyForInput(optionMap: HashMap<MediaType.MediaSource, List<String>>, input: String): MediaType.MediaSource? {
+                    fun findKeyForInput(optionMap: HashMap<MediaUtils.MediaPlatform, List<String>>, input: String): MediaUtils.MediaPlatform? {
                         for ((key, values) in optionMap) {
                             if (input in values) {
                                 return key
@@ -76,12 +102,12 @@ class Play(private val client: Client): MutualCommand {
                         }
                         return null
                     }
-                    val optionMap = HashMap<MediaType.MediaSource,List<String>>()
+                    val optionMap = HashMap<MediaUtils.MediaPlatform,List<String>>()
                     optionMap.apply{
-                        put(MediaType.MediaSource.YOUTUBE, listOf("Y", "youtube", "yt"))
-                        put(MediaType.MediaSource.SOUNDCLOUD, listOf("sc", "soundcloud", "S"))
-                        put(MediaType.MediaSource.SPOTIFY, listOf("sp", "spotify"))
-                        put(MediaType.MediaSource.UNKNOWN, listOf("url","U","uri"))
+                        put(MediaUtils.MediaPlatform.YOUTUBE, listOf("Y", "youtube", "yt"))
+                        put(MediaUtils.MediaPlatform.SOUNDCLOUD, listOf("sc", "soundcloud", "S"))
+                        put(MediaUtils.MediaPlatform.SPOTIFY, listOf("sp", "spotify"))
+                        put(MediaUtils.MediaPlatform.UNKNOWN, listOf("url","U","uri"))
                     }
 
 
@@ -89,21 +115,22 @@ class Play(private val client: Client): MutualCommand {
                         val platform = findKeyForInput(optionMap, res.options[0])
                         if (platform!=null){
                             client.lavaClient.search(res.command, platform)
+                        } else {
+                            respond(EmbedFrame.error("잘못된 플랫폼입니다",null))
+                            null
                         }
-                        context.sendRespond(ResponseType.NORMAL,EmbedFrame.error("잘못된 플랫폼입니다",null))
-                        null
                     }
                     else
                         client.lavaClient.search(res.command)
                 }
             }
             is ContextType.Interaction -> {
-                val command = context.value.interaction.command
-                val platform = when(command.strings["platform"]){
-                    "youtube"       -> MediaType.MediaSource.YOUTUBE
-                    "soundcloud"    -> MediaType.MediaSource.SOUNDCLOUD
-                    "spotify"       -> MediaType.MediaSource.SPOTIFY
-                    "url"           -> MediaType.MediaSource.UNKNOWN
+                val command     = context.value.interaction.command
+                val platform    = when(command.strings["platform"]){
+                    "youtube"       -> MediaUtils.MediaPlatform.YOUTUBE
+                    "soundcloud"    -> MediaUtils.MediaPlatform.SOUNDCLOUD
+                    "spotify"       -> MediaUtils.MediaPlatform.SPOTIFY
+                    "url"           -> MediaUtils.MediaPlatform.UNKNOWN
                     else            -> null
                 }
                 if(platform!=null)
@@ -114,26 +141,35 @@ class Play(private val client: Client): MutualCommand {
             }
         }
         if(searchedTrack != null) {
-            when(searchedTrack.result){
-                is LookupResult.Success -> {
+
+            when(searchedTrack.status){
+                MediaUtils.SearchType.SUCCESS -> {
+                    val image = context.getMember().avatar?.cdnUrl?.toUrl {
+                        CdnUrl.UrlFormatBuilder().apply {
+                            format = Image.Format.WEBP
+                            size   = Image.Size.Size1024
+                        }
+                    }
                     when(searchedTrack.data){
                         is MediaTrack.Track -> {
-                            client.lavaClient.play(listOf(searchedTrack.data),context.guildId)
-                            context.sendRespond(ResponseType.NORMAL, EmbedFrame.musicInfo(searchedTrack.data,false))
+                            client.lavaClient.play(searchedTrack.data,context.guildId)
+                            respond(EmbedFrame.musicInfo(searchedTrack.data,image))
                         }
                         is MediaTrack.Playlist -> {
-                            val test = searchedTrack.data.tracks[1]
-                            client.lavaClient.play(listOf(test),context.guildId)
-                            context.sendRespond(ResponseType.NORMAL, EmbedFrame.musicInfo(test,false))
+                            val test = searchedTrack.data.tracks[0]
+                            val track = client.lavaClient.play(test,context.guildId)
+                            respond(EmbedFrame.musicInfo(track!!,image))
                         }
                         else -> context.sendRespond(ResponseType.NORMAL,EmbedFrame.warning("검색 결과가 없습니다",null))
 
                     }
 
                 }
-                is LookupResult.Error       -> context.sendRespond(ResponseType.NORMAL,EmbedFrame.error("에러가 발생했습니다",null))
-                is LookupResult.NoResults   -> context.sendRespond(ResponseType.NORMAL,EmbedFrame.warning("검색 결과가 없습니다",null))
+                MediaUtils.SearchType.ERROR       -> respond(EmbedFrame.error("에러가 발생했습니다",null))
+                MediaUtils.SearchType.NORESULTS   -> respond(EmbedFrame.warning("검색 결과가 없습니다",null))
             }
+
+
         }
         else
             context.sendRespond(ResponseType.NORMAL,EmbedFrame.warning("검색 결과가 없습니다",null))

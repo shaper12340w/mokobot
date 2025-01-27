@@ -6,6 +6,7 @@ import com.jfposton.ytdlp.mapper.VideoInfo
 import dev.shaper.rypolixy.config.Properties
 import dev.shaper.rypolixy.logger
 import dev.shaper.rypolixy.utils.io.json.JsonManager
+import dev.shaper.rypolixy.utils.musicplayer.MediaUtils
 
 object YtDlpManager {
 
@@ -19,8 +20,9 @@ object YtDlpManager {
         ENTRY(null),
     }
 
-    fun getData(url:String, isFlat:Boolean = true): YtDlpInfo? {
-        val request = YtDlpRequest(url).apply {
+    fun getUrlData(url:String, isFlat:Boolean = true): YtDlpInfo? {
+        logger.debug { "Get yt-dlp data from url : $url" }
+        val request     = YtDlpRequest(url).apply {
             setOption("quiet")
             setOption("dump-single-json")
             setOption("skip-download")
@@ -28,9 +30,7 @@ object YtDlpManager {
                 setOption("flat-playlist")
         }
         val result      = YtDlp.execute(request).out
-        logger.debug { "Data: $result" }
         val checkType   = JsonManager().sealedBuilder(YtDlpInfo::class,YtDlpInfo.BaseInfo::class).decode<YtDlpInfo.BaseInfo>(result)
-        logger.debug { "Check type: $checkType" }
         if(isFlat && (checkType.type == DataType.PLAYLIST.value))
             return JsonManager().sealedBuilder(YtDlpInfo::class,YtDlpInfo.FlatPlaylistInfo::class).decode<YtDlpInfo.FlatPlaylistInfo>(result)
         when(checkType.type) {
@@ -38,6 +38,17 @@ object YtDlpManager {
             DataType.PLAYLIST.value -> return JsonManager().sealedBuilder(YtDlpInfo::class,YtDlpInfo.PlaylistInfo::class).decode<YtDlpInfo.PlaylistInfo>(result)
         }
         return null
+    }
+
+    fun getSearchData(arg:String, platform:MediaUtils.MediaPlatform, count:Int = 10): YtDlpInfo.SearchTrackInfo {
+        val request     = YtDlpRequest("${platform.option}$count:\"$arg\"").apply {
+            setOption("quiet")
+            setOption("dump-single-json")
+            setOption("skip-download")
+            setOption("flat-playlist")
+        }
+        val result      = YtDlp.execute(request).out
+        return JsonManager().sealedBuilder(YtDlpInfo::class,YtDlpInfo.SearchTrackInfo::class).decode<YtDlpInfo.SearchTrackInfo>(result)
     }
 
     @Deprecated("Deprecated. Use getData", ReplaceWith("getData(url, isFlat)"))

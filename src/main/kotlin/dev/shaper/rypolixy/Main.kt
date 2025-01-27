@@ -16,8 +16,8 @@ val logger = KotlinLogging.logger {}
 suspend fun main(){
 
     Settings.errorHandler()
-    if(true){
-        val data = YtDlpManager.getData("https://www.youtube.com/watch?v=WwuuVWNgUq8")
+    if(false){
+        val data = YtDlpManager.getUrlData("https://www.youtube.com/playlist?list=PLKBuK09OeYfSfKDmjkyZFL968QeH_gW__")
         val result = when(data){
             is YtDlpInfo.TrackInfo          -> JsonManager().sealedBuilder(YtDlpInfo::class,YtDlpInfo.TrackInfo::class).encode(data)
             is YtDlpInfo.PlaylistInfo       -> JsonManager().sealedBuilder(YtDlpInfo::class,YtDlpInfo.PlaylistInfo::class).encode(data)

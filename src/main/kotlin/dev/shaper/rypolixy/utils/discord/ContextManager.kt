@@ -38,7 +38,7 @@ class ContextManager {
                 is ContextType.Interaction -> this.value.interaction.data.user.value
                 is ContextType.Message -> this.value.message.data.author
             }
-        @Deprecated("Use getGuild() instead", ReplaceWith("getGuild()"))
+        @Deprecated("Use getMember() instead", ReplaceWith("getMember()"))
         val ContextType.member
             get() = when (this) {
                 is ContextType.Interaction -> Member(

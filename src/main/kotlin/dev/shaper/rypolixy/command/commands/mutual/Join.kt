@@ -13,8 +13,7 @@ import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.guildId
 import dev.shaper.rypolixy.utils.discord.EmbedFrame
 import dev.shaper.rypolixy.utils.discord.ResponseManager.Companion.sendRespond
 import dev.shaper.rypolixy.utils.discord.ResponseType
-import dev.shaper.rypolixy.utils.musicplayer.MediaPlayer
-import dev.shaper.rypolixy.utils.musicplayer.MediaType
+import dev.shaper.rypolixy.utils.musicplayer.MediaUtils
 
 
 class Join(private val client: Client): MutualCommand {
@@ -49,10 +48,10 @@ class Join(private val client: Client): MutualCommand {
                     errorMessage("이미 입장해있습니다")
                 else {
                     //TODO: Get Player Setting data from Database
-                    client.lavaClient.connect(MediaType.ConnectOptions(
+                    client.lavaClient.connect(MediaUtils.ConnectOptions(
                         channel         = context.channel,
                         voiceChannel    = channel!!,
-                        playerOptions   = MediaType.PlayerOptions()
+                        playerOptions   = MediaUtils.PlayerOptions()
                     ))
                     if(res?.options?.contains("silence") != true)
                         context.sendRespond(ResponseType.NORMAL, EmbedBuilder().apply {
