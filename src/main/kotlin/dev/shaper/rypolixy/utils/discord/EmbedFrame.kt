@@ -1,11 +1,14 @@
 package dev.shaper.rypolixy.utils.discord
 
+import dev.kord.core.entity.Member
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.shaper.rypolixy.utils.discord.TextDesign.Embed.description
 import dev.shaper.rypolixy.utils.discord.TextDesign.Embed.title
 import dev.shaper.rypolixy.utils.musicplayer.MediaBehavior
 import dev.shaper.rypolixy.utils.musicplayer.MediaTrack
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.datetime.Clock
+import java.util.Date
 
 object EmbedFrame {
 
@@ -41,16 +44,16 @@ object EmbedFrame {
         }.apply(builder)
     }
 
-    fun loading(title:String = "Loading",description:String?,builder:EmbedBuilder.() -> Unit): EmbedBuilder {
+    fun loading(title:String = "Loading",description:String?,builder:EmbedBuilder.() -> Unit = {}): EmbedBuilder {
         return EmbedBuilder().apply {
-            title(Emoji.Default.LOADING, title)
+            title(Emoji.Server.LOADING, title)
             description(description)
-            color = Colors.DARKGREY
+            color = Colors.BLURLPLE
         }.apply(builder)
 
     }
 
-    fun musicInfo(track: MediaTrack.Track, isRecommend:Boolean):EmbedBuilder {
+    fun musicInfo(track: MediaTrack.Track, avatar: String? = "", isRecommend:Boolean = false):EmbedBuilder {
         return EmbedBuilder().apply {
             title = "${if(isRecommend) "✅"  else "🎶"} | ${track.title}"
             color = if(isRecommend) Colors.GREEN else Colors.BLURLPLE
@@ -71,12 +74,13 @@ object EmbedFrame {
                     inline  = true
                 }
             )
+            timestamp = Clock.System.now()
             thumbnail = EmbedBuilder.Thumbnail().apply {
                 url = track.thumbnail?: ""
             }
             footer = EmbedBuilder.Footer().apply {
                 text = if(isRecommend)"추천 기능으로 자동 추가됨" else ""
-                icon = ""
+                icon = avatar ?: ""
             }
         }
     }
