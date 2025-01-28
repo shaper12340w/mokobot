@@ -23,39 +23,40 @@ class MediaUtils {
     ) {
         YOUTUBE(
             listOf(
-                "https?://(?:www\\.)?youtube\\.com/clip/(?P<id>[^/?#]+)",
-                "https?://(?:www\\.)?youtube\\.com/?(?:[?#]|$)|:ytrec(?:ommended)?",
-                "https?://(?:www\\.)?youtube\\.com/(?:results|search)\\?([^#]+&)?(?:search_query|q)=(?:[^&]+)(?:[&#]|$)",
-                "https?://(?:www\\.)?youtube\\.com/source/(?P<id>[\\w-]{11})/shorts",
-                "https?://(?:www\\.)?youtube\\.com/watch\\?v=(?P<id>[0-9A-Za-z_-]{1,10})$",
-                "https?://music\\.youtube\\.com/search\\?([^#]+&)?(?:search_query|q)=(?:[^&]+)(?:[&#]|$)",
-                "https?://(?:\\w+\\.)?youtube\\.com/embed/live_stream/?\\?(?:[^#]+&)?channel=(?P<id>[^&#]+)",
-                "https?://youtu\\.be/(?P<id>[0-9A-Za-z_-]{11})/*?.*?\\blist=(?P<playlist_id>(?:(?:PL|LL|EC|UU|FL|RD|UL|TL|PU|OLAK5uy_)[0-9A-Za-z-_]{10,}|RDMM|WL|LL|LM))"
-                ),
+                "https?:\\/\\/(?:www\\.)?youtu(?:be\\.com\\/watch\\?v=|\\.be\\/)([\\w\\-\\_]*)(&(amp;)?\u200C\u200B[\\w\\?\u200C\u200B=]*)?",
+                "https?:\\/\\/(?:www\\.)?youtube\\.com\\/clip\\/(?<id>[^\\/?#]+)",
+                "https?:\\/\\/(?:www\\.)?youtube\\.com\\/?$",
+                "https?:\\/\\/(?:www\\.)?youtube\\.com\\/(?:results|search)\\?.*?(?:search_query|q)=[^&]+",
+                "https?:\\/\\/(?:www\\.)?youtube\\.com\\/shorts\\/(?<id>[\\w-]{11})",
+                "https?:\\/\\/(?:www\\.)?youtube\\.com\\/watch\\?v=(?<id>[\\w-]{11})",
+                "https?:\\/\\/music\\.youtube\\.com\\/search\\?.*?(?:search_query|q)=[^&]+",
+                "https?:\\/\\/(?:\\w+\\.)?youtube\\.com\\/embed\\/live_stream\\/?\\?.*?channel=(?<id>[^&#]+)",
+                "https?:\\/\\/youtu\\.be\\/([\\w-]{11})(?:[^#&]*[&?])list=((?:(?:PL|LL|EC|UU|FL|RD|UL|TL|PU|OLAK5uy_)[\\w-]{10,}|RDMM|WL|LL|LM))",
+                "https?:\\/\\/www\\.youtube\\.com\\/playlist\\?list=([a-zA-Z0-9-_]+)"
+            ),
             "https://www.youtube.com/favicon.ico",
             "ytsearch"
         ),
         SOUNDCLOUD(
             listOf(
-                "/^https?:\\/\\/(soundcloud\\.com|snd\\.sc)\\/(.*)\$/",
-                "^(?:https?:\\/\\/)((?:www\\.)|(?:m\\.))?soundcloud\\.com\\/[a-z0-9](?!.*?(-|_){2})[\\w-]{1,23}[a-z0-9](?:\\/.+)?\$",
-                "/^https?:\\/\\/(soundcloud\\.com|snd\\.sc)\\/([A-Za-z0-9_-]+)\\/([A-Za-z0-9_-]+)\\/?\$/",
+                "https?:\\/\\/(soundcloud\\.com|snd\\.sc)\\/(.*)",
+                "https?:\\/\\/(?:www\\.|m\\.)?soundcloud\\.com\\/[a-z0-9](?!.*?(-|_){2})[\\w-]{1,23}[a-z0-9](?:\\/.+)?",
+                "https?:\\/\\/(soundcloud\\.com|snd\\.sc)\\/([A-Za-z0-9_-]+)\\/([A-Za-z0-9_-]+)\\/?"
             ),
             "https://soundcloud.com",
             "scsearch"
         ),
         SPOTIFY(
             listOf(
-                "/^(?:spotify:|https:\\/\\/[a-z]+\\.spotify\\.com\\/(track\\/|user\\/(.*)\\/playlist\\/|playlist\\/))(.*)\$/"
+                "^(?:spotify:|https?:\\/\\/[a-z]+\\.spotify\\.com\\/(track\\/|user\\/(.*)\\/playlist\\/|playlist\\/))(.*)$"
             ),
             "https://spotify.com/",
-            "spsearch",
+            "spsearch"
         ),
-        UNKNOWN(listOf(),"",null)
-
+        UNKNOWN(listOf(), "", null)
     }
 
-    data class PlayerOptions(
+        data class PlayerOptions(
         var leaveTime:      Long = 0,
         var volume:         Double = 100.0,
         var shuffle:        Boolean = false
@@ -107,9 +108,9 @@ class MediaUtils {
                     track.info.length.toDuration(DurationUnit.MILLISECONDS),
                     track.info.uri,
                     source,
+                    track.info.artworkUrl,
                     track.info.identifier,
                     track.info.author,
-                    track.info.artworkUrl,
                     track.toTrack()
                 )
             }
@@ -121,6 +122,7 @@ class MediaUtils {
                         track.name,
                         track.tracks.fold(0L) { acc, audioTrack -> acc + audioTrack.duration }.toDuration(DurationUnit.MINUTES),
                         track.selectedTrack?.info?.uri,
+                        track.selectedTrack?.info?.artworkUrl,
                         source,
                         track.isSearchResult,
                         track.tracks.map { trackfy(it) }.toMutableList(),
@@ -156,14 +158,16 @@ class MediaUtils {
                     title       = track.title,
                     duration    = track.duration?.toDuration(DurationUnit.SECONDS) ?: Duration.ZERO,
                     url         = track.pageUrl,
+                    thumbnail   = track.thumbnails.getOrNull(0)?.url,
                     source      = source
                 )
             }
 
             fun dlpPlaylistInfoToPlaylist(
-                url      : String,
-                entries  : List<MediaTrack>,
-                isSearch : Boolean,
+                url         : String,
+                thumbnail   : String?,
+                entries     : List<MediaTrack>,
+                isSearch    : Boolean,
             ) : MediaTrack.Playlist {
                 val checkDuration = entries.fold(0) { acc,trackInfo ->
                     when(trackInfo){
@@ -178,6 +182,7 @@ class MediaUtils {
                     duration    = checkDuration.toDuration(DurationUnit.SECONDS),
                     url         = url,
                     isSeek      = isSearch,
+                    thumbnail   = thumbnail,
                     tracks      = entries.toMutableList()
                 )
             }
@@ -191,6 +196,7 @@ class MediaUtils {
                 }
                 is YtDlpInfo.PlaylistInfo       -> dlpPlaylistInfoToPlaylist(
                     info.pageUrl,
+                    info.thumbnails.getOrNull(0)?.url,
                     info.entries.map {
                         val lavaResult = LavaPlayerManager.load(it.pageUrl)
                         if(lavaResult !is LavaResult.Success)
@@ -201,11 +207,13 @@ class MediaUtils {
                 )
                 is YtDlpInfo.FlatPlaylistInfo   -> dlpPlaylistInfoToPlaylist(
                     info.pageUrl,
+                    info.thumbnails?.getOrNull(0)?.url,
                     info.entries.map { dlpFlatTrackInfoToTrack(it) },
                     false
                 )
                 is YtDlpInfo.SearchTrackInfo    -> dlpPlaylistInfoToPlaylist(
                     info.pageUrl,
+                    null,
                     info.entries.map { dlpFlatTrackInfoToTrack(it) },
                     true
                 )
