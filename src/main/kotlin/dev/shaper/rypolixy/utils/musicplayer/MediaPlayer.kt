@@ -1,5 +1,6 @@
 package dev.shaper.rypolixy.utils.musicplayer
 
+import com.sedmelluq.discord.lavaplayer.player.event.TrackEndEvent
 import dev.kord.common.annotation.KordVoice
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.BaseVoiceChannelBehavior
@@ -13,7 +14,12 @@ import dev.shaper.rypolixy.utils.musicplayer.MediaUtils.Companion.lavaTrackBuild
 import dev.shaper.rypolixy.utils.musicplayer.lavaplayer.LavaPlayerManager
 import dev.shaper.rypolixy.utils.musicplayer.lavaplayer.LavaResult
 import dev.shaper.rypolixy.utils.musicplayer.ytdlp.YtDlpManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.awt.PageAttributes.MediaType
 import java.util.concurrent.TimeUnit
+import kotlin.math.log
 
 
 @OptIn(KordVoice::class)
@@ -32,14 +38,21 @@ class MediaPlayer(client:Client) {
         val player  = LavaPlayerManager.createPlayer()
         val queue   : MutableList<MediaTrack> = mutableListOf()
         val guildId = options.voiceChannel.guildId
-
         val connection = options.voiceChannel.connect {
             audioProvider {
                 player.provide(1, TimeUnit.SECONDS)?.let {
                     return@audioProvider AudioFrame.fromData(it.data)
                 }
-                playNext(guildId)
                 return@audioProvider AudioFrame.SILENCE
+            }
+
+        }
+
+        player.addListener {
+            if(it is TrackEndEvent){
+                CoroutineScope(Dispatchers.IO).launch {
+                    playNext(guildId)
+                }
             }
         }
 
@@ -59,9 +72,9 @@ class MediaPlayer(client:Client) {
         }
     }
 
-    private suspend fun queryChecker(query: String): MediaUtils.MediaPlatform? {
+    private fun queryChecker(query: String): MediaUtils.MediaPlatform? {
         return MediaUtils.MediaPlatform.entries.firstOrNull { link ->
-            link.url.any { it.matches(query.toRegex()) }
+            link.url.any { it.toRegex().matches(query) }
         }
     }
 
@@ -80,7 +93,17 @@ class MediaPlayer(client:Client) {
                 }
                 MediaUtils.MediaPlatform.UNKNOWN -> { //URL
                     //TODO : Add process with other websites
-                    return when (val lavaResult  = LavaPlayerManager.load(query)) {
+                    val checkQuery = queryChecker(query)
+                    if (checkQuery != null) {
+                        val dlpResult   = YtDlpManager.getUrlData(query)
+                            ?: return MediaUtils.SearchResult(MediaUtils.SearchType.NORESULTS,null)
+                        val result      = MediaUtils.ytDlpTrackBuilder(dlpResult, option)
+                        return MediaUtils.SearchResult(
+                            status      = MediaUtils.SearchType.SUCCESS,
+                            data        = result
+                        )
+                    } else
+                    return when (val lavaResult = LavaPlayerManager.load(query)) {
                         is LavaResult.Error     -> throw lavaResult.error
                         is LavaResult.NoResults -> MediaUtils.SearchResult(MediaUtils.SearchType.NORESULTS,null)
                         is LavaResult.Success   -> MediaUtils.SearchResult(MediaUtils.SearchType.SUCCESS,
@@ -112,10 +135,17 @@ class MediaPlayer(client:Client) {
         if(!sessions.containsKey(guildId)) return null
         val session = sessions[guildId]!!
         add(tracks,session)
-        if(session.currentData()?.status != MediaBehavior.PlayStatus.PLAYING)
+        if(session.currentData()?.status != MediaBehavior.PlayStatus.PLAYING){
             session.index = session.queue.size - 1
-        session.currentData()?.playWith(sessions[guildId]!!.player)
-        return session.currentTrack()
+            playNext(guildId)
+            return session.currentTrack()
+        }
+        else {
+            return when(val media = session.queue.last()){
+                is MediaTrack.Track -> return media
+                else                -> null
+            }
+        }
     }
 
     //add track on queue
@@ -124,101 +154,105 @@ class MediaPlayer(client:Client) {
             logger.debug { "Found track's Platform is Youtube!" }
             session.queue.add(implementTrack(track)!!)
         }
-
-        else
-            session.queue.add(track)
+        else session.queue.add(track)
     }
 
 
-    /*fuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuck*/
     private suspend fun playNext(guildId: Snowflake){
+
         //TODO : when invoke Error -> send TextChannel to Error message + leave
         //TODO : automatize track and playlist <- + flatTrack to normal TrackData
-        val session = sessions[guildId] ?: return
+
         //val leftTrack = session.queue.filter { it.data.status == MediaBehavior.PlayStatus.IDLE }
         //val leftTrackIndexes = leftTrack.map { session.queue.indexOf(it) }
 
         //RepeatAll  -> Track + Playlist as Track / RepeatOnce -> (Track/Playlist) of one as Track / Nothing -> Track <=> Playlist
         //Shuffle    -> (Track -> (Track + Playlist)) or (Playlist -> Playlist)
 
-        if(session.queue.isEmpty()) return
-        logger.info { "Playing Next Track.." }
+        //순서 -> 다음 트랙 계산 -> 플레이리스트일 경우 플레이리스트 내부 / 트랙일 경우 다음 요소 검색
+        // 일반 트랙일 경우, 플레이리스트일 경우
+        // 플레이리스트일 경우 -> 구현됨 / 구현안됨
 
-        suspend fun normalTrackProcess(){
-            //filter only Track / FlatPlaylist
-            val leftTrack = session.queue.filter {
-                when(it){
-                    is MediaTrack.Track     -> it.data.status == MediaBehavior.PlayStatus.IDLE
-                    is MediaTrack.Playlist  -> it.tracks.firstOrNull { subTrack -> subTrack is MediaTrack.FlatTrack } != null
-                    else                    -> false
-                }
+
+        val session = sessions[guildId] ?: return
+        val originQueue = session.queue
+        val tempQueue = session.queue.toMutableList()
+        val shuffle = session.options.shuffle
+
+        if (tempQueue.isEmpty()) return
+        logger.debug { "Playing Next Track.. / Data : $session" }
+
+        while(tempQueue.isNotEmpty()) {
+            val nextIndex = when {
+                session.subIndex > 0 -> session.index
+                shuffle              -> (tempQueue.indices).random()
+                else                 -> 0
             }
-            val leftTrackIndexes = leftTrack.map { session.queue.indexOf(it) }
-
-            if(session.options.repeat != MediaUtils.PlayerOptions.RepeatType.ONCE)
-                session.currentData()?.status = MediaBehavior.PlayStatus.END       //Normally Play ended
-
-            //if play all ended
-            if(session.queue.isNotEmpty() && leftTrack.isEmpty())
-                when (session.options.repeat) {
-                    MediaUtils.PlayerOptions.RepeatType.DEFAULT -> return disconnect(guildId)
-                    MediaUtils.PlayerOptions.RepeatType.ALL     -> session.queue.forEach {
-                        when(it){
-                            is MediaTrack.Track     -> it.data.status = MediaBehavior.PlayStatus.IDLE
-                            is MediaTrack.Playlist  -> it.tracks.forEach { track -> if(track is MediaTrack.Track) track.data.status = MediaBehavior.PlayStatus.IDLE }
-                            else                    -> Unit
-                        }
+            if (nextIndex !in tempQueue.indices) {
+                logger.warn { "Invalid nextIndex: $nextIndex in tempQueue size ${tempQueue.size}" }
+                tempQueue.clear()
+                break
+            }
+            val nextMedia = tempQueue[nextIndex]
+            logger.debug { nextMedia.toString() }
+            when(nextMedia) {
+                is MediaTrack.Track         -> {
+                    logger.debug { "Track Type : Track" }
+                    if(nextMedia.data.status == MediaBehavior.PlayStatus.IDLE){
+                        nextMedia.data.status = MediaBehavior.PlayStatus.PLAYING
+                        session.index = originQueue.indexOf(nextMedia)
+                        logger.debug { "Play Track : $nextMedia" }
+                        return nextMedia.data.playWith(sessions[guildId]!!.player)
                     }
-                    MediaUtils.PlayerOptions.RepeatType.ONCE    -> Unit
+                    else tempQueue.removeAt(nextIndex)
                 }
-
-            if(session.options.repeat == MediaUtils.PlayerOptions.RepeatType.DEFAULT) {
-                if(session.options.shuffle)
-                    session.index = leftTrackIndexes.random()
-                else
-                    session.index = leftTrackIndexes.first()
-                if(session.currentData()?.status == MediaBehavior.PlayStatus.END)
-                    session.currentData()?.clone()
-                session.currentData()?.status = MediaBehavior.PlayStatus.PLAYING
+                is MediaTrack.Playlist      -> {
+                    logger.debug { "Track Type : Playlist" }
+                    val idleTracks = nextMedia.tracks.filterIsInstance<MediaTrack.FlatTrack>()
+                        .plus(nextMedia.tracks.filterIsInstance<MediaTrack.Track>()
+                        .filter { it.data.status == MediaBehavior.PlayStatus.IDLE })
+                    if(idleTracks.isNotEmpty()){
+                        val subNextIndex    = if (shuffle) (idleTracks.indices).random() else 0
+                        val nextTrack       = idleTracks[subNextIndex]
+                        val originPlaylist  = (originQueue[session.index] as MediaTrack.Playlist).tracks
+                        val originIndex     = originPlaylist.indexOf(nextTrack)
+                        if (nextTrack is MediaTrack.FlatTrack) {
+                            val convertedTrack = nextTrack.toTrack()
+                            if(convertedTrack == null) {
+                                logger.debug { "Skip Track Because Null: $nextMedia " }
+                                tempQueue.removeAt(nextIndex)
+                                return
+                            }
+                            originPlaylist[originIndex] = convertedTrack
+                            session.subIndex = originIndex
+                            convertedTrack.data.status = MediaBehavior.PlayStatus.PLAYING
+                            logger.debug { "Play Converted Track: $convertedTrack" }
+                            return convertedTrack.data.playWith(session.player)
+                        }
+                        if(session.subIndex == 0)
+                            session.index = nextIndex
+                        (nextTrack as MediaTrack.Track).data.status = MediaBehavior.PlayStatus.PLAYING
+                        session.subIndex = originPlaylist.indexOf(nextTrack)
+                        logger.debug { "Play Track : $nextTrack" }
+                        return nextTrack.data.playWith(sessions[guildId]!!.player)
+                    }
+                    else {
+                        if(session.subIndex > 0) session.subIndex = 0
+                        tempQueue.removeAt(nextIndex)
+                    }
+                }
+                else                        -> Unit
             }
-            session.currentData()?.playWith(session.player)
-
         }
 
-        when(val currentMedia = session.queue[session.index]){
-            is MediaTrack.Playlist  -> {
-                /**
-                 * Have to process
-                 *  - shuffle and extra system and check it is all done
-                 *  - when if it is FlatTrack -> change it to normal Track
-                 */
-                val currentTrack = currentMedia.tracks[session.subIndex]
-                if(currentTrack is MediaTrack.FlatTrack) {
-                    val result = implementTrack(currentTrack, currentTrack.source) ?: throw RuntimeException("Converted value is null")
-                    currentMedia.tracks[session.subIndex] = result
-                    logger.debug { "Loaded Track from Playlist $currentMedia"}
-                }
+        // No tracks left to play
+        session.index = 0
+        session.subIndex = 0
 
-                val leftTrack = currentMedia.tracks.filter { (it as MediaTrack.Track).data.status == MediaBehavior.PlayStatus.IDLE }
-                val leftTrackIndexes = leftTrack.map { currentMedia.tracks.indexOf(it) }
+        logger.debug { "Queue is empty, leaving voice channel" }
+        disconnect(guildId)
 
 
-                if(leftTrackIndexes.isNotEmpty()){
-                    if(session.options.shuffle)
-                        session.subIndex = leftTrackIndexes.random()
-                    else
-                        session.subIndex = leftTrackIndexes.first()
-                }
-                else{
-                    //goto normal track process
-                    normalTrackProcess()
-                    session.subIndex = 0
-                }
-
-            }
-            is MediaTrack.Track     -> normalTrackProcess()
-            else                    -> Unit
-        }
 
     }
 

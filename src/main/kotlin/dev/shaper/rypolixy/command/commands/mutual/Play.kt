@@ -156,9 +156,18 @@ class Play(private val client: Client): MutualCommand {
                             respond(EmbedFrame.musicInfo(searchedTrack.data,image))
                         }
                         is MediaTrack.Playlist -> {
-                            val test = searchedTrack.data.tracks[0]
-                            val track = client.lavaClient.play(test,context.guildId)
-                            respond(EmbedFrame.musicInfo(track!!,image))
+                            if(searchedTrack.data.isSeek){
+                                val test = searchedTrack.data.tracks[0]
+                                val track = client.lavaClient.play(test,context.guildId)
+                                respond(EmbedFrame.musicInfo(track!!,image))
+                            }
+                            else{
+                                val track = client.lavaClient.play(searchedTrack.data,context.guildId)
+                                respond(EmbedFrame.list(searchedTrack.data.title,
+                                    searchedTrack.data.tracks.joinToString("\n") { it.title }) {
+                                    thumbnail { url = searchedTrack.data.thumbnail ?: "" }
+                                })
+                            }
                         }
                         else -> context.sendRespond(ResponseType.NORMAL,EmbedFrame.warning("검색 결과가 없습니다",null))
 
