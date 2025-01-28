@@ -162,7 +162,7 @@ class Play(private val client: Client): MutualCommand {
                                 respond(EmbedFrame.musicInfo(track!!,image))
                             }
                             else{
-                                val track = client.lavaClient.play(searchedTrack.data,context.guildId)
+                                client.lavaClient.play(searchedTrack.data,context.guildId)
                                 respond(EmbedFrame.list(searchedTrack.data.title,
                                     searchedTrack.data.tracks.joinToString("\n") { it.title }) {
                                     thumbnail { url = searchedTrack.data.thumbnail ?: "" }

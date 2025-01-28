@@ -162,6 +162,7 @@ class MediaPlayer(client:Client) {
 
         //TODO : when invoke Error -> send TextChannel to Error message + leave
         //TODO : automatize track and playlist <- + flatTrack to normal TrackData
+        //TODO : add process repeat / add process when status is END
 
         //val leftTrack = session.queue.filter { it.data.status == MediaBehavior.PlayStatus.IDLE }
         //val leftTrackIndexes = leftTrack.map { session.queue.indexOf(it) }
@@ -216,6 +217,8 @@ class MediaPlayer(client:Client) {
                         val nextTrack       = idleTracks[subNextIndex]
                         val originPlaylist  = (originQueue[session.index] as MediaTrack.Playlist).tracks
                         val originIndex     = originPlaylist.indexOf(nextTrack)
+                        if(session.subIndex == 0)
+                            session.index = originQueue.indexOf(nextMedia)
                         if (nextTrack is MediaTrack.FlatTrack) {
                             val convertedTrack = nextTrack.toTrack()
                             if(convertedTrack == null) {
@@ -228,13 +231,12 @@ class MediaPlayer(client:Client) {
                             convertedTrack.data.status = MediaBehavior.PlayStatus.PLAYING
                             logger.debug { "Play Converted Track: $convertedTrack" }
                             return convertedTrack.data.playWith(session.player)
+                        } else if(nextTrack is MediaTrack.Track){
+                            logger.debug { "Play Track : $nextTrack" }
+                            nextTrack.data.status = MediaBehavior.PlayStatus.PLAYING
+                            session.subIndex = originIndex
+                            return nextTrack.data.playWith(session.player)
                         }
-                        if(session.subIndex == 0)
-                            session.index = nextIndex
-                        (nextTrack as MediaTrack.Track).data.status = MediaBehavior.PlayStatus.PLAYING
-                        session.subIndex = originPlaylist.indexOf(nextTrack)
-                        logger.debug { "Play Track : $nextTrack" }
-                        return nextTrack.data.playWith(sessions[guildId]!!.player)
                     }
                     else {
                         if(session.subIndex > 0) session.subIndex = 0
