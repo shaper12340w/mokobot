@@ -19,7 +19,7 @@ sealed class MediaTrack {
         override val thumbnail  : String?,
         val id          : String,
         val author      : String,
-        val data        : MediaBehavior
+        var data        : MediaBehavior
     ) : MediaTrack() {
 
         fun hyperlink(): String {

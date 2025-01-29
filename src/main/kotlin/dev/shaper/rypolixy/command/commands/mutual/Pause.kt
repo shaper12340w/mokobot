@@ -9,10 +9,10 @@ import dev.shaper.rypolixy.utils.discord.EmbedFrame
 import dev.shaper.rypolixy.utils.discord.ResponseManager.Companion.sendRespond
 import dev.shaper.rypolixy.utils.discord.ResponseType
 
-class Skip(private val client: Client): MutualCommand {
+class Pause(private val client: Client): MutualCommand {
 
-    override val name           : String                    = "skip"
-    override val description    : String                    = "Skip to next track"
+    override val name           : String                    = "pause"
+    override val description    : String                    = "Pause playing track"
     override val enabled        : Boolean                   = true
     override val isInteractive  : Boolean                   = true
     override val commandType    : TextCommand.CommandType   = TextCommand.CommandType()
@@ -26,13 +26,10 @@ class Skip(private val client: Client): MutualCommand {
             )
         }
         else {
-            //TODO : Add option to skip Playlist
-            val track = client.lavaClient.next(context.guildId)
+            val isPaused = client.lavaClient.pause(context.guildId)!!
             context.sendRespond(
                 ResponseType.NORMAL,
-                EmbedFrame.info("다음 곡을 재생합니다",null) {
-                    footer { text = track?.title ?: "" }
-                }
+                EmbedFrame.info(if(isPaused) "일시정지됨" else "재생됨",null)
             )
         }
     }

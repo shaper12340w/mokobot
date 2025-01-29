@@ -12,7 +12,7 @@ class MediaBehavior (val audioTrack: AudioTrack){
 
     fun playWith(player: AudioPlayer) {
         status = PlayStatus.PLAYING
-        player.playTrack(audioTrack)
+        player.startTrack(audioTrack,true)
     }
 
     fun clone() = MediaBehavior(audioTrack.makeClone())

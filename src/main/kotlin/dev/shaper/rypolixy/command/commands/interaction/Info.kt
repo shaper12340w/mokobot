@@ -1,10 +1,9 @@
 package dev.shaper.rypolixy.command.commands.interaction
 
-import dev.kord.core.behavior.interaction.response.respond
-import dev.shaper.rypolixy.config.Client
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.shaper.rypolixy.command.types.InteractionCommand
+import dev.shaper.rypolixy.config.Client
 import dev.shaper.rypolixy.utils.CheckNetwork
 import dev.shaper.rypolixy.utils.discord.ResponseManager.Companion.createDefer
 import dev.shaper.rypolixy.utils.discord.ResponseManager.Companion.sendRespond
@@ -14,13 +13,9 @@ import kotlin.time.Duration.Companion.seconds
 
 class Info(private val client: Client): InteractionCommand {
 
-    override val name       : String
-        get() = "info"
-    override val description: String
-        get() = "get system info"
-    override val enabled    : Boolean
-        get() = true
-
+    override val name           : String    = "info"
+    override val description    : String    = "Get system info"
+    override val enabled        : Boolean   = true
 
     override suspend fun execute(context: ChatInputCommandInteractionCreateEvent) {
         val pingResult = CheckNetwork.pingURL("https://www.discord.com") ?: "Error"

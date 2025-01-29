@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="1e345269-ec05-4230-aaee-33753ef44a1d" name="Changes" comment="chore(feat,fix,style) - lavaplayer process update">
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Pause.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/cmdflow/OptionCommandAction.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/cmdflow/OptionCommandBuilder.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/cmdflow/OptionCommandScope.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/interaction/Info.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/interaction/Info.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Join.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Join.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Leave.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Leave.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Ping.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Ping.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Play.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Play.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Skip.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Skip.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/text/Info.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/text/Info.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/types/ContextType.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/types/ContextType.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/types/TextCommand.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/types/TextCommand.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/config/Register.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/config/Register.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/discord/EmbedFrame.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/discord/EmbedFrame.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/discord/Emoji.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/discord/Emoji.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/musicplayer/MediaBehavior.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/musicplayer/MediaBehavior.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/musicplayer/MediaData.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/musicplayer/MediaData.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/musicplayer/MediaPlayer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/musicplayer/MediaPlayer.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/musicplayer/MediaTrack.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/musicplayer/MediaTrack.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/musicplayer/ytdlp/YtDlpManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/musicplayer/ytdlp/YtDlpManager.kt" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="rypoliz" type="f1a62948:ProjectNode" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Kotlin Object" />
+        <option value="Kotlin Interface" />
+        <option value="Kotlin Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;shaper12340w&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/shaper12340w/mokobot.git&quot;,
+    &quot;accountId&quot;: &quot;71ba5aa3-fdfc-4329-b7b4-b287600fe2da&quot;
+  },
+  &quot;recentNewPullRequestHead&quot;: {
+    &quot;server&quot;: {
+      &quot;useHttp&quot;: false,
+      &quot;host&quot;: &quot;github.com&quot;,
+      &quot;port&quot;: null,
+      &quot;suffix&quot;: null
+    },
+    &quot;owner&quot;: &quot;shaper12340w&quot;,
+    &quot;repository&quot;: &quot;mokobot&quot;
+  }
+}</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/dev.arbjerg/lavaplayer/2.2.2/788baf568888d7d99aa3eda95494c51d9cfe76fa/lavaplayer-2.2.2-sources.jar!/com/sedmelluq/discord/lavaplayer/source/http/HttpAudioTrack.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/dev.arbjerg/lavaplayer/2.2.2/788baf568888d7d99aa3eda95494c51d9cfe76fa/lavaplayer-2.2.2-sources.jar!/com/sedmelluq/discord/lavaplayer/track/AudioPlaylist.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/dev.arbjerg/lavaplayer/2.2.2/788baf568888d7d99aa3eda95494c51d9cfe76fa/lavaplayer-2.2.2-sources.jar!/com/sedmelluq/discord/lavaplayer/track/AudioReference.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/dev.arbjerg/lavaplayer/2.2.2/788baf568888d7d99aa3eda95494c51d9cfe76fa/lavaplayer-2.2.2-sources.jar!/com/sedmelluq/discord/lavaplayer/track/AudioTrack.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/dev.arbjerg/lavaplayer/2.2.2/788baf568888d7d99aa3eda95494c51d9cfe76fa/lavaplayer-2.2.2-sources.jar!/com/sedmelluq/discord/lavaplayer/track/AudioTrackInfo.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/dev.arbjerg/lavaplayer/2.2.2/788baf568888d7d99aa3eda95494c51d9cfe76fa/lavaplayer-2.2.2-sources.jar!/com/sedmelluq/discord/lavaplayer/track/BaseAudioTrack.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/dev.arbjerg/lavaplayer/2.2.2/788baf568888d7d99aa3eda95494c51d9cfe76fa/lavaplayer-2.2.2-sources.jar!/com/sedmelluq/discord/lavaplayer/track/BasicAudioPlaylist.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/dev.arbjerg/lavaplayer/2.2.2/788baf568888d7d99aa3eda95494c51d9cfe76fa/lavaplayer-2.2.2-sources.jar!/com/sedmelluq/discord/lavaplayer/track/DelegatedAudioTrack.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/dev.arbjerg/lavaplayer/2.2.2/788baf568888d7d99aa3eda95494c51d9cfe76fa/lavaplayer-2.2.2-sources.jar!/com/sedmelluq/discord/lavaplayer/track/info/AudioTrackInfoProvider.java" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="2rrF0e0Ceugn9ooHsBEmk9MFmmr" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Gradle.Build rypoliz.executor": "Run",
+    "Gradle.Download Sources.executor": "Run",
+    "Gradle.rypoliz.executor": "Run",
+    "Kotlin.AzureMainkt.executor": "Run",
+    "Kotlin.MainKt.executor": "Run",
+    "Kotlin.Mainkt.executor": "Run",
+    "Kotlin.OrangepiMainkt.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "#10 on master",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/shaper.pem",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\shaper\Documents\rypoliz\src\main\kotlin\dev\shaper\rypolixy\utils\musicplayer" />
+    </key>
+    <key name="CreateKotlinClassDialog.RecentsKey">
+      <recent name="dev.shaper.rypolixy.utils.cmdflow" />
+    </key>
+    <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
+      <recent name="dev.shaper.rypolixy.utils.musicplayer" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Kotlin.OrangepiMainkt">
+    <configuration name="AzureMainkt" type="JetRunConfigurationType">
+      <option name="MAIN_CLASS_NAME" value="dev.shaper.rypolixy.MainKt" />
+      <module name="rypoliz.main" />
+      <target name="shaper@130.33.97.2:22" />
+      <shortenClasspath name="NONE" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Mainkt" type="JetRunConfigurationType">
+      <option name="MAIN_CLASS_NAME" value="dev.shaper.rypolixy.MainKt" />
+      <module name="rypoliz.main" />
+      <shortenClasspath name="NONE" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="OrangepiMainkt" type="JetRunConfigurationType">
+      <option name="MAIN_CLASS_NAME" value="dev.shaper.rypolixy.MainKt" />
+      <module name="rypoliz.main" />
+      <target name="shaper@192.168.0.3:22" />
+      <shortenClasspath name="NONE" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Kotlin.Mainkt" />
+      <item itemvalue="Kotlin.OrangepiMainkt" />
+      <item itemvalue="Kotlin.AzureMainkt" />
+    </list>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="1e345269-ec05-4230-aaee-33753ef44a1d" name="Changes" comment="" />
+      <created>1737309065184</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1737309065184</updated>
+      <workItem from="1737309066697" duration="2533000" />
+      <workItem from="1737546475687" duration="11963000" />
+      <workItem from="1737597218100" duration="167000" />
+      <workItem from="1737597403518" duration="33231000" />
+      <workItem from="1737714885115" duration="51544000" />
+      <workItem from="1737874697185" duration="2874000" />
+      <workItem from="1737901197242" duration="288000" />
+      <workItem from="1737901500364" duration="37467000" />
+      <workItem from="1737982437954" duration="76942000" />
+    </task>
+    <task id="LOCAL-00001" summary="Make it Playable">
+      <option name="closed" value="true" />
+      <created>1737603385641</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1737603385641</updated>
+    </task>
+    <task id="LOCAL-00002" summary="ci(chore) - refactored">
+      <option name="closed" value="true" />
+      <created>1737681229201</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1737681229201</updated>
+    </task>
+    <task id="LOCAL-00003" summary="fix,perf - Enhanced YtDlpInfo usage and it's return">
+      <option name="closed" value="true" />
+      <created>1737783440479</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1737783440479</updated>
+    </task>
+    <task id="LOCAL-00004" summary="fix,perf">
+      <option name="closed" value="true" />
+      <created>1737963476159</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1737963476159</updated>
+    </task>
+    <task id="LOCAL-00005" summary="chore(feat,fix,style)">
+      <option name="closed" value="true" />
+      <created>1738060937926</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1738060937927</updated>
+    </task>
+    <task id="LOCAL-00006" summary="chore(feat,fix,style) - lavaplayer process update">
+      <option name="closed" value="true" />
+      <created>1738062313166</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1738062313166</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Make it Playable" />
+    <MESSAGE value="ci(chore) - refactored" />
+    <MESSAGE value="fix,perf - Enhanced YtDlpInfo usage and it's return" />
+    <MESSAGE value="fix,perf" />
+    <MESSAGE value="chore(feat,fix,style)" />
+    <MESSAGE value="chore(feat,fix,style) - lavaplayer process update" />
+    <option name="LAST_COMMIT_MESSAGE" value="chore(feat,fix,style) - lavaplayer process update" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.RuntimeException" package="java.lang" />
+          <option name="timeStamp" value="5" />
+        </breakpoint>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.net.SocketException" package="java.net" />
+          <option name="timeStamp" value="6" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RemoteTargetsManager">
+    <targets>
+      <target name="shaper@130.33.97.2:22" type="ssh/sftp" uuid="4b3347ac-cd6b-4a09-a18e-91e268ab103e">
+        <config>
+          <option name="projectRootOnTarget" value="/home/shaper/rypoliz" />
+          <option name="serverName" value="shaper@130.33.97.2:22 key" />
+        </config>
+        <ContributedStateBase type="JavaLanguageRuntime">
+          <config>
+            <option name="homePath" value="/usr" />
+          </config>
+        </ContributedStateBase>
+      </target>
+      <target name="shaper@192.168.0.3:22" type="ssh/sftp" uuid="916ff772-1d06-4bbe-bac4-1a236b7e10b8">
+        <config>
+          <option name="projectRootOnTarget" value="/home/shaper/rypoliz" />
+          <option name="serverName" value="shaper@192.168.0.3:22 password" />
+        </config>
+        <ContributedStateBase type="JavaLanguageRuntime">
+          <config>
+            <option name="homePath" value="/usr/local/java/jdk-22.0.2" />
+            <option name="javaVersionString" value="22.0.2" />
+          </config>
+        </ContributedStateBase>
+      </target>
+    </targets>
+  </component>
+</project>
