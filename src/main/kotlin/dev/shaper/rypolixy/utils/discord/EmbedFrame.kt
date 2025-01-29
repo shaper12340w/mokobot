@@ -12,15 +12,15 @@ import java.util.Date
 
 object EmbedFrame {
 
-    fun info(title:String = "Info",description:String?,builder:EmbedBuilder.() -> Unit = {}): EmbedBuilder {
+    fun info(title:String = "Info",description:String? = null,builder:EmbedBuilder.() -> Unit = {}): EmbedBuilder {
         return EmbedBuilder().apply {
-            title(Emoji.Default.INFO, title)
+            title(Emoji.Server.INFO, title)
             description(description)
             color = Colors.BLURLPLE
         }.apply(builder)
     }
 
-    fun success(title:String = "Success",description:String?,builder:EmbedBuilder.() -> Unit = {}): EmbedBuilder {
+    fun success(title:String = "Success",description:String? = null,builder:EmbedBuilder.() -> Unit = {}): EmbedBuilder {
         return EmbedBuilder().apply {
             title(Emoji.Default.SUCCESS, title)
             description(description)
@@ -28,7 +28,7 @@ object EmbedFrame {
         }.apply(builder)
     }
 
-    fun error(title:String = "Error",description:String?,builder:EmbedBuilder.() -> Unit = {}): EmbedBuilder {
+    fun error(title:String = "Error",description:String? = null,builder:EmbedBuilder.() -> Unit = {}): EmbedBuilder {
         return EmbedBuilder().apply {
             title(Emoji.Default.ERROR, title)
             description(description)
@@ -36,7 +36,7 @@ object EmbedFrame {
         }.apply(builder)
     }
 
-    fun warning(title:String = "Warning",description:String?,builder:EmbedBuilder.() -> Unit = {}): EmbedBuilder {
+    fun warning(title:String = "Warning",description:String? = null,builder:EmbedBuilder.() -> Unit = {}): EmbedBuilder {
         return EmbedBuilder().apply {
             title(Emoji.Default.WARN, title)
             description(description)
@@ -44,7 +44,7 @@ object EmbedFrame {
         }.apply(builder)
     }
 
-    fun loading(title:String = "Loading",description:String?,builder:EmbedBuilder.() -> Unit = {}): EmbedBuilder {
+    fun loading(title:String = "Loading",description:String? = null,builder:EmbedBuilder.() -> Unit = {}): EmbedBuilder {
         return EmbedBuilder().apply {
             title(Emoji.Server.LOADING, title)
             description(description)

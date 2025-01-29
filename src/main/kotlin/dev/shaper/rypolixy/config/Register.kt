@@ -11,6 +11,8 @@ object Register {
                 dev.shaper.rypolixy.command.commands.mutual.Join(client),
                 dev.shaper.rypolixy.command.commands.mutual.Leave(client),
                 dev.shaper.rypolixy.command.commands.mutual.Play(client),
+                dev.shaper.rypolixy.command.commands.mutual.Skip(client),
+                dev.shaper.rypolixy.command.commands.mutual.Pause(client),
             )
         )
 

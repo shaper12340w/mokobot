@@ -2,12 +2,9 @@ package dev.shaper.rypolixy.command.commands.mutual
 
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Permissions
-import dev.kord.core.behavior.MessageBehavior
 import dev.kord.core.behavior.edit
-import dev.kord.core.behavior.interaction.respondPublic
-import dev.kord.core.behavior.interaction.response.*
-import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
-import dev.kord.core.event.message.MessageCreateEvent
+import dev.kord.core.behavior.interaction.response.PublicMessageInteractionResponseBehavior
+import dev.kord.core.behavior.interaction.response.edit
 import dev.kord.rest.Image
 import dev.kord.rest.builder.interaction.ChatInputCreateBuilder
 import dev.kord.rest.builder.interaction.string
@@ -18,40 +15,24 @@ import dev.shaper.rypolixy.command.types.MutualCommand
 import dev.shaper.rypolixy.command.types.TextCommand
 import dev.shaper.rypolixy.config.Client
 import dev.shaper.rypolixy.logger
+import dev.shaper.rypolixy.utils.cmdflow.OptionCommandBuilder
 import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.getMember
 import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.guildId
-import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.interaction
-import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.member
-import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.user
 import dev.shaper.rypolixy.utils.discord.EmbedFrame
-import dev.shaper.rypolixy.utils.discord.ResponseManager.Companion.createDefer
 import dev.shaper.rypolixy.utils.discord.ResponseManager.Companion.sendRespond
 import dev.shaper.rypolixy.utils.discord.ResponseType
 import dev.shaper.rypolixy.utils.discord.ReturnType
 import dev.shaper.rypolixy.utils.musicplayer.MediaTrack
 import dev.shaper.rypolixy.utils.musicplayer.MediaUtils
-import dev.shaper.rypolixy.utils.musicplayer.lavaplayer.LavaResult
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.take
 
 
 class Play(private val client: Client): MutualCommand {
 
-    override val name       : String
-        get()          = "play"
-
-    override val description: String
-        get()          = "play a song"
-
-    override val commandType: TextCommand.CommandType
-        get()          = TextCommand.CommandType(prefix = null, suffix = null, equals = null)
-
-    override val enabled    : Boolean
-        get() = true
-
-    override val isInteractive: Boolean
-        get() = true
+    override val name           : String                    = "play"
+    override val description    : String                    = "Play a song"
+    override val enabled        : Boolean                   = true
+    override val isInteractive  : Boolean                   = true
+    override val commandType    : TextCommand.CommandType   = TextCommand.CommandType()
 
     override fun setup(builder: ChatInputCreateBuilder) {
         builder.apply {
@@ -88,7 +69,6 @@ class Play(private val client: Client): MutualCommand {
 
         val searchedTrack: MediaUtils.SearchResult? = when(context){
             is ContextType.Message -> {
-                val response = (waitMessage as ReturnType.Message).data
                 if(res?.command == null){
                     respond(EmbedFrame.error("검색어를 입력해주세요",null))
                     null

@@ -1,7 +1,6 @@
 package dev.shaper.rypolixy.command.commands.text
 
 import dev.shaper.rypolixy.config.Client
-import dev.kord.core.behavior.reply
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.rest.builder.message.embed
 import dev.shaper.rypolixy.command.types.TextCommand
@@ -12,17 +11,10 @@ import kotlin.time.Duration.Companion.seconds
 
 class Info(private val client: Client) : TextCommand {
 
-    override val name       : String
-        get()          = "info"
-
-    override val description: String
-        get()          = "get system info"
-
-    override val commandType: TextCommand.CommandType
-        get()          = TextCommand.CommandType(prefix = null, suffix = null, equals = null)
-
-    override val enabled    : Boolean
-        get() = true
+    override val name           : String                    = "info"
+    override val description    : String                    = "Get system info"
+    override val enabled        : Boolean                   = true
+    override val commandType    : TextCommand.CommandType   = TextCommand.CommandType()
 
     override suspend fun execute(event: MessageCreateEvent, res: TextCommand.ResponseData?) {
         val pingResult = CheckNetwork.pingURL("https://www.discord.com") ?: "Error"

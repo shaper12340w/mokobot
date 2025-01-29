@@ -6,9 +6,9 @@ import dev.shaper.rypolixy.command.types.MutualCommand
 import dev.shaper.rypolixy.command.types.TextCommand
 import dev.shaper.rypolixy.config.Client
 import dev.shaper.rypolixy.logger
+import dev.shaper.rypolixy.utils.discord.Colors
 import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.channel
 import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.getMember
-import dev.shaper.rypolixy.utils.discord.Colors
 import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.guildId
 import dev.shaper.rypolixy.utils.discord.EmbedFrame
 import dev.shaper.rypolixy.utils.discord.ResponseManager.Companion.sendRespond
@@ -18,20 +18,11 @@ import dev.shaper.rypolixy.utils.musicplayer.MediaUtils
 
 class Join(private val client: Client): MutualCommand {
 
-    override val name       : String
-        get()          = "join"
-
-    override val description: String
-        get()          = "join to voice channel"
-
-    override val commandType: TextCommand.CommandType
-        get()          = TextCommand.CommandType(prefix = null, suffix = null, equals = null)
-
-    override val enabled    : Boolean
-        get() = true
-
-    override val isInteractive: Boolean
-        get() = true
+    override val name           : String                    = "join"
+    override val description    : String                    = "Join a voice channel"
+    override val enabled        : Boolean                   = true
+    override val isInteractive  : Boolean                   = true
+    override val commandType    : TextCommand.CommandType   = TextCommand.CommandType()
 
     override suspend fun execute(context: ContextType, res: TextCommand.ResponseData?) {
 

@@ -1,6 +1,6 @@
 package dev.shaper.rypolixy.utils.musicplayer
 
-import com.sedmelluq.discord.lavaplayer.player.event.TrackEndEvent
+import com.sedmelluq.discord.lavaplayer.player.event.*
 import dev.kord.common.annotation.KordVoice
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.BaseVoiceChannelBehavior
@@ -17,9 +17,7 @@ import dev.shaper.rypolixy.utils.musicplayer.ytdlp.YtDlpManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.awt.PageAttributes.MediaType
 import java.util.concurrent.TimeUnit
-import kotlin.math.log
 
 
 @OptIn(KordVoice::class)
@@ -35,23 +33,55 @@ class MediaPlayer(client:Client) {
         = connect(MediaUtils.ConnectOptions(channel.asChannel(), channel, MediaUtils.PlayerOptions()))
 
     suspend fun connect(options: MediaUtils.ConnectOptions) {
-        val player  = LavaPlayerManager.createPlayer()
-        val queue   : MutableList<MediaTrack> = mutableListOf()
-        val guildId = options.voiceChannel.guildId
-        val connection = options.voiceChannel.connect {
+        val player      = LavaPlayerManager.createPlayer()
+        val queue       : MutableList<MediaTrack> = mutableListOf()
+        val guildId     = options.voiceChannel.guildId
+        val connection  = options.voiceChannel.connect {
             audioProvider {
+                if(sessions[guildId] != null && sessions[guildId]?.paused == true)
+                    return@audioProvider null
                 player.provide(1, TimeUnit.SECONDS)?.let {
+                    sessions[guildId]?.position = sessions[guildId]?.position?.plus(1) ?: 0
                     return@audioProvider AudioFrame.fromData(it.data)
                 }
                 return@audioProvider AudioFrame.SILENCE
             }
-
         }
+        val provider    = connection.audioProvider
 
         player.addListener {
-            if(it is TrackEndEvent){
-                CoroutineScope(Dispatchers.IO).launch {
-                    playNext(guildId)
+            CoroutineScope(Dispatchers.IO).launch {
+                when (it) {
+                    is TrackStuckEvent      -> {
+                        logger.warn { "Track is Stuck" }
+                    }
+                    is TrackEndEvent        -> {
+                        val session = sessions[guildId]
+                        if(player.isPaused && session != null && session.paused){
+                            logger.warn { "Track is terminated! "}
+                            session.terminated = true
+                        }
+                        else{
+                            session?.currentTrack()?.data?.status = MediaBehavior.PlayStatus.END
+                            playNext(guildId)
+                        }
+
+                    }
+                    is TrackStartEvent      -> {} //Todo : Add stack or deque to preload others
+                    is TrackExceptionEvent  -> {
+                        logger.error { it.exception }
+                    }
+                    is PlayerPauseEvent     -> {
+                        sessions[guildId]?.paused = true
+                    }
+                    is PlayerResumeEvent    -> {
+                        val session = sessions[guildId]
+                        if(session?.terminated == true)
+                            session.update()
+
+                        session?.paused = false
+                    }
+
                 }
             }
         }
@@ -59,6 +89,7 @@ class MediaPlayer(client:Client) {
         sessions[guildId] = MediaData(
             queue,
             player,
+            provider,
             connection,
             options.playerOptions
         )
@@ -84,7 +115,7 @@ class MediaPlayer(client:Client) {
         try{
             when(option){
                 MediaUtils.MediaPlatform.YOUTUBE -> {
-                    val dlpSearch   = YtDlpManager.getSearchData(query, option)
+                    val dlpSearch   = YtDlpManager.getSearchData(query, option) ?: return MediaUtils.SearchResult(MediaUtils.SearchType.NORESULTS,null)
                     val result      = MediaUtils.ytDlpTrackBuilder(dlpSearch,option)
                     return MediaUtils.SearchResult(
                         status  = MediaUtils.SearchType.SUCCESS,
@@ -157,8 +188,26 @@ class MediaPlayer(client:Client) {
         else session.queue.add(track)
     }
 
+    suspend fun next(guildId: Snowflake): MediaTrack.Track? {
+        if(!sessions.containsKey(guildId)) return null
+        val session = sessions[guildId]!!
+        if(session.player.isPaused){
+            session.player.isPaused = false
+            playNext(guildId)
+        }
+        session.player.stopTrack()
+        return session.currentTrack()
+    }
 
-    private suspend fun playNext(guildId: Snowflake){
+
+    fun pause(guildId: Snowflake):Boolean? {
+        if(!sessions.containsKey(guildId)) return null
+        val session = sessions[guildId]!!
+        session.player.isPaused = !session.player.isPaused
+        return session.player.isPaused
+    }
+
+    private suspend fun playNext(guildId: Snowflake): MediaTrack.Track? {
 
         //TODO : when invoke Error -> send TextChannel to Error message + leave
         //TODO : automatize track and playlist <- + flatTrack to normal TrackData
@@ -175,12 +224,12 @@ class MediaPlayer(client:Client) {
         // 플레이리스트일 경우 -> 구현됨 / 구현안됨
 
 
-        val session = sessions[guildId] ?: return
+        val session = sessions[guildId] ?: return null
         val originQueue = session.queue
         val tempQueue = session.queue.toMutableList()
         val shuffle = session.options.shuffle
 
-        if (tempQueue.isEmpty()) return
+        if (tempQueue.isEmpty()) return null
         logger.debug { "Playing Next Track.. / Data : $session" }
 
         while(tempQueue.isNotEmpty()) {
@@ -203,7 +252,8 @@ class MediaPlayer(client:Client) {
                         nextMedia.data.status = MediaBehavior.PlayStatus.PLAYING
                         session.index = originQueue.indexOf(nextMedia)
                         logger.debug { "Play Track : $nextMedia" }
-                        return nextMedia.data.playWith(sessions[guildId]!!.player)
+                        nextMedia.data.playWith(sessions[guildId]!!.player)
+                        return nextMedia
                     }
                     else tempQueue.removeAt(nextIndex)
                 }
@@ -224,18 +274,20 @@ class MediaPlayer(client:Client) {
                             if(convertedTrack == null) {
                                 logger.debug { "Skip Track Because Null: $nextMedia " }
                                 tempQueue.removeAt(nextIndex)
-                                return
+                                return null
                             }
                             originPlaylist[originIndex] = convertedTrack
                             session.subIndex = originIndex
                             convertedTrack.data.status = MediaBehavior.PlayStatus.PLAYING
                             logger.debug { "Play Converted Track: $convertedTrack" }
-                            return convertedTrack.data.playWith(session.player)
-                        } else if(nextTrack is MediaTrack.Track){
+                            convertedTrack.data.playWith(session.player)
+                            return convertedTrack
+                        } else if (nextTrack is MediaTrack.Track){
                             logger.debug { "Play Track : $nextTrack" }
                             nextTrack.data.status = MediaBehavior.PlayStatus.PLAYING
                             session.subIndex = originIndex
-                            return nextTrack.data.playWith(session.player)
+                            nextTrack.data.playWith(session.player)
+                            return nextTrack
                         }
                     }
                     else {
@@ -243,7 +295,10 @@ class MediaPlayer(client:Client) {
                         tempQueue.removeAt(nextIndex)
                     }
                 }
-                else                        -> Unit
+                else                        -> {
+                    logger.warn { "Not Supported Type ${nextMedia::class.simpleName}. Skipping.." }
+                    tempQueue.removeAt(nextIndex)
+                }
             }
         }
 
@@ -253,7 +308,7 @@ class MediaPlayer(client:Client) {
 
         logger.debug { "Queue is empty, leaving voice channel" }
         disconnect(guildId)
-
+        return null
 
 
     }
