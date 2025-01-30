@@ -3,6 +3,8 @@ package dev.shaper.rypolixy.command.types
 import dev.shaper.rypolixy.command.types.TextCommand.ResponseData
 import dev.shaper.rypolixy.config.Client
 import dev.kord.core.event.message.MessageCreateEvent
+import dev.shaper.rypolixy.logger
+import us.jimschubert.kopper.Parser
 
 class CommandManager(private val client: Client) {
     val textCommand         = HashMap<String, TextCommand>        ()
@@ -13,21 +15,32 @@ class CommandManager(private val client: Client) {
     suspend fun executeTextCommand(event:MessageCreateEvent) {
         val input = event.message.content
         if (input.startsWith(TextCommand.commonPrefix)) {
-            val regex           = Regex("^${TextCommand.commonPrefix}(\\w+)\\s*(.*)")
-            val commandRegex    = Regex("\\S+")
-            val optionRegex     = Regex("--(\\w+)")
-            val matchResult     = regex.find(input)
+            val regex       = """"([^"]*)"|(\S+)""".toRegex()
+            val args        = regex.findAll(input.split(TextCommand.commonPrefix)[1]).map { it.value }.toList()
 
-            if (matchResult != null) {
-                val keyword = matchResult.groupValues[1]
-                val command = commandRegex.find(matchResult.groupValues[2])!!.value
-                val options = optionRegex.findAll(matchResult.groupValues[2]).map{ it.groupValues[1] }.toList()
+            if (args.isNotEmpty()) {
+                val keyword = args[0]
+                val command = if(args.size > 1 && !args[1].startsWith("-")) args[1] else ""
+                val options = if(command.isBlank()) args.drop(1) else args.drop(2)
+                val parser = Parser()
+                logger.debug { "keyword: $keyword | command: $command | options:$options" }
+                if (textCommand[keyword] != null){
+                    parser.apply {
+                        setName(textCommand[keyword]!!.name)
+                        setApplicationDescription(textCommand[keyword]!!.description)
+                    }
+                    textCommand[keyword]?.setup(parser)
+                    textCommand[keyword]?.execute(event, ResponseData(command, parser.parse(options.toTypedArray())))
+                }
 
-                if (textCommand[keyword] != null)
-                    textCommand[keyword]?.execute(event, ResponseData(keyword, command, options))
-
-                if(mutualCommand[keyword] != null)
-                    mutualCommand[keyword]?.execute(ContextType.Message(event), ResponseData(keyword, command, options))
+                if (mutualCommand[keyword] != null){
+                    parser.apply {
+                        setName(mutualCommand[keyword]!!.name)
+                        setApplicationDescription(mutualCommand[keyword]!!.description)
+                    }
+                    mutualCommand[keyword]?.setup(parser)
+                    mutualCommand[keyword]?.execute(ContextType.Message(event), ResponseData(command, parser.parse(options.toTypedArray())))
+                }
 
             }
 

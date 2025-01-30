@@ -1,7 +1,8 @@
 package dev.shaper.rypolixy.command.types
 
 import dev.kord.core.event.message.MessageCreateEvent
-import dev.shaper.rypolixy.utils.cmdflow.OptionCommandBuilder
+import us.jimschubert.kopper.ArgumentCollection
+import us.jimschubert.kopper.Parser
 
 interface TextCommand: CommandStructure {
 
@@ -19,12 +20,11 @@ interface TextCommand: CommandStructure {
     )
 
     data class ResponseData(
-        val keyword     :String?,
         val command     :String?,
-        val options     :List<String>?
+        val options     :ArgumentCollection
     )
 
-    fun setup(builder: OptionCommandBuilder) {}
+    fun setup(builder: Parser) {}
 
     suspend fun execute(event: MessageCreateEvent,res: ResponseData?)
 

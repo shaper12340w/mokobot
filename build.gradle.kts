@@ -50,8 +50,7 @@ dependencies {
     implementation("com.squareup.moshi:moshi-adapters:1.8.0")
 
     // Option Parser
-    implementation("com.github.ajalt.clikt:clikt:5.0.1")
-    implementation("com.github.ajalt.clikt:clikt-markdown:5.0.1")
+    implementation("us.jimschubert:kopper:0.0.4")
 
     // Database
     implementation("org.postgresql:postgresql:42.7.2")

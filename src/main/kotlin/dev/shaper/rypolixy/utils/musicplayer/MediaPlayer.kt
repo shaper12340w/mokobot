@@ -232,6 +232,10 @@ class MediaPlayer(client:Client) {
         if (tempQueue.isEmpty()) return null
         logger.debug { "Playing Next Track.. / Data : $session" }
 
+        if (session.options.repeat == MediaUtils.PlayerOptions.RepeatType.ONCE)
+            return session.currentTrack()
+
+        //if (session.option.repeat == MediaUtils.PlayerOptions.RepeatType.DEFAULT)
         while(tempQueue.isNotEmpty()) {
             val nextIndex = when {
                 session.subIndex > 0 -> session.index
@@ -303,14 +307,24 @@ class MediaPlayer(client:Client) {
         }
 
         // No tracks left to play
-        session.index = 0
-        session.subIndex = 0
+        session.index       = 0
+        session.subIndex    = 0
+
+        if(session.options.repeat == MediaUtils.PlayerOptions.RepeatType.ALL){
+            //Reset ALL Tracks
+            session.queue.forEach {
+                when(it){
+                    is MediaTrack.Track     -> it.data = it.data.clone()
+                    is MediaTrack.Playlist  -> it.tracks.forEach { track -> (track as MediaTrack.Track).data = track.data.clone() }
+                    else                    -> Unit
+                }
+            }
+            return playNext(guildId)
+        }
 
         logger.debug { "Queue is empty, leaving voice channel" }
         disconnect(guildId)
         return null
-
-
     }
 
 }

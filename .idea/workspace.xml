@@ -4,28 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1e345269-ec05-4230-aaee-33753ef44a1d" name="Changes" comment="chore(feat,fix,style) - lavaplayer process update">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Pause.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/cmdflow/OptionCommandAction.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/cmdflow/OptionCommandBuilder.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/cmdflow/OptionCommandScope.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/interaction/Info.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/interaction/Info.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Join.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Join.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Leave.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Leave.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Ping.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Ping.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Play.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Play.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Skip.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Skip.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/text/Info.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/text/Info.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/types/ContextType.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/types/ContextType.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/types/TextCommand.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/types/TextCommand.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/config/Register.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/config/Register.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/discord/EmbedFrame.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/discord/EmbedFrame.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/discord/Emoji.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/discord/Emoji.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/musicplayer/MediaBehavior.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/musicplayer/MediaBehavior.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/musicplayer/MediaData.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/musicplayer/MediaData.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/musicplayer/MediaPlayer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/musicplayer/MediaPlayer.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/musicplayer/MediaTrack.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/musicplayer/MediaTrack.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/musicplayer/ytdlp/YtDlpManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/musicplayer/ytdlp/YtDlpManager.kt" afterDir="false" />
+    <list default="true" id="1e345269-ec05-4230-aaee-33753ef44a1d" name="Changes" comment="chore(feat,fix) - Fixed bugs / Add features">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -125,7 +105,7 @@
     "Kotlin.OrangepiMainkt.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "#10 on master",
+    "git-widget-placeholder": "#11 on master",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/shaper.pem",
@@ -198,7 +178,7 @@
       <workItem from="1737874697185" duration="2874000" />
       <workItem from="1737901197242" duration="288000" />
       <workItem from="1737901500364" duration="37467000" />
-      <workItem from="1737982437954" duration="76942000" />
+      <workItem from="1737982437954" duration="78361000" />
     </task>
     <task id="LOCAL-00001" summary="Make it Playable">
       <option name="closed" value="true" />
@@ -248,7 +228,15 @@
       <option name="project" value="LOCAL" />
       <updated>1738062313166</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="chore(feat,fix) - Fixed bugs / Add features">
+      <option name="closed" value="true" />
+      <created>1738164375776</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1738164375776</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -261,7 +249,8 @@
     <MESSAGE value="fix,perf" />
     <MESSAGE value="chore(feat,fix,style)" />
     <MESSAGE value="chore(feat,fix,style) - lavaplayer process update" />
-    <option name="LAST_COMMIT_MESSAGE" value="chore(feat,fix,style) - lavaplayer process update" />
+    <MESSAGE value="chore(feat,fix) - Fixed bugs / Add features" />
+    <option name="LAST_COMMIT_MESSAGE" value="chore(feat,fix) - Fixed bugs / Add features" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

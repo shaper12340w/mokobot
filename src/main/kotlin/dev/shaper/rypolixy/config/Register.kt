@@ -13,6 +13,10 @@ object Register {
                 dev.shaper.rypolixy.command.commands.mutual.Play(client),
                 dev.shaper.rypolixy.command.commands.mutual.Skip(client),
                 dev.shaper.rypolixy.command.commands.mutual.Pause(client),
+                dev.shaper.rypolixy.command.commands.mutual.Resume(client),
+                dev.shaper.rypolixy.command.commands.mutual.Repeat(client),
+                dev.shaper.rypolixy.command.commands.mutual.Playing(client),
+                dev.shaper.rypolixy.command.commands.mutual.Shuffle(client)
             )
         )
 
