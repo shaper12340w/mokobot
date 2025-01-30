@@ -17,7 +17,7 @@ data class MediaData @OptIn(KordVoice::class) constructor(
 
     var paused:         Boolean = false
     var position:       Long = 0
-    var terminated:    Boolean = false
+    var terminated:     Boolean = false
 
     fun current(): MediaTrack? = queue.getOrNull(index)
 

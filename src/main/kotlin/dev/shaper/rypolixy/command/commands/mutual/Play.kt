@@ -15,7 +15,7 @@ import dev.shaper.rypolixy.command.types.MutualCommand
 import dev.shaper.rypolixy.command.types.TextCommand
 import dev.shaper.rypolixy.config.Client
 import dev.shaper.rypolixy.logger
-import dev.shaper.rypolixy.utils.cmdflow.OptionCommandBuilder
+import dev.shaper.rypolixy.utils.discord.CommandCaller
 import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.getMember
 import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.guildId
 import dev.shaper.rypolixy.utils.discord.EmbedFrame
@@ -24,6 +24,7 @@ import dev.shaper.rypolixy.utils.discord.ResponseType
 import dev.shaper.rypolixy.utils.discord.ReturnType
 import dev.shaper.rypolixy.utils.musicplayer.MediaTrack
 import dev.shaper.rypolixy.utils.musicplayer.MediaUtils
+import us.jimschubert.kopper.Parser
 
 
 class Play(private val client: Client): MutualCommand {
@@ -51,6 +52,15 @@ class Play(private val client: Client): MutualCommand {
         }
     }
 
+    override fun setup(builder: Parser) {
+        builder.apply {
+            option("yt",listOf("youtube"),"search youtube")
+            option("sc", listOf("soundcloud"),"search soundcloud")
+            option("sp",listOf("spotify"),"search spotify")
+            option("url",listOf("url","uri"),"search url")
+        }
+    }
+
     override suspend fun execute(context: ContextType, res: TextCommand.ResponseData?) {
         val findPlayer = client.lavaClient.sessions[context.guildId]
         val waitMessage = context.sendRespond(ResponseType.NORMAL,EmbedFrame.loading("로딩중입니다. 잠시만 기다려 주세요",null).apply { footer = EmbedBuilder.Footer().apply { text = "유튜브의 경우 시간이 다소 소요될 수 있습니다"} })
@@ -63,7 +73,7 @@ class Play(private val client: Client): MutualCommand {
 
         }
         if(findPlayer == null){
-            client.commandManager.mutualCommand["join"]!!.execute(context, TextCommand.ResponseData("join",null,listOf("silence")))
+            CommandCaller.call(client,"join",context,"silent")
             logger.info { "Called Joined command" }
         }
 
@@ -74,34 +84,21 @@ class Play(private val client: Client): MutualCommand {
                     null
                 }
                 else{
-                    fun findKeyForInput(optionMap: HashMap<MediaUtils.MediaPlatform, List<String>>, input: String): MediaUtils.MediaPlatform? {
-                        for ((key, values) in optionMap) {
-                            if (input in values) {
-                                return key
-                            }
+                    when {
+                        res.options.option("yt") != null          -> client.lavaClient.search(res.options.option("yt")!!,MediaUtils.MediaPlatform.YOUTUBE)
+                        res.options.option("sc") != null          -> client.lavaClient.search(res.options.option("sc")!!,MediaUtils.MediaPlatform.SOUNDCLOUD)
+                        res.options.option("sp") != null          -> client.lavaClient.search(res.options.option("sp")!!,MediaUtils.MediaPlatform.SPOTIFY)
+                        res.options.option("url") != null         -> client.lavaClient.search(res.options.option("url")!!,MediaUtils.MediaPlatform.UNKNOWN)
+                        res.command.isNotBlank()                        -> client.lavaClient.search(res.command)
+                        res.options.unparsedArgs.isNotEmpty()           -> {
+                            respond(EmbedFrame.error("잘못된 사용법입니다",null))
+                            null
                         }
-                        return null
-                    }
-                    val optionMap = HashMap<MediaUtils.MediaPlatform,List<String>>()
-                    optionMap.apply{
-                        put(MediaUtils.MediaPlatform.YOUTUBE, listOf("Y", "youtube", "yt"))
-                        put(MediaUtils.MediaPlatform.SOUNDCLOUD, listOf("sc", "soundcloud", "S"))
-                        put(MediaUtils.MediaPlatform.SPOTIFY, listOf("sp", "spotify"))
-                        put(MediaUtils.MediaPlatform.UNKNOWN, listOf("url","U","uri"))
-                    }
-
-
-                    if(res.options != null){
-                        val platform = findKeyForInput(optionMap, res.options[0])
-                        if (platform!=null){
-                            client.lavaClient.search(res.command, platform)
-                        } else {
-                            respond(EmbedFrame.error("잘못된 플랫폼입니다",null))
+                        else -> {
+                            respond(EmbedFrame.error("잘못된 사용법입니다",null))
                             null
                         }
                     }
-                    else
-                        client.lavaClient.search(res.command)
                 }
             }
             is ContextType.Interaction -> {
