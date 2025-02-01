@@ -1,5 +1,6 @@
 package dev.shaper.rypolixy.command.commands.mutual
 
+import dev.kord.core.entity.channel.VoiceChannel
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.shaper.rypolixy.command.types.ContextType
 import dev.shaper.rypolixy.command.types.MutualCommand
@@ -29,7 +30,7 @@ class Leave(private val client: Client): MutualCommand {
         else{
             val findPlayer = client.lavaClient.sessions[context.guildId]
             if(findPlayer == null) {
-                client.lavaClient.connect(voiceChannel)
+                client.lavaClient.connect(voiceChannel.asChannel() as VoiceChannel)
             }
             client.lavaClient.disconnect(context.guildId)
             context.sendRespond(ResponseType.NORMAL, EmbedBuilder().apply {

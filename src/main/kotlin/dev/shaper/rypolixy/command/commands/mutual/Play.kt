@@ -23,7 +23,7 @@ import dev.shaper.rypolixy.utils.discord.ResponseManager.Companion.sendRespond
 import dev.shaper.rypolixy.utils.discord.ResponseType
 import dev.shaper.rypolixy.utils.discord.ReturnType
 import dev.shaper.rypolixy.utils.musicplayer.MediaTrack
-import dev.shaper.rypolixy.utils.musicplayer.MediaUtils
+import dev.shaper.rypolixy.utils.musicplayer.utils.MediaUtils
 import us.jimschubert.kopper.Parser
 
 
@@ -85,10 +85,14 @@ class Play(private val client: Client): MutualCommand {
                 }
                 else{
                     when {
-                        res.options.option("yt") != null          -> client.lavaClient.search(res.options.option("yt")!!,MediaUtils.MediaPlatform.YOUTUBE)
-                        res.options.option("sc") != null          -> client.lavaClient.search(res.options.option("sc")!!,MediaUtils.MediaPlatform.SOUNDCLOUD)
-                        res.options.option("sp") != null          -> client.lavaClient.search(res.options.option("sp")!!,MediaUtils.MediaPlatform.SPOTIFY)
-                        res.options.option("url") != null         -> client.lavaClient.search(res.options.option("url")!!,MediaUtils.MediaPlatform.UNKNOWN)
+                        res.options.option("yt") != null          -> client.lavaClient.search(res.options.option("yt")!!,
+                            MediaUtils.MediaPlatform.YOUTUBE)
+                        res.options.option("sc") != null          -> client.lavaClient.search(res.options.option("sc")!!,
+                            MediaUtils.MediaPlatform.SOUNDCLOUD)
+                        res.options.option("sp") != null          -> client.lavaClient.search(res.options.option("sp")!!,
+                            MediaUtils.MediaPlatform.SPOTIFY)
+                        res.options.option("url") != null         -> client.lavaClient.search(res.options.option("url")!!,
+                            MediaUtils.MediaPlatform.UNKNOWN)
                         res.command.isNotBlank()                        -> client.lavaClient.search(res.command)
                         res.options.unparsedArgs.isNotEmpty()           -> {
                             respond(EmbedFrame.error("잘못된 사용법입니다",null))

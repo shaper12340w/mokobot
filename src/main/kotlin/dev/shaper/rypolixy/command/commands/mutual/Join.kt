@@ -2,6 +2,7 @@ package dev.shaper.rypolixy.command.commands.mutual
 
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Permissions
+import dev.kord.core.behavior.channel.asChannelOf
 import dev.kord.rest.builder.interaction.ChatInputCreateBuilder
 import dev.kord.rest.builder.interaction.boolean
 import dev.kord.rest.builder.message.EmbedBuilder
@@ -17,7 +18,7 @@ import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.guildId
 import dev.shaper.rypolixy.utils.discord.EmbedFrame
 import dev.shaper.rypolixy.utils.discord.ResponseManager.Companion.sendRespond
 import dev.shaper.rypolixy.utils.discord.ResponseType
-import dev.shaper.rypolixy.utils.musicplayer.MediaUtils
+import dev.shaper.rypolixy.utils.musicplayer.utils.MediaUtils
 import us.jimschubert.kopper.Parser
 
 
@@ -61,8 +62,8 @@ class Join(private val client: Client): MutualCommand {
                     //TODO: Get Player Setting data from Database
                     client.lavaClient.connect(
                         MediaUtils.ConnectOptions(
-                            channel = context.channel,
-                            voiceChannel = channel!!,
+                            channel = context.channel.asChannelOf(),
+                            voiceChannel = channel!!.asChannelOf(),
                             playerOptions = MediaUtils.PlayerOptions()
                         )
                     )

@@ -1,12 +1,13 @@
-package dev.shaper.rypolixy.utils.musicplayer
+package dev.shaper.rypolixy.utils.musicplayer.utils
 
 import com.sedmelluq.discord.lavaplayer.track.AudioItem
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack
-import dev.kord.core.behavior.channel.BaseVoiceChannelBehavior
-import dev.kord.core.behavior.channel.ChannelBehavior
+import dev.kord.core.entity.channel.TopGuildMessageChannel
+import dev.kord.core.entity.channel.VoiceChannel
 import dev.shaper.rypolixy.logger
 import dev.shaper.rypolixy.utils.musicplayer.MediaBehavior.Companion.toTrack
+import dev.shaper.rypolixy.utils.musicplayer.MediaTrack
 import dev.shaper.rypolixy.utils.musicplayer.lavaplayer.LavaPlayerManager
 import dev.shaper.rypolixy.utils.musicplayer.lavaplayer.LavaResult
 import dev.shaper.rypolixy.utils.musicplayer.ytdlp.YtDlpInfo
@@ -68,8 +69,8 @@ class MediaUtils {
     }
 
     data class ConnectOptions(
-        val channel         : ChannelBehavior,
-        val voiceChannel    : BaseVoiceChannelBehavior,
+        val channel         : TopGuildMessageChannel,
+        val voiceChannel    : VoiceChannel,
         val playerOptions   : PlayerOptions
     )
 
@@ -89,7 +90,7 @@ class MediaUtils {
         /**
          * Convert MediaTrack(with no specific data) to implement it.
          * */
-        suspend fun implementTrack(track: MediaTrack, source: MediaPlatform = MediaPlatform.YOUTUBE):MediaTrack? {
+        suspend fun implementTrack(track: MediaTrack, source: MediaPlatform = MediaPlatform.YOUTUBE): MediaTrack? {
             logger.debug { "Convert Track $track with $source" }
             val url = track.url
             val dlpResult = YtDlpManager.getUrlData(url!!)
@@ -101,8 +102,8 @@ class MediaUtils {
         /**
          * Build MediaTrack from LavaPlayer AudioItem
          * */
-        fun lavaTrackBuilder(track: AudioItem, source: MediaPlatform):MediaTrack? {
-            fun trackfy(track: AudioTrack):MediaTrack.Track{
+        fun lavaTrackBuilder(track: AudioItem, source: MediaPlatform): MediaTrack? {
+            fun trackfy(track: AudioTrack): MediaTrack.Track {
                 return MediaTrack.Track(
                     track.info.title,
                     track.info.length.toDuration(DurationUnit.MILLISECONDS),
@@ -120,7 +121,8 @@ class MediaUtils {
                 is AudioPlaylist    -> {
                     return MediaTrack.Playlist(
                         track.name,
-                        track.tracks.fold(0L) { acc, audioTrack -> acc + audioTrack.duration }.toDuration(DurationUnit.MINUTES),
+                        track.tracks.fold(0L) { acc, audioTrack -> acc + audioTrack.duration }
+                            .toDuration(DurationUnit.MINUTES),
                         track.selectedTrack?.info?.uri,
                         track.selectedTrack?.info?.artworkUrl,
                         source,
@@ -140,14 +142,14 @@ class MediaUtils {
             ) : MediaTrack.Track
             {
                 return MediaTrack.Track(
-                    source      = source,
-                    title       = track.title,
-                    duration    = track.duration?.toDuration(DurationUnit.SECONDS) ?: Duration.ZERO,
-                    url         = track.pageUrl,
-                    id          = track.id,
-                    author      = track.channel ?: "Unknown",
-                    thumbnail   = track.thumbnail,
-                    data        = (lavaTrackBuilder(lavaInfo.track,source) as MediaTrack.Track).data
+                    source = source,
+                    title = track.title,
+                    duration = track.duration?.toDuration(DurationUnit.SECONDS) ?: Duration.ZERO,
+                    url = track.pageUrl,
+                    id = track.id,
+                    author = track.channel ?: "Unknown",
+                    thumbnail = track.thumbnail,
+                    data = (lavaTrackBuilder(lavaInfo.track, source) as MediaTrack.Track).data
                 )
             }
 
@@ -155,11 +157,11 @@ class MediaUtils {
                 track : YtDlpInfo.FlatTrackInfo
             ) : MediaTrack.FlatTrack {
                 return MediaTrack.FlatTrack(
-                    title       = track.title,
-                    duration    = track.duration?.toDuration(DurationUnit.SECONDS) ?: Duration.ZERO,
-                    url         = track.pageUrl,
-                    thumbnail   = track.thumbnails.getOrNull(0)?.url,
-                    source      = source
+                    title = track.title,
+                    duration = track.duration?.toDuration(DurationUnit.SECONDS) ?: Duration.ZERO,
+                    url = track.pageUrl,
+                    thumbnail = track.thumbnails.getOrNull(0)?.url,
+                    source = source
                 )
             }
 
@@ -171,19 +173,19 @@ class MediaUtils {
             ) : MediaTrack.Playlist {
                 val checkDuration = entries.fold(0) { acc,trackInfo ->
                     when(trackInfo){
-                        is MediaTrack.Track     -> acc + trackInfo.duration.toInt(DurationUnit.SECONDS)
+                        is MediaTrack.Track -> acc + trackInfo.duration.toInt(DurationUnit.SECONDS)
                         is MediaTrack.FlatTrack -> acc + trackInfo.duration.toInt(DurationUnit.SECONDS)
                         else -> acc + 0
                     }
                 }
                 return MediaTrack.Playlist(
-                    source      = source,
-                    title       = info.title,
-                    duration    = checkDuration.toDuration(DurationUnit.SECONDS),
-                    url         = url,
-                    isSeek      = isSearch,
-                    thumbnail   = thumbnail,
-                    tracks      = entries.toMutableList()
+                    source = source,
+                    title = info.title,
+                    duration = checkDuration.toDuration(DurationUnit.SECONDS),
+                    url = url,
+                    isSeek = isSearch,
+                    thumbnail = thumbnail,
+                    tracks = entries.toMutableList()
                 )
             }
 

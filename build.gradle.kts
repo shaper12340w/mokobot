@@ -39,6 +39,7 @@ dependencies {
 
     // AudioPlayer
     implementation("dev.arbjerg:lavaplayer:2.2.2")
+    implementation("dev.arbjerg:lavadsp:0.7.8")
     implementation("com.github.sapher:youtubedl-java:1.1")
 
     // JSON/YAML Processing
@@ -48,6 +49,7 @@ dependencies {
     implementation("com.squareup.moshi:moshi:1.15.2")
     implementation("com.squareup.moshi:moshi-kotlin:1.15.2")
     implementation("com.squareup.moshi:moshi-adapters:1.8.0")
+    implementation("org.json:json:20250107")
 
     // Option Parser
     implementation("us.jimschubert:kopper:0.0.4")
