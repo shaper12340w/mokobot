@@ -4,13 +4,14 @@ import dev.kord.common.annotation.KordVoice
 import dev.kord.voice.VoiceConnection
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer
 import dev.kord.voice.AudioProvider
+import dev.shaper.rypolixy.utils.musicplayer.utils.MediaUtils
 
 data class MediaData @OptIn(KordVoice::class) constructor(
     val queue:          MutableList<MediaTrack>,
     val player:         AudioPlayer,
     val provider:       AudioProvider,
     val connection:     VoiceConnection,
-    val options:        MediaUtils.PlayerOptions,
+    val options:        MediaUtils.ConnectOptions,
 ){
     var index:          Int = 0
     var subIndex:       Int = 0

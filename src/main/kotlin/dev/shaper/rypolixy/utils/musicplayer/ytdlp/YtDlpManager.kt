@@ -7,7 +7,7 @@ import com.jfposton.ytdlp.mapper.VideoInfo
 import dev.shaper.rypolixy.config.Properties
 import dev.shaper.rypolixy.logger
 import dev.shaper.rypolixy.utils.io.json.JsonManager
-import dev.shaper.rypolixy.utils.musicplayer.MediaUtils
+import dev.shaper.rypolixy.utils.musicplayer.utils.MediaUtils
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
 
@@ -60,7 +60,7 @@ object YtDlpManager {
         }
     }
 
-    suspend fun getSearchData(arg:String, platform:MediaUtils.MediaPlatform, count:Int = 10): YtDlpInfo.SearchTrackInfo? {
+    suspend fun getSearchData(arg:String, platform: MediaUtils.MediaPlatform, count:Int = 10): YtDlpInfo.SearchTrackInfo? {
         try {
             return withTimeout(60000L) {
                 val questArg    = "${platform.option}$count:\"$arg\""

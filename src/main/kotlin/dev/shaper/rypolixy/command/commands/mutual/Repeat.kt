@@ -10,7 +10,7 @@ import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.guildId
 import dev.shaper.rypolixy.utils.discord.EmbedFrame
 import dev.shaper.rypolixy.utils.discord.ResponseManager.Companion.sendRespond
 import dev.shaper.rypolixy.utils.discord.ResponseType
-import dev.shaper.rypolixy.utils.musicplayer.MediaUtils
+import dev.shaper.rypolixy.utils.musicplayer.utils.MediaUtils
 import us.jimschubert.kopper.Parser
 
 class Repeat(private val client: Client): MutualCommand {
@@ -66,7 +66,7 @@ class Repeat(private val client: Client): MutualCommand {
                 is ContextType.Interaction -> {
                     val option = context.value.interaction.command.strings["type"]
                     val mode    = modeValue(option)!!
-                    session.options.repeat = mode
+                    session.options.playerOptions.repeat = mode
                     context.sendRespond(
                         ResponseType.NORMAL,
                         EmbedFrame.info("반복 모드가 **${modeText(mode)}** 으로 설정되었습니다",null)
@@ -78,7 +78,7 @@ class Repeat(private val client: Client): MutualCommand {
                     if(mode == null || res.options.unparsedArgs.isNotEmpty()){
                         context.sendRespond(
                             ResponseType.NORMAL,
-                            EmbedFrame.error("잘못된 사용법","작성한 옵션 : ${res.options.map { it.option.parameterText }}\n올바른 사용법 : -t [once/all/none] OR --type=[once/all/none]"){
+                            EmbedFrame.error("잘못된 사용법","작성한 옵션 : ${res.options.map { it.value  }}\n올바른 사용법 : -t [once/all/none] OR --type=[once/all/none]"){
                                 footer {
                                     text = "자세한 것은 help 참고"
                                 }
@@ -86,7 +86,7 @@ class Repeat(private val client: Client): MutualCommand {
                         )
                     }
                     else {
-                        session.options.repeat = mode
+                        session.options.playerOptions.repeat = mode
                         context.sendRespond(
                             ResponseType.NORMAL,
                             EmbedFrame.info("반복 모드가 **${modeText(mode)}** 으로 설정되었습니다",null)

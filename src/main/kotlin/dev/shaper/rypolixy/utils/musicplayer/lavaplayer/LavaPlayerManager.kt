@@ -9,7 +9,7 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack
 import dev.shaper.rypolixy.logger
-import dev.shaper.rypolixy.utils.musicplayer.MediaUtils
+import dev.shaper.rypolixy.utils.musicplayer.utils.MediaUtils
 import kotlin.coroutines.suspendCoroutine
 import kotlin.coroutines.resume
 

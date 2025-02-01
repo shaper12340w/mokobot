@@ -21,7 +21,11 @@ class CommandManager(private val client: Client) {
             if (args.isNotEmpty()) {
                 val keyword = args[0]
                 val command = if(args.size > 1 && !args[1].startsWith("-")) args[1] else ""
-                val options = if(command.isBlank()) args.drop(1) else args.drop(2)
+                val options = (if(command.isBlank()) args.drop(1) else args.drop(2))
+                    .map {
+                        it.removeSurrounding("\"")
+                            .replace(Regex("""\s*(?<==)\s*"|^"|"$"""), "")
+                    }
                 val parser = Parser()
                 logger.debug { "keyword: $keyword | command: $command | options:$options" }
                 if (textCommand[keyword] != null){

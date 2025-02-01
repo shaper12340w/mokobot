@@ -18,7 +18,7 @@ object Properties {
     }
 
 
-    fun getProperty(key: String): String {
-        return tokens.getProperty(key)
+    fun getProperty(key: String): String? {
+        return tokens.getOrDefault(key,null) as String?
     }
 }

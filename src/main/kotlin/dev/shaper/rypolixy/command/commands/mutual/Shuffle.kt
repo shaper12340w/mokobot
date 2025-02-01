@@ -11,8 +11,8 @@ import dev.shaper.rypolixy.utils.discord.ResponseType
 
 class Shuffle(private val client: Client): MutualCommand {
 
-    override val name           : String                    = "pause"
-    override val description    : String                    = "Pause playing track"
+    override val name           : String                    = "shuffle"
+    override val description    : String                    = "Shuffle options for playing track"
     override val enabled        : Boolean                   = true
     override val isInteractive  : Boolean                   = true
     override val commandType    : TextCommand.CommandType   = TextCommand.CommandType()
@@ -26,10 +26,10 @@ class Shuffle(private val client: Client): MutualCommand {
             )
         }
         else {
-            session.options.shuffle = !session.options.shuffle
+            session.options.playerOptions.shuffle = !session.options.playerOptions.shuffle
             context.sendRespond(
                 ResponseType.NORMAL,
-                EmbedFrame.info(if(session.options.shuffle) "셔플 활성화됨" else "셔플 비활성화됨",null)
+                EmbedFrame.info(if(session.options.playerOptions.shuffle) "셔플 활성화됨" else "셔플 비활성화됨",null)
             )
         }
     }
