@@ -1,4 +1,4 @@
-package dev.shaper.rypolixy.utils.musicplayer.lavaplayer
+package dev.shaper.rypolixy.core.musicplayer.lavaplayer
 
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager
@@ -9,9 +9,10 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack
 import dev.shaper.rypolixy.logger
-import dev.shaper.rypolixy.utils.musicplayer.utils.MediaUtils
-import kotlin.coroutines.suspendCoroutine
+import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils
 import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
+
 
 //DefaultAudioPlayerManager 상속
 object LavaPlayerManager: DefaultAudioPlayerManager() {

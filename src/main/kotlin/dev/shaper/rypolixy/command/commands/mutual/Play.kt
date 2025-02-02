@@ -22,8 +22,8 @@ import dev.shaper.rypolixy.utils.discord.EmbedFrame
 import dev.shaper.rypolixy.utils.discord.ResponseManager.Companion.sendRespond
 import dev.shaper.rypolixy.utils.discord.ResponseType
 import dev.shaper.rypolixy.utils.discord.ReturnType
-import dev.shaper.rypolixy.utils.musicplayer.MediaTrack
-import dev.shaper.rypolixy.utils.musicplayer.utils.MediaUtils
+import dev.shaper.rypolixy.core.musicplayer.MediaTrack
+import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils
 import us.jimschubert.kopper.Parser
 
 

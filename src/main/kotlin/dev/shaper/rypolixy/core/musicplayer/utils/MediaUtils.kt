@@ -1,4 +1,4 @@
-package dev.shaper.rypolixy.utils.musicplayer.utils
+package dev.shaper.rypolixy.core.musicplayer.utils
 
 import com.sedmelluq.discord.lavaplayer.track.AudioItem
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist
@@ -6,12 +6,12 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack
 import dev.kord.core.entity.channel.TopGuildMessageChannel
 import dev.kord.core.entity.channel.VoiceChannel
 import dev.shaper.rypolixy.logger
-import dev.shaper.rypolixy.utils.musicplayer.MediaBehavior.Companion.toTrack
-import dev.shaper.rypolixy.utils.musicplayer.MediaTrack
-import dev.shaper.rypolixy.utils.musicplayer.lavaplayer.LavaPlayerManager
-import dev.shaper.rypolixy.utils.musicplayer.lavaplayer.LavaResult
-import dev.shaper.rypolixy.utils.musicplayer.ytdlp.YtDlpInfo
-import dev.shaper.rypolixy.utils.musicplayer.ytdlp.YtDlpManager
+import dev.shaper.rypolixy.core.musicplayer.MediaBehavior.Companion.toTrack
+import dev.shaper.rypolixy.core.musicplayer.MediaTrack
+import dev.shaper.rypolixy.core.musicplayer.lavaplayer.LavaPlayerManager
+import dev.shaper.rypolixy.core.musicplayer.lavaplayer.LavaResult
+import dev.shaper.rypolixy.core.musicplayer.ytdlp.YtDlpInfo
+import dev.shaper.rypolixy.core.musicplayer.ytdlp.YtDlpManager
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -57,10 +57,11 @@ class MediaUtils {
         UNKNOWN(listOf(), "", null)
     }
 
-        data class PlayerOptions(
-        var leaveTime:      Long = 0,
-        var volume:         Double = 100.0,
-        var shuffle:        Boolean = false
+    data class PlayerOptions(
+        var leaveTime:      Long    = 0,
+        var volume:         Double  = 100.0,
+        var shuffle:        Boolean = false,
+        var recommendation: Boolean = false,
     ){
         enum class RepeatType {
             DEFAULT, ONCE, ALL
@@ -71,7 +72,15 @@ class MediaUtils {
     data class ConnectOptions(
         val channel         : TopGuildMessageChannel,
         val voiceChannel    : VoiceChannel,
-        val playerOptions   : PlayerOptions
+        val options         : PlayerOptions
+    )
+
+    data class QueueOptions(
+        var index:          Int = 0,
+        var subIndex:       Int = 0,
+        var position:       Long = 0,
+        var paused:         Boolean = false,
+        var terminated:     Boolean = false,
     )
 
     enum class SearchType {

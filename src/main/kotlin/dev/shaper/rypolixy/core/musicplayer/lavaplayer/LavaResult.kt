@@ -1,4 +1,4 @@
-package dev.shaper.rypolixy.utils.musicplayer.lavaplayer
+package dev.shaper.rypolixy.core.musicplayer.lavaplayer
 
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 import com.sedmelluq.discord.lavaplayer.track.AudioItem

@@ -8,4 +8,4 @@
  - 5. ffmpeg로 Opus 인코딩
  - 6. loadItem으로 Track으로 다시 wrapping
  - Timeout 추가 -> O
- - URL REGEX 포팅하기 [MediaRegex.kt](utils/musicplayer/utils/MediaRegex.kt)
+ - URL REGEX 포팅하기 [MediaRegex.kt](utils/musicplayer/utils/MediaRegex.kt) -> O

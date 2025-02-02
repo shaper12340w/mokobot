@@ -1,9 +1,10 @@
-package dev.shaper.rypolixy.utils.musicplayer.parser.youtube
+package dev.shaper.rypolixy.core.musicplayer.parser.youtube
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dev.shaper.rypolixy.logger
+import dev.shaper.rypolixy.core.musicplayer.utils.MediaRegex
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
 import org.json.JSONArray
@@ -64,9 +65,10 @@ object YoutubeScrapper {
         return resultsArray?.toString() ?: "[]"
     }
 
-    suspend fun getRelatedData(url: String): List<YoutubeParseInfo.CompactVideoInfo>? {
+    suspend fun getRelatedData(videoId: String,count:Int = 10): List<dev.shaper.rypolixy.core.musicplayer.parser.youtube.YoutubeParseInfo.CompactVideoInfo>? {
         try {
             return withTimeout(60000L) {
+                val url  = "${MediaRegex.REGEX.youtube.youtubeBaseUrl}/watch?v=$videoId"
                 val html = fetchUrl(url)
                 val relatedVideosString = extractRelatedVideosAsString(html)
                 if (relatedVideosString == "[]")
@@ -78,21 +80,21 @@ object YoutubeScrapper {
                     .build()
                 val listType = Types.newParameterizedType(List::class.java, YoutubeParseInfo.CompactVideoInfo::class.java)
                 val adapter = moshi.adapter<List<YoutubeParseInfo.CompactVideoInfo>>(listType)
-                return@withTimeout adapter.fromJson(relatedVideosString)
+                return@withTimeout (adapter.fromJson(relatedVideosString) as List<YoutubeParseInfo.CompactVideoInfo>).toList().take(count)
             }
 
         }
         catch (e: TimeoutCancellationException) {
-            logger.error { "Timeout while getting yt-dlp data from url : $url" }
+            logger.error { "Timeout while getting Youtube data from id : $videoId" }
             return null
         }
         catch (e: YoutubeDataException){
-            logger.error { "Cannot get data from url : $url" }
+            logger.error { "Cannot get data from id : $videoId" }
             logger.error { e.message }
             return null
         }
         catch (e: Exception) {
-            logger.error { "Cannot get data from url : $url" }
+            logger.error { "Cannot get data from id : $videoId" }
             logger.error { e.message }
             return null
         }

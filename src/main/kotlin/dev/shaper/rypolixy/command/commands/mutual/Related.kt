@@ -9,10 +9,11 @@ import dev.shaper.rypolixy.utils.discord.EmbedFrame
 import dev.shaper.rypolixy.utils.discord.ResponseManager.Companion.sendRespond
 import dev.shaper.rypolixy.utils.discord.ResponseType
 
-class Shuffle(private val client: Client): MutualCommand {
 
-    override val name           : String                    = "shuffle"
-    override val description    : String                    = "Shuffle options for playing track"
+class Related(private val client: Client): MutualCommand {
+
+    override val name           : String                    = "related"
+    override val description    : String                    = "Get related track when play ended"
     override val enabled        : Boolean                   = true
     override val isInteractive  : Boolean                   = true
     override val commandType    : TextCommand.CommandType   = TextCommand.CommandType()
@@ -28,7 +29,9 @@ class Shuffle(private val client: Client): MutualCommand {
         else {
             context.sendRespond(
                 ResponseType.NORMAL,
-                EmbedFrame.info(if(client.lavaClient.shuffle(context.guildId)!!) "셔플 활성화됨" else "셔플 비활성화됨",null)
+                EmbedFrame.info(if(client.lavaClient.related(context.guildId)!!) "트랙 추천 활성화됨" else "트랙 추천 비활성화됨",null) {
+                    footer { text = "[!] 현재 Youtube 와 Soundcloud 소스만 지원됩니다" }
+                }
             )
         }
     }

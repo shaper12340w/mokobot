@@ -1,4 +1,4 @@
-package dev.shaper.rypolixy.utils.musicplayer.ytdlp
+package dev.shaper.rypolixy.core.musicplayer.ytdlp
 
 import com.jfposton.ytdlp.YtDlp
 import com.jfposton.ytdlp.YtDlpException
@@ -7,7 +7,7 @@ import com.jfposton.ytdlp.mapper.VideoInfo
 import dev.shaper.rypolixy.config.Properties
 import dev.shaper.rypolixy.logger
 import dev.shaper.rypolixy.utils.io.json.JsonManager
-import dev.shaper.rypolixy.utils.musicplayer.utils.MediaUtils
+import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
 

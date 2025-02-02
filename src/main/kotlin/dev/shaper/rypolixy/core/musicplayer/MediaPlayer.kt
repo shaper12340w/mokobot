@@ -1,4 +1,4 @@
-package dev.shaper.rypolixy.utils.musicplayer
+package dev.shaper.rypolixy.core.musicplayer
 
 import com.sedmelluq.discord.lavaplayer.player.event.*
 import dev.kord.common.annotation.KordVoice
@@ -8,16 +8,16 @@ import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.entity.channel.VoiceChannel
 import dev.kord.voice.AudioFrame
 import java.util.concurrent.ConcurrentHashMap
-import dev.shaper.rypolixy.config.Client
 import dev.shaper.rypolixy.logger
 import dev.shaper.rypolixy.utils.discord.EmbedFrame
-import dev.shaper.rypolixy.utils.musicplayer.utils.MediaUtils.Companion.implementTrack
-import dev.shaper.rypolixy.utils.musicplayer.utils.MediaUtils.Companion.lavaTrackBuilder
-import dev.shaper.rypolixy.utils.musicplayer.lavaplayer.LavaPlayerManager
-import dev.shaper.rypolixy.utils.musicplayer.lavaplayer.LavaResult
-import dev.shaper.rypolixy.utils.musicplayer.utils.MediaFilter
-import dev.shaper.rypolixy.utils.musicplayer.utils.MediaUtils
-import dev.shaper.rypolixy.utils.musicplayer.ytdlp.YtDlpManager
+import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils.Companion.implementTrack
+import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils.Companion.lavaTrackBuilder
+import dev.shaper.rypolixy.core.musicplayer.lavaplayer.LavaPlayerManager
+import dev.shaper.rypolixy.core.musicplayer.lavaplayer.LavaResult
+import dev.shaper.rypolixy.core.musicplayer.parser.MediaParser
+import dev.shaper.rypolixy.core.musicplayer.utils.MediaRegex
+import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils
+import dev.shaper.rypolixy.core.musicplayer.ytdlp.YtDlpManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit
 
 
 @OptIn(KordVoice::class)
-class MediaPlayer(client:Client) {
+class MediaPlayer {
 
     init {
         LavaPlayerManager.registerAllSources()
@@ -42,7 +42,7 @@ class MediaPlayer(client:Client) {
         val guildId     = options.voiceChannel.guildId
         val connection  = options.voiceChannel.connect {
             audioProvider {
-                if(sessions[guildId] != null && sessions[guildId]?.paused == true)
+                if(sessions[guildId] != null && sessions[guildId]?.options?.paused == true)
                     return@audioProvider null
                 player.provide(1, TimeUnit.SECONDS)?.let {
                     return@audioProvider AudioFrame.fromData(it.data)
@@ -60,9 +60,9 @@ class MediaPlayer(client:Client) {
                     }
                     is TrackEndEvent        -> {
                         val session = sessions[guildId]
-                        if(player.isPaused && session != null && session.paused){
+                        if(player.isPaused && session != null && session.options.paused){
                             logger.warn { "Track is terminated! "}
-                            session.terminated = true
+                            session.options.terminated = true
                         }
                         else{
                             session?.currentTrack()?.data?.status = MediaBehavior.PlayStatus.END
@@ -70,21 +70,26 @@ class MediaPlayer(client:Client) {
                         }
 
                     }
-                    is TrackStartEvent      -> {} //Todo : Add stack or deque to preload others
+                    is TrackStartEvent      -> {
+                        val session = sessions[guildId]
+                        if(session != null)
+                            session.player.volume = session.connector.options.volume.toInt()
+                    } //Todo : Add stack or deque to preload others
                     is TrackExceptionEvent  -> {
-                        sendError(guildId,it.exception.message ?: it.toString())
+                        sendError(guildId,it.exception)
                         logger.error { it.exception }
+                        disconnect(guildId)
                     }
                     is PlayerPauseEvent     -> {
-                        sessions[guildId]?.position = sessions[guildId]?.position?.plus(1) ?: 0
-                        sessions[guildId]?.paused = true
+                        sessions[guildId]?.options?.position = sessions[guildId]?.options?.position?.plus(1) ?: 0
+                        sessions[guildId]?.options?.paused = true
                     }
                     is PlayerResumeEvent    -> {
                         val session = sessions[guildId]
-                        if(session?.terminated == true)
+                        if(session?.options?.terminated == true)
                             session.update()
 
-                        session?.paused = false
+                        session?.options?.paused = false
                     }
 
                 }
@@ -96,7 +101,8 @@ class MediaPlayer(client:Client) {
             player,
             provider,
             connection,
-            options
+            options,
+            MediaUtils.QueueOptions()
         )
     }
 
@@ -108,11 +114,6 @@ class MediaPlayer(client:Client) {
         }
     }
 
-    private fun queryChecker(query: String): MediaUtils.MediaPlatform? {
-        return MediaUtils.MediaPlatform.entries.firstOrNull { link ->
-            link.url.any { it.toRegex().matches(query) }
-        }
-    }
 
     suspend fun search(query: String, option: MediaUtils.MediaPlatform = MediaUtils.MediaPlatform.SOUNDCLOUD): MediaUtils.SearchResult {
 
@@ -129,11 +130,18 @@ class MediaPlayer(client:Client) {
                 }
                 MediaUtils.MediaPlatform.UNKNOWN -> { //URL
                     //TODO : Add process with other websites
-                    val checkQuery = queryChecker(query)
-                    if (checkQuery != null) {
+                    val checkQuery = MediaRegex.checkAllRegex(query,MediaRegex.REGEX)
+                    if (checkQuery.isNotEmpty()) {
+                        val platform    = when(checkQuery.keys.toList().first().split(".")[0]){
+                            "youtube"       -> MediaUtils.MediaPlatform.YOUTUBE
+                            "spotify"       -> MediaUtils.MediaPlatform.SPOTIFY
+                            "soundcloud"    -> MediaUtils.MediaPlatform.SOUNDCLOUD
+                            else            -> MediaUtils.MediaPlatform.UNKNOWN
+                        }
+                        logger.debug { checkQuery.keys.toList()  }
                         val dlpResult   = YtDlpManager.getUrlData(query)
                             ?: return MediaUtils.SearchResult(MediaUtils.SearchType.NORESULTS,null)
-                        val result      = MediaUtils.ytDlpTrackBuilder(dlpResult, option)
+                        val result      = MediaUtils.ytDlpTrackBuilder(dlpResult, platform)
                         return MediaUtils.SearchResult(
                             status      = MediaUtils.SearchType.SUCCESS,
                             data        = result
@@ -174,7 +182,7 @@ class MediaPlayer(client:Client) {
         val session = sessions[guildId]!!
         add(tracks,session)
         if(session.currentData()?.status != MediaBehavior.PlayStatus.PLAYING){
-            session.index = session.queue.size - 1
+            session.options.index = session.queue.size - 1
             playNext(guildId)
             return session.currentTrack()
         }
@@ -206,53 +214,99 @@ class MediaPlayer(client:Client) {
         return session.currentTrack()
     }
 
-
-    fun pause(guildId: Snowflake):Boolean? {
-        if(!sessions.containsKey(guildId)) return null
+    private fun baseOnOffFunction(
+        guildId: Snowflake,
+        property: MediaData.(Boolean?) -> Boolean
+    ): Boolean? {
+        if (!sessions.containsKey(guildId)) return null
         val session = sessions[guildId]!!
-        session.player.isPaused = !session.player.isPaused
-        return session.player.isPaused
+        val currentValue = session.property(null)
+        val newValue = !currentValue
+        session.property(newValue)
+        return newValue
     }
+
+    fun pause(guildId: Snowflake): Boolean?
+        = baseOnOffFunction(guildId) { if (it != null) { player.isPaused = it }; player.isPaused }
+
+    fun shuffle(guildId: Snowflake):Boolean?
+        = baseOnOffFunction(guildId) { if (it != null) { connector.options.shuffle = it }; connector.options.shuffle }
+
+    fun related(guildId: Snowflake):Boolean?
+        = baseOnOffFunction(guildId) { if (it != null) { connector.options.recommendation = it }; connector.options.recommendation }
 
     fun volume(guildId: Snowflake, volume:Int){
         if(!sessions.containsKey(guildId)) return
         val session = sessions[guildId]!!
+        session.connector.options.volume = volume.toDouble()
         session.player.volume = volume
-
     }
 
-    private suspend fun sendError(guildId: Snowflake,errorString: String){
+    private suspend fun sendError(guildId: Snowflake,e: Exception){
         if(!sessions.containsKey(guildId)) return
         val session = sessions[guildId]!!
-        session.options.channel.createMessage { embeds = mutableListOf(EmbedFrame.error("처리 도중 에러가 발생했습니다",errorString){ footer { text = "관리자에게 문의 바랍니다" } }) }
+        session.connector.channel.createMessage { embeds = mutableListOf(EmbedFrame.error("처리 도중 에러가 발생했습니다",e.message){ footer { text = "관리자에게 문의 바랍니다" } }) }
+        logger.error { e.printStackTrace() }
+    }
+
+    private suspend fun addRelatedTrack(guildId: Snowflake){
+        if(!sessions.containsKey(guildId)) return
+        val session = sessions[guildId]!!
+        if(session.current() != null && session.current()!! !is MediaTrack.FlatTrack){
+            when(session.currentTrack()!!.source){
+                MediaUtils.MediaPlatform.YOUTUBE,
+                MediaUtils.MediaPlatform.SOUNDCLOUD -> {
+                    val parsedTrack = MediaParser.parse(session.currentTrack()!!)
+                    session.queue.addAll(parsedTrack!!)
+                    session.connector.channel.createMessage {
+                        embeds = mutableListOf(
+                            EmbedFrame.list(
+                                "추천 트랙이 추가되었습니다",
+                                parsedTrack.joinToString("\n") { it.title }
+                            )
+                        )
+                    }
+                }
+                else -> {
+                    session.connector.channel.createMessage {
+                        embeds = mutableListOf(
+                            EmbedFrame.warning(
+                                "지원하지 않는 미디어 플렛폼입니다",
+                                "추천 기준 소스 : ${session.currentTrack()?.source?.name}\n링크 : ${session.currentTrack()?.url?.take(50)}"
+                            )
+                            { footer { text = "지원하지 않는 소스기에 자동으로 무시되었습니다." } }
+                        )
+                    }
+                    session.connector.options.recommendation = false
+                }
+            }
+        }
     }
 
     private suspend fun playNext(guildId: Snowflake): MediaTrack.Track? {
 
-        //TODO : when invoke Error -> send TextChannel to Error message + leave
-        //TODO : automatize track and playlist <- + flatTrack to normal TrackData
-        //TODO : add process repeat / add process when status is END
-
-        //val leftTrack = session.queue.filter { it.data.status == MediaBehavior.PlayStatus.IDLE }
-        //val leftTrackIndexes = leftTrack.map { session.queue.indexOf(it) }
-
-        //RepeatAll  -> Track + Playlist as Track / RepeatOnce -> (Track/Playlist) of one as Track / Nothing -> Track <=> Playlist
-        //Shuffle    -> (Track -> (Track + Playlist)) or (Playlist -> Playlist)
-
-        //순서 -> 다음 트랙 계산 -> 플레이리스트일 경우 플레이리스트 내부 / 트랙일 경우 다음 요소 검색
-        // 일반 트랙일 경우, 플레이리스트일 경우
-        // 플레이리스트일 경우 -> 구현됨 / 구현안됨
+        fun playTrack(track: MediaTrack.Track): MediaTrack.Track {
+            track.data.status = MediaBehavior.PlayStatus.PLAYING
+            logger.debug { "Play Track : $track" }
+            track.data.playWith(sessions[guildId]!!.player)
+            return track
+        }
+        suspend fun playFlatTrack(track: MediaTrack.FlatTrack): MediaTrack.Track? {
+            val convertedTrack = track.toTrack() ?: return null
+            return playTrack(convertedTrack)
+        }
 
         try {
+
             val session = sessions[guildId] ?: return null
             val originQueue = session.queue
             val tempQueue = session.queue.toMutableList()
-            val shuffle = session.options.playerOptions.shuffle
+            val shuffle = session.connector.options.shuffle
 
             if (tempQueue.isEmpty()) return null
             logger.debug { "Playing Next Track.. / Data : $session" }
 
-            if (session.options.playerOptions.repeat == MediaUtils.PlayerOptions.RepeatType.ONCE){
+            if (session.connector.options.repeat == MediaUtils.PlayerOptions.RepeatType.ONCE){
                 session.update()
                 session.currentTrack()?.data?.playWith(sessions[guildId]!!.player)
                 logger.debug { "Play Track : ${session.currentTrack()}" }
@@ -262,7 +316,7 @@ class MediaPlayer(client:Client) {
             //if (session.option.repeat == MediaUtils.PlayerOptions.RepeatType.DEFAULT)
             while(tempQueue.isNotEmpty()) {
                 val nextIndex = when {
-                    session.subIndex > 0 -> session.index
+                    session.options.subIndex > 0 -> session.options.index
                     shuffle              -> (tempQueue.indices).random()
                     else                 -> 0
                 }
@@ -277,13 +331,22 @@ class MediaPlayer(client:Client) {
                     is MediaTrack.Track         -> {
                         logger.debug { "Track Type : Track" }
                         if(nextMedia.data.status == MediaBehavior.PlayStatus.IDLE){
-                            nextMedia.data.status = MediaBehavior.PlayStatus.PLAYING
-                            session.index = originQueue.indexOf(nextMedia)
-                            logger.debug { "Play Track : $nextMedia" }
-                            nextMedia.data.playWith(sessions[guildId]!!.player)
-                            return nextMedia
+                            session.options.index = originQueue.indexOf(nextMedia)
+                            return playTrack(nextMedia)
                         }
                         else tempQueue.removeAt(nextIndex)
+                    }
+                    is MediaTrack.FlatTrack -> {
+                        logger.debug { "Track Type : FlatTrack" }
+                        val convertedTrack = playFlatTrack(nextMedia)
+                        if(convertedTrack == null) {
+                            logger.debug { "Skip Track Because Null: $nextMedia " }
+                            tempQueue.removeAt(nextIndex)
+                            return null
+                        }
+                        session.options.index = originQueue.indexOf(nextMedia)
+                        session.queue[session.options.index] = convertedTrack
+                        return convertedTrack
                     }
                     is MediaTrack.Playlist      -> {
                         logger.debug { "Track Type : Playlist" }
@@ -293,48 +356,45 @@ class MediaPlayer(client:Client) {
                         if(idleTracks.isNotEmpty()){
                             val subNextIndex    = if (shuffle) (idleTracks.indices).random() else 0
                             val nextTrack       = idleTracks[subNextIndex]
-                            val originPlaylist  = (originQueue[session.index] as MediaTrack.Playlist).tracks
+                            val originPlaylist  = (originQueue[session.options.index] as MediaTrack.Playlist).tracks
                             val originIndex     = originPlaylist.indexOf(nextTrack)
-                            if(session.subIndex == 0)
-                                session.index = originQueue.indexOf(nextMedia)
+                            if(session.options.subIndex == 0)
+                                session.options.index = originQueue.indexOf(nextMedia)
                             if (nextTrack is MediaTrack.FlatTrack) {
-                                val convertedTrack = nextTrack.toTrack()
+                                val convertedTrack = playFlatTrack(nextTrack)
                                 if(convertedTrack == null) {
                                     logger.debug { "Skip Track Because Null: $nextMedia " }
                                     tempQueue.removeAt(nextIndex)
                                     return null
                                 }
                                 originPlaylist[originIndex] = convertedTrack
-                                session.subIndex = originIndex
-                                convertedTrack.data.status = MediaBehavior.PlayStatus.PLAYING
-                                logger.debug { "Play Converted Track: $convertedTrack" }
-                                convertedTrack.data.playWith(session.player)
+                                session.options.subIndex = originIndex
                                 return convertedTrack
                             } else if (nextTrack is MediaTrack.Track){
-                                logger.debug { "Play Track : $nextTrack" }
-                                nextTrack.data.status = MediaBehavior.PlayStatus.PLAYING
-                                session.subIndex = originIndex
-                                nextTrack.data.playWith(session.player)
-                                return nextTrack
+                                session.options.subIndex = originIndex
+                                return playTrack(nextTrack)
                             }
                         }
                         else {
-                            if(session.subIndex > 0) session.subIndex = 0
+                            if(session.options.subIndex > 0) session.options.subIndex = 0
                             tempQueue.removeAt(nextIndex)
                         }
                     }
-                    else                        -> {
-                        logger.warn { "Not Supported Type ${nextMedia::class.simpleName}. Skipping.." }
-                        tempQueue.removeAt(nextIndex)
-                    }
+
                 }
             }
 
-            // No tracks left to play
-            session.index       = 0
-            session.subIndex    = 0
+            if(session.connector.options.recommendation){
+                addRelatedTrack(guildId)
+                playNext(guildId)
+                return session.currentTrack()
+            }
 
-            if(session.options.playerOptions.repeat == MediaUtils.PlayerOptions.RepeatType.ALL){
+            // No tracks left to play
+            session.options.index       = 0
+            session.options.subIndex    = 0
+
+            if(session.connector.options.repeat == MediaUtils.PlayerOptions.RepeatType.ALL){
                 //Reset ALL Tracks
                 session.queue.forEach {
                     when(it){
@@ -351,9 +411,10 @@ class MediaPlayer(client:Client) {
             return null
         }
         catch (ex: Exception){
-            sendError(guildId,ex.localizedMessage)
+            sendError(guildId,ex)
             logger.error { ex.message }
             logger.error { ex.stackTraceToString() }
+            disconnect(guildId)
             return null
         }
 

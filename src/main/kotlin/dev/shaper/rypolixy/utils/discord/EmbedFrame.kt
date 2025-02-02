@@ -1,14 +1,10 @@
 package dev.shaper.rypolixy.utils.discord
 
-import dev.kord.core.entity.Member
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.shaper.rypolixy.utils.discord.TextDesign.Embed.description
 import dev.shaper.rypolixy.utils.discord.TextDesign.Embed.title
-import dev.shaper.rypolixy.utils.musicplayer.MediaBehavior
-import dev.shaper.rypolixy.utils.musicplayer.MediaTrack
-import kotlinx.coroutines.flow.asFlow
+import dev.shaper.rypolixy.core.musicplayer.MediaTrack
 import kotlinx.datetime.Clock
-import java.util.Date
 
 object EmbedFrame {
 

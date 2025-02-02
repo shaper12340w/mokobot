@@ -1,4 +1,4 @@
-package dev.shaper.rypolixy.utils.musicplayer
+package dev.shaper.rypolixy.core.musicplayer
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack

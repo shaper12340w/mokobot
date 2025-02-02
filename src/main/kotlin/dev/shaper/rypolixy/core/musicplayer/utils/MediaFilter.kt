@@ -1,4 +1,4 @@
-package dev.shaper.rypolixy.utils.musicplayer.utils
+package dev.shaper.rypolixy.core.musicplayer.utils
 
 /*
 * This source is from https://github.com/lavalink-devs/Lavalink/blob/master/LavalinkServer/src/main/java/lavalink/server/player/filters/filterConfigs.kt

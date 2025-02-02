@@ -1,4 +1,4 @@
-package dev.shaper.rypolixy.utils.musicplayer.parser.youtube
+package dev.shaper.rypolixy.core.musicplayer.parser.youtube
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
