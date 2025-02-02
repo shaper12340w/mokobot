@@ -1,7 +1,7 @@
-package dev.shaper.rypolixy.utils.musicplayer
+package dev.shaper.rypolixy.core.musicplayer
 
-import dev.shaper.rypolixy.utils.musicplayer.utils.MediaUtils
-import dev.shaper.rypolixy.utils.musicplayer.utils.MediaUtils.MediaPlatform
+import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils
+import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils.MediaPlatform
 import kotlin.time.Duration
 
 sealed class MediaTrack {

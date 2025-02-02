@@ -16,6 +16,7 @@ application {
 repositories {
     mavenCentral()
     maven("https://jitpack.io")
+    maven("https://maven.topi.wtf/releases")
     maven("https://maven.lavalink.dev/releases")
     maven("https://oss.sonatype.org/content/repositories/snapshots")
 }
@@ -40,6 +41,7 @@ dependencies {
     // AudioPlayer
     implementation("dev.arbjerg:lavaplayer:2.2.2")
     implementation("dev.arbjerg:lavadsp:0.7.8")
+    implementation("xyz.gianlu.librespot:librespot-java:1.6.5")
     implementation("com.github.sapher:youtubedl-java:1.1")
 
     // JSON/YAML Processing

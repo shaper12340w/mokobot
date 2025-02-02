@@ -18,7 +18,7 @@ import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.guildId
 import dev.shaper.rypolixy.utils.discord.EmbedFrame
 import dev.shaper.rypolixy.utils.discord.ResponseManager.Companion.sendRespond
 import dev.shaper.rypolixy.utils.discord.ResponseType
-import dev.shaper.rypolixy.utils.musicplayer.utils.MediaUtils
+import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils
 import us.jimschubert.kopper.Parser
 
 
@@ -64,7 +64,7 @@ class Join(private val client: Client): MutualCommand {
                         MediaUtils.ConnectOptions(
                             channel = context.channel.asChannelOf(),
                             voiceChannel = channel!!.asChannelOf(),
-                            playerOptions = MediaUtils.PlayerOptions()
+                            options = MediaUtils.PlayerOptions()
                         )
                     )
                     if (res?.options?.flag("silent") == true ||

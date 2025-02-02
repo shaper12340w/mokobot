@@ -1,4 +1,4 @@
-package dev.shaper.rypolixy.utils.musicplayer.ytdlp
+package dev.shaper.rypolixy.core.musicplayer.ytdlp
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

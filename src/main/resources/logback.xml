@@ -7,7 +7,7 @@
     <!-- Console Appender with Custom Format -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>DEBUG</level>
+            <level>INFO</level>
         </filter>
         <encoder>
             <charset>${CONSOLE_LOG_CHARSET}</charset>
@@ -15,22 +15,34 @@
         </encoder>
     </appender>
 
-    <!-- File Appender with Original Format -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>logs/application.log</file>
+        <immediateFlush>true</immediateFlush>
+        <bufferSize>8192</bufferSize>
+        <append>true</append>
+
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/application.%d{yyyy-MM-dd-HH-mm-ss}.log</fileNamePattern>
+            <fileNamePattern>logs/application.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
             <totalSizeCap>3GB</totalSizeCap>
         </rollingPolicy>
+
         <encoder>
             <charset>${CONSOLE_LOG_CHARSET}</charset>
             <pattern>%d{${LOG_DATEFORMAT_PATTERN}} %5p --- [%thread] %logger : %m%n</pattern>
         </encoder>
     </appender>
 
+    <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE" />
+        <queueSize>512</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <includeCallerData>true</includeCallerData>
+        <neverBlock>false</neverBlock>
+    </appender>
+
     <root level="DEBUG">
         <appender-ref ref="CONSOLE" />
-        <appender-ref ref="FILE" />
+        <appender-ref ref="ASYNC" />
     </root>
 </configuration>

@@ -1,32 +1,27 @@
-package dev.shaper.rypolixy.utils.musicplayer
+package dev.shaper.rypolixy.core.musicplayer
 
 import dev.kord.common.annotation.KordVoice
 import dev.kord.voice.VoiceConnection
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer
 import dev.kord.voice.AudioProvider
-import dev.shaper.rypolixy.utils.musicplayer.utils.MediaUtils
+import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils
 
 data class MediaData @OptIn(KordVoice::class) constructor(
     val queue:          MutableList<MediaTrack>,
     val player:         AudioPlayer,
     val provider:       AudioProvider,
     val connection:     VoiceConnection,
-    val options:        MediaUtils.ConnectOptions,
+    val connector:      MediaUtils.ConnectOptions,
+    val options:        MediaUtils.QueueOptions
 ){
-    var index:          Int = 0
-    var subIndex:       Int = 0
 
-    var paused:         Boolean = false
-    var position:       Long = 0
-    var terminated:     Boolean = false
-
-    fun current(): MediaTrack? = queue.getOrNull(index)
+    fun current(): MediaTrack? = queue.getOrNull(options.index)
 
     fun currentTrack(): MediaTrack.Track?{
         return when(current()) {
-            is MediaTrack.Track     -> queue[index] as MediaTrack.Track
+            is MediaTrack.Track     -> queue[options.index] as MediaTrack.Track
             is MediaTrack.Playlist  -> {
-                val trackData =  (queue[index] as MediaTrack.Playlist).tracks[subIndex]
+                val trackData =  (queue[options.index] as MediaTrack.Playlist).tracks[options.subIndex]
                 if(trackData is MediaTrack.Track) trackData
                 else null
             }
@@ -44,7 +39,7 @@ data class MediaData @OptIn(KordVoice::class) constructor(
     fun update() {
         currentTrack()?.data = currentData()?.clone()!!
         player.startTrack(currentTrack()?.data?.audioTrack!!,true)
-        currentTrack()?.data?.seek(position)
-        terminated = false
+        currentTrack()?.data?.seek(options.position)
+        options.terminated = false
     }
 }

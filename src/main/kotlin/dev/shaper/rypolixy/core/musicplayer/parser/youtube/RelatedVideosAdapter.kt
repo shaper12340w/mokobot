@@ -1,4 +1,4 @@
-package dev.shaper.rypolixy.utils.musicplayer.parser.youtube
+package dev.shaper.rypolixy.core.musicplayer.parser.youtube
 
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.JsonReader
@@ -35,8 +35,6 @@ class RelatedVideosAdapter {
         val lengthText = (renderer["lengthText"] as Map<String, Any>)["simpleText"] as String
         val viewCountText = (renderer["viewCountText"] as Map<String, Any>)["simpleText"] as String
         val publishedTimeText = (renderer["publishedTimeText"] as Map<String, Any>)["simpleText"] as String
-
-        // 나머지 필드들도 비슷한 방식으로 파싱...
 
         return YoutubeParseInfo.CompactVideoInfo(
             YoutubeParseInfo.RelatedVideo(

@@ -1,4 +1,7 @@
-package dev.shaper.rypolixy.utils.musicplayer.utils
+package dev.shaper.rypolixy.core.musicplayer.utils
+
+import kotlin.reflect.KVisibility
+import kotlin.reflect.full.memberProperties
 
 object MediaRegex {
 
@@ -13,8 +16,6 @@ object MediaRegex {
         val soundcloudBaseUrl: String,
         val soundcloudApiVersion: String,
         val soundcloudUrlRegex: Regex,
-        val soundcloudKeygenUrlRegex: Regex,
-        val soundcloudApiKeyRegex: Regex,
         val regexTrack: Regex,
         val regexSet: Regex,
         val regexArtist: Regex,
@@ -59,12 +60,6 @@ object MediaRegex {
             soundcloudUrlRegex = Regex(
                 "^https?://(soundcloud.com|snd.sc)/(.*)$"
             ),
-            soundcloudKeygenUrlRegex = Regex(
-                "^https?://(www.)?[-a-zA-Z0-9@:%._+~#=]{1,256}.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)$"
-            ),
-            soundcloudApiKeyRegex = Regex(
-                "^(https://)?(www.)?[-a-zA-Z0-9@:%._+~#=]{1,256}.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)$"
-            ),
             regexTrack = Regex(
                 "^https?://(soundcloud.com|snd.sc)/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)/?$"
             ),
@@ -92,4 +87,27 @@ object MediaRegex {
             "^https?://(?:www.|secure.|sp.)?nicovideo.jp/watch/([a-z]{2}[0-9]+)$"
         )
     )
+
+    fun checkAllRegex(input: String, obj: Any, parentPath: String = ""): Map<String, MatchResult> {
+        val results = mutableMapOf<String, MatchResult>()
+        obj::class.memberProperties.forEach { prop ->
+            if (prop.visibility == KVisibility.PUBLIC) { // public 프로퍼티만 처리
+                val propValue = prop.getter.call(obj)
+                val currentPath = if (parentPath.isEmpty()) prop.name else "$parentPath.${prop.name}"
+
+                when (propValue) {
+                    is Regex -> {
+                        propValue.find(input)?.let { match ->
+                            results[currentPath] = match
+                        }
+                    }
+                    // 중첩 객체 (예: YoutubeRegexConfig) 처리
+                    else -> if (propValue != null && propValue !is Collection<*> && propValue !is Map<*, *>) {
+                        results += checkAllRegex(input, propValue, currentPath)
+                    }
+                }
+            }
+        }
+        return results
+    }
 }

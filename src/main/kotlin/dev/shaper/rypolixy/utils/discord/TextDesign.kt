@@ -9,7 +9,7 @@ object TextDesign {
         }
         fun EmbedBuilder.description(text:String?){
             if(text != null)
-                this.description = text.split("\n").joinToString("\n") { " -  $it" }
+                this.description = "```\n$text\n```"
         }
     }
 }
