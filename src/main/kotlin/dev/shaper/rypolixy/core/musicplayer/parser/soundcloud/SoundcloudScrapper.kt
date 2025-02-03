@@ -41,7 +41,7 @@ object SoundcloudScrapper {
             // options 적용 예시: 헤더 추가 등 (프로젝트에 맞게 수정)
             fetchUrl(url)
         } catch (e: Exception) {
-            logger.error(e.message)
+            logger.error { e.message }
             ""
         }
     }
@@ -135,7 +135,7 @@ object SoundcloudScrapper {
                     val responseBody = response.body!!.bytes()
                     val inputStream = GZIPInputStream(ByteArrayInputStream(responseBody))
                     val decompressed = inputStream.bufferedReader().readText()
-                    logger.info { decompressed }
+                    logger.debug { "Returned Data : $decompressed" }
                     // Moshi를 사용해 JSON을 파싱합니다.
                     val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
                     val adapter = moshi.adapter(SoundcloudParseInfo.RelatedResponse::class.java)

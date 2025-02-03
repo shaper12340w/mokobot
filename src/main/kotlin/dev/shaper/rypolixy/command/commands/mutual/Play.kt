@@ -124,7 +124,7 @@ class Play(private val client: Client): MutualCommand {
         if(searchedTrack != null) {
 
             when(searchedTrack.status){
-                MediaUtils.SearchType.SUCCESS -> {
+                is MediaUtils.SearchType.SUCCESS -> {
                     val image = context.getMember().avatar?.cdnUrl?.toUrl {
                         CdnUrl.UrlFormatBuilder().apply {
                             format = Image.Format.WEBP
@@ -155,8 +155,8 @@ class Play(private val client: Client): MutualCommand {
                     }
 
                 }
-                MediaUtils.SearchType.ERROR       -> respond(EmbedFrame.error("에러가 발생했습니다",null))
-                MediaUtils.SearchType.NORESULTS   -> respond(EmbedFrame.warning("검색 결과가 없습니다",null))
+                is MediaUtils.SearchType.ERROR       -> respond(EmbedFrame.error("에러가 발생했습니다",searchedTrack.status.exception.message))
+                is MediaUtils.SearchType.NORESULTS   -> respond(EmbedFrame.warning("검색 결과가 없습니다",null))
             }
 
 

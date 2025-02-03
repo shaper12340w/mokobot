@@ -1,5 +1,6 @@
 package dev.shaper.rypolixy.core.musicplayer.utils
 
+import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 import com.sedmelluq.discord.lavaplayer.track.AudioItem
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack
@@ -83,8 +84,10 @@ class MediaUtils {
         var terminated:     Boolean = false,
     )
 
-    enum class SearchType {
-        SUCCESS, NORESULTS, ERROR
+    sealed class SearchType {
+        data object SUCCESS:SearchType()
+        data object NORESULTS:SearchType()
+        data class  ERROR(val exception: Exception):SearchType()
     }
 
     data class SearchResult(
@@ -99,13 +102,24 @@ class MediaUtils {
         /**
          * Convert MediaTrack(with no specific data) to implement it.
          * */
-        suspend fun implementTrack(track: MediaTrack, source: MediaPlatform = MediaPlatform.YOUTUBE): MediaTrack? {
-            logger.debug { "Convert Track $track with $source" }
-            val url = track.url
-            val dlpResult = YtDlpManager.getUrlData(url!!)
-            val regeneratedResult = ytDlpTrackBuilder(dlpResult!!,source)
-            logger.debug { "Implemented Source $regeneratedResult" }
-            return regeneratedResult
+        suspend fun implementTrack(url: String, source: MediaPlatform = MediaPlatform.YOUTUBE): MediaTrack? {
+            logger.debug { "Convert Track $url with $source" }
+            return when(source){
+                MediaPlatform.SOUNDCLOUD    -> {
+                    val lavaResult = LavaPlayerManager.load(url)
+                    if (lavaResult !is LavaResult.Success)
+                        throw FriendlyException(
+                            "LavaPlayer not found from $url",
+                            FriendlyException.Severity.COMMON,
+                            IllegalArgumentException()
+                        )
+                    lavaTrackBuilder(lavaResult.track,source)
+                }
+                else -> {
+                    val dlpResult = YtDlpManager.getUrlData(url)
+                    ytDlpTrackBuilder(dlpResult!!,source)
+                }
+            }
         }
 
         /**
@@ -188,13 +202,13 @@ class MediaUtils {
                     }
                 }
                 return MediaTrack.Playlist(
-                    source = source,
-                    title = info.title,
-                    duration = checkDuration.toDuration(DurationUnit.SECONDS),
-                    url = url,
-                    isSeek = isSearch,
-                    thumbnail = thumbnail,
-                    tracks = entries.toMutableList()
+                    source      = source,
+                    title       = info.title,
+                    duration    = checkDuration.toDuration(DurationUnit.SECONDS),
+                    url         = url,
+                    isSeek      = isSearch,
+                    thumbnail   = thumbnail,
+                    tracks      = entries.toMutableList()
                 )
             }
 

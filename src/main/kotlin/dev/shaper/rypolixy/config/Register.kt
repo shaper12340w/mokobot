@@ -17,7 +17,7 @@ object Register {
                 dev.shaper.rypolixy.command.commands.mutual.Repeat(client),
                 dev.shaper.rypolixy.command.commands.mutual.Playing(client),
                 dev.shaper.rypolixy.command.commands.mutual.Shuffle(client),
-                dev.shaper.rypolixy.command.commands.mutual.Related(client),
+                dev.shaper.rypolixy.command.commands.mutual.Relate(client),
                 dev.shaper.rypolixy.command.commands.mutual.Volume(client),
             )
         )
