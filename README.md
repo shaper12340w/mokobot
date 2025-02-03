@@ -21,7 +21,7 @@ AI LLM 모델을 활용한 기능도 계획 중입니다.
 </p>
 
 ## ✨ 기능
-- 🎵 **음악 재생** (Lavaplayer, yt-dlp, librespot 지원)
+- 🎵 **음악 재생** (Lavaplayer, yt-dlp 지원)
 - ⚙️ **서버 관리 기능** (추후 업데이트 예정)
 - 🎮 **게임, 출석 체크, 운세 기능** (추후 업데이트 예정)
 - 🧠 **AI 기반 기능** (추후 업데이트 예정)
@@ -35,7 +35,7 @@ AI LLM 모델을 활용한 기능도 계획 중입니다.
 
 ## 📦 사용된 기술
 - **언어**: Kotlin
-- **음악 라이브러리**: Lavaplayer, yt-dlp, librespot(will be used)
+- **음악 라이브러리**: Lavaplayer, yt-dlp, librespot (will be supported)
 - **기타**: Discord API, AI LLM 모델 (추후 추가 예정)
 
 ## 📜 라이선스
