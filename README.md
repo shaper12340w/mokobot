@@ -35,7 +35,7 @@ AI LLM 모델을 활용한 기능도 계획 중입니다.
 
 ## 📦 사용된 기술
 - **언어**: Kotlin
-- **음악 라이브러리**: Lavaplayer, yt-dlp, librespot
+- **음악 라이브러리**: Lavaplayer, yt-dlp, librespot(will be used)
 - **기타**: Discord API, AI LLM 모델 (추후 추가 예정)
 
 ## 📜 라이선스
