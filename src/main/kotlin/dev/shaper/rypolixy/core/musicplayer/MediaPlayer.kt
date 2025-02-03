@@ -1,6 +1,7 @@
 package dev.shaper.rypolixy.core.musicplayer
 
 import com.sedmelluq.discord.lavaplayer.player.event.*
+import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 import dev.kord.common.annotation.KordVoice
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.connect
@@ -128,6 +129,18 @@ class MediaPlayer {
                         data    = result
                     )
                 }
+                MediaUtils.MediaPlatform.SOUNDCLOUD -> {
+                    return when (val lavaResult  = LavaPlayerManager.optionSearcher(query, option)) {
+                        is LavaResult.Error     -> throw lavaResult.error
+                        is LavaResult.NoResults -> MediaUtils.SearchResult(MediaUtils.SearchType.NORESULTS, null)
+                        is LavaResult.Success   -> MediaUtils.SearchResult(
+                            MediaUtils.SearchType.SUCCESS,
+                            lavaTrackBuilder(lavaResult.track,option))
+                    }
+                }
+                MediaUtils.MediaPlatform.SPOTIFY -> {
+                    throw FriendlyException("Spotify는 아직 지원 준비중입니다.\n죄송합니다", FriendlyException.Severity.COMMON, null)
+                }
                 MediaUtils.MediaPlatform.UNKNOWN -> { //URL
                     //TODO : Add process with other websites
                     val checkQuery = MediaRegex.checkAllRegex(query,MediaRegex.REGEX)
@@ -138,13 +151,11 @@ class MediaPlayer {
                             "soundcloud"    -> MediaUtils.MediaPlatform.SOUNDCLOUD
                             else            -> MediaUtils.MediaPlatform.UNKNOWN
                         }
-                        logger.debug { checkQuery.keys.toList()  }
-                        val dlpResult   = YtDlpManager.getUrlData(query)
-                            ?: return MediaUtils.SearchResult(MediaUtils.SearchType.NORESULTS,null)
-                        val result      = MediaUtils.ytDlpTrackBuilder(dlpResult, platform)
+                        logger.debug { "Found matched regex keys : ${checkQuery.keys.toList()}" }
+                        val track = implementTrack(query, platform) ?: return MediaUtils.SearchResult(MediaUtils.SearchType.NORESULTS,null)
                         return MediaUtils.SearchResult(
                             status      = MediaUtils.SearchType.SUCCESS,
-                            data        = result
+                            data        = track
                         )
                     } else
                     return when (val lavaResult = LavaPlayerManager.load(query)) {
@@ -155,21 +166,13 @@ class MediaPlayer {
                             lavaTrackBuilder(lavaResult.track,option))
                     }
                 }
-                else                            -> {
-                    return when (val lavaResult  = LavaPlayerManager.optionSearcher(query, option)) {
-                        is LavaResult.Error     -> throw lavaResult.error
-                        is LavaResult.NoResults -> MediaUtils.SearchResult(MediaUtils.SearchType.NORESULTS, null)
-                        is LavaResult.Success   -> MediaUtils.SearchResult(
-                            MediaUtils.SearchType.SUCCESS,
-                            lavaTrackBuilder(lavaResult.track,option))
-                    }
-                }
+
             }
         }
         catch (ex: Exception){
             logger.warn(ex) { "Exception while searching $query" }
             return MediaUtils.SearchResult(
-                MediaUtils.SearchType.ERROR,
+                MediaUtils.SearchType.ERROR(ex),
                 null
             )
         }
@@ -198,7 +201,7 @@ class MediaPlayer {
     private suspend fun add(track: MediaTrack, session: MediaData){
         if(track.source == MediaUtils.MediaPlatform.YOUTUBE){
             logger.debug { "Found track's Platform is Youtube!" }
-            session.queue.add(implementTrack(track)!!)
+            session.queue.add(implementTrack(track.url!!)!!)
         }
         else session.queue.add(track)
     }
@@ -246,7 +249,6 @@ class MediaPlayer {
         if(!sessions.containsKey(guildId)) return
         val session = sessions[guildId]!!
         session.connector.channel.createMessage { embeds = mutableListOf(EmbedFrame.error("처리 도중 에러가 발생했습니다",e.message){ footer { text = "관리자에게 문의 바랍니다" } }) }
-        logger.error { e.printStackTrace() }
     }
 
     private suspend fun addRelatedTrack(guildId: Snowflake){
@@ -412,8 +414,7 @@ class MediaPlayer {
         }
         catch (ex: Exception){
             sendError(guildId,ex)
-            logger.error { ex.message }
-            logger.error { ex.stackTraceToString() }
+            logger.error (ex) { ex.message }
             disconnect(guildId)
             return null
         }

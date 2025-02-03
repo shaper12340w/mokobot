@@ -4,6 +4,7 @@ import com.jfposton.ytdlp.YtDlp
 import com.jfposton.ytdlp.YtDlpException
 import com.jfposton.ytdlp.YtDlpRequest
 import com.jfposton.ytdlp.mapper.VideoInfo
+import dev.shaper.rypolixy.config.Configs
 import dev.shaper.rypolixy.config.Properties
 import dev.shaper.rypolixy.logger
 import dev.shaper.rypolixy.utils.io.json.JsonManager
@@ -14,11 +15,7 @@ import kotlinx.coroutines.withTimeout
 object YtDlpManager {
 
     init {
-        when(System.getProperty("os.name")){
-            "Linux"         -> YtDlp.setExecutablePath(Properties.getProperty("program.linux.ytdlp"))
-            "Windows 11"    -> YtDlp.setExecutablePath(Properties.getProperty("program.windows.ytdlp"))
-        }
-
+        YtDlp.setExecutablePath(Configs.PROGRAMS.ytdlp)
     }
 
     enum class DataType(val value: String?){

@@ -48,7 +48,7 @@ sealed class MediaTrack {
     ) :MediaTrack(){
 
         suspend fun toTrack(): Track? {
-            return MediaUtils.implementTrack(this,source) as Track?
+            return MediaUtils.implementTrack(this.url!!,source) as Track?
         }
 
     }

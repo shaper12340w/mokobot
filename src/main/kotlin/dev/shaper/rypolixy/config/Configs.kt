@@ -1,5 +1,6 @@
 package dev.shaper.rypolixy.config
 
+import com.jfposton.ytdlp.YtDlp
 import dev.shaper.rypolixy.logger
 
 object Configs {
@@ -16,6 +17,10 @@ object Configs {
         var discord: String,
         var spotify: String,
         var server: String
+    )
+
+    data class ProgramConfig(
+        var ytdlp: String,
     )
 
     /*
@@ -43,8 +48,16 @@ object Configs {
     )
 
     val ID = IdConfig(
-        discord =   Properties.getProperty("discord.client.id")         ?: warn("client.id"),
-        server  =   Properties.getProperty("discord.guild.id")          ?: warn("guild.id"),
-        spotify =  Properties.getProperty("spotify.id")                 ?: warn("spotify.key"),
+        discord = Properties.getProperty("discord.client.id")         ?: debug("client.id"), //can get from kord
+        server  = Properties.getProperty("discord.guild.id")          ?: debug("guild.id"),  //not essential
+        spotify = Properties.getProperty("spotify.id")                ?: warn("spotify.id"),
+    )
+
+    val PROGRAMS = ProgramConfig(
+        ytdlp   = when(System.getProperty("os.name")){
+            "Linux"         -> Properties.getProperty("program.linux.ytdlp")    ?: warn("program.linux.ytdlp")
+            "Windows 11"    -> Properties.getProperty("program.windows.ytdlp")  ?: warn("program.windows.ytdlp")
+            else            -> warn("program.unknown.ytdlp")
+        }
     )
 }

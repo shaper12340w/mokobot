@@ -5,6 +5,7 @@ import dev.shaper.rypolixy.core.musicplayer.parser.soundcloud.SoundcloudScrapper
 import dev.shaper.rypolixy.core.musicplayer.parser.youtube.YoutubeScrapper
 import dev.shaper.rypolixy.core.musicplayer.utils.MediaRegex
 import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils
+import dev.shaper.rypolixy.logger
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
@@ -41,16 +42,18 @@ object MediaParser {
                 }
             }
             MediaUtils.MediaPlatform.SOUNDCLOUD -> {
-                SoundcloudScrapper.findRelated(track.id, count)?.map {
+                //TODO : extract track ID
+                val regex = Regex("tracks:(\\d+)")
+                val trackId = regex.find(track.id)?.value?.split(":")?.get(1) ?: throw IllegalArgumentException("Unknown track")
+                SoundcloudScrapper.findRelated(trackId, count)?.map {
                     MediaTrack.FlatTrack(
                         title       = it.title,
                         duration    = it.duration.toDuration(DurationUnit.SECONDS),
-                        url         = it.uri,
+                        url         = it.permalinkUrl,
                         source      = track.source,
                         thumbnail   = it.artworkUrl
                     )
                 }
-                null
             }
             else -> throw IllegalArgumentException("Unsupported media platform")
         }

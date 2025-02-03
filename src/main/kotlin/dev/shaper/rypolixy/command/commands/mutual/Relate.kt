@@ -10,9 +10,9 @@ import dev.shaper.rypolixy.utils.discord.ResponseManager.Companion.sendRespond
 import dev.shaper.rypolixy.utils.discord.ResponseType
 
 
-class Related(private val client: Client): MutualCommand {
+class Relate(private val client: Client): MutualCommand {
 
-    override val name           : String                    = "related"
+    override val name           : String                    = "relate"
     override val description    : String                    = "Get related track when play ended"
     override val enabled        : Boolean                   = true
     override val isInteractive  : Boolean                   = true

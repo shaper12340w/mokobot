@@ -72,15 +72,15 @@ class SoundcloudParseInfo {
         @Json(name = "artwork_url")         val artworkUrl: String?,
         @Json(name = "caption")             val caption: String?,
         @Json(name = "commentable")         val commentable: Boolean,
-        @Json(name = "comment_count")       val commentCount: Int,
+        @Json(name = "comment_count")       val commentCount: Int?,
         @Json(name = "created_at")          val createdAt: String,
-        @Json(name = "description")         val description: String,
+        @Json(name = "description")         val description: String?,
         @Json(name = "downloadable")        val downloadable: Boolean,
         @Json(name = "download_count")      val downloadCount: Int,
         @Json(name = "duration")            val duration: Int,
         @Json(name = "full_duration")       val fullDuration: Int,
         @Json(name = "embeddable_by")       val embeddableBy: String,
-        @Json(name = "genre")               val genre: String,
+        @Json(name = "genre")               val genre: String?,
         @Json(name = "has_downloads_left")  val hasDownloadsLeft: Boolean,
         @Json(name = "id")                  val id: Int,
         @Json(name = "kind")                val kind: String,
@@ -107,7 +107,7 @@ class SoundcloudParseInfo {
         @Json(name = "uri")                 val uri: String,
         @Json(name = "urn")                 val urn: String,
         @Json(name = "user_id")             val userId: Int,
-        @Json(name = "visuals")             val visuals: String?,
+        @Json(name = "visuals")             val visuals: Visuals?,
         @Json(name = "waveform_url")        val waveformUrl: String,
         @Json(name = "display_date")        val displayDate: String,
         @Json(name = "media")               val media: Media,
@@ -117,6 +117,13 @@ class SoundcloudParseInfo {
         @Json(name = "monetization_model")  val monetizationModel: String,
         @Json(name = "policy")              val policy: String,
         @Json(name = "user")                val user: User
+    )
+
+    @JsonClass(generateAdapter = true)
+    data class Visuals(
+        @Json(name = "urn")             val urn: String,
+        @Json(name = "enabled")         val enabled: Boolean,
+        @Json(name = "tracking")        val tracking: Boolean?,
     )
 
     /**
