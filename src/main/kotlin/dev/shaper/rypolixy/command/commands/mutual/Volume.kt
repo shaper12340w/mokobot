@@ -55,7 +55,7 @@ class Volume(private val client: Client): MutualCommand {
                     if(volume == null || res?.options?.unparsedArgs?.isNotEmpty() == true){
                         context.sendRespond(
                             ResponseType.NORMAL,
-                            EmbedFrame.error("잘못된 사용법","작성한 옵션 : ${res?.options?.map { it.value  }}\n올바른 사용법 : -t [once/all/none] OR --type=[once/all/none]"){
+                            EmbedFrame.error("잘못된 사용법","작성한 옵션 : ${res?.options?.map { it.value  }}\n올바른 사용법 :volume number OR -v number OR --volume=number"){
                                 footer {
                                     text = "자세한 것은 help 참고"
                                 }

@@ -4,22 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1e345269-ec05-4230-aaee-33753ef44a1d" name="Changes" comment="feat,fix - Add player features">
+    <list default="true" id="1e345269-ec05-4230-aaee-33753ef44a1d" name="Changes" comment="design - Logo and etc">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/Main.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Play.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Play.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Related.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Relate.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/config/Configs.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/config/Configs.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/config/Register.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/config/Register.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/MediaPlayer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/MediaPlayer.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/MediaTrack.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/MediaTrack.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/lavaplayer/LavaPlayerManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/lavaplayer/LavaPlayerManager.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/parser/MediaParser.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/parser/MediaParser.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/parser/soundcloud/SoundcloudParseInfo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/parser/soundcloud/SoundcloudParseInfo.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/parser/soundcloud/SoundcloudScrapper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/parser/soundcloud/SoundcloudScrapper.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/utils/MediaUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/utils/MediaUtils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/ytdlp/YtDlpManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/ytdlp/YtDlpManager.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/logback.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/logback.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,6 +65,7 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -140,7 +127,7 @@
     "Kotlin.OrangepiMainkt.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "#17 on master",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/shaper.pem",
@@ -247,7 +234,8 @@
       <workItem from="1737982437954" duration="78361000" />
       <workItem from="1738321508677" duration="62065000" />
       <workItem from="1738504776915" duration="5304000" />
-      <workItem from="1738553790789" duration="7014000" />
+      <workItem from="1738553790789" duration="9994000" />
+      <workItem from="1738601951444" duration="6723000" />
     </task>
     <task id="LOCAL-00001" summary="Make it Playable">
       <option name="closed" value="true" />
@@ -321,7 +309,23 @@
       <option name="project" value="LOCAL" />
       <updated>1738505824983</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="fix - fix trivial bugs">
+      <option name="closed" value="true" />
+      <created>1738562417043</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1738562417043</updated>
+    </task>
+    <task id="LOCAL-00011" summary="design - Logo and etc">
+      <option name="closed" value="true" />
+      <created>1738612763742</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1738612763742</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -337,7 +341,9 @@
     <MESSAGE value="chore(feat,fix) - Fixed bugs / Add features" />
     <MESSAGE value="feat - Added Regex / Scrapper / volume" />
     <MESSAGE value="feat,fix - Add player features" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat,fix - Add player features" />
+    <MESSAGE value="fix - fix trivial bugs" />
+    <MESSAGE value="design - Logo and etc" />
+    <option name="LAST_COMMIT_MESSAGE" value="design - Logo and etc" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
