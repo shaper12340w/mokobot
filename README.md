@@ -28,9 +28,9 @@ AI LLM 모델을 활용한 기능도 계획 중입니다.
 
 ## 📸 스크린샷 (WIP)
 <p align="center">
-    <img src="./images/screenshot_wip_1.png" width="33%">
-    <img src="./images/screenshot_wip_2.png" width="33%">
-    <img src="./images/screenshot_wip_3.png" width="33%">
+    <img src="./images/screenshot_wip_1.png" width="30%">
+    <img src="./images/screenshot_wip_2.png" width="30%">
+    <img src="./images/screenshot_wip_3.png" width="30%">
 </p>
 
 ## 📦 사용된 기술
