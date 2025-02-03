@@ -1,4 +1,4 @@
-<h1 align="center"><img src="./images/logo.png" width="230px" style="margin-right: 20px;" align="left"/>MokoBot</h1>
+<h1 align="center"><img src="./images/logo.png" width="250px" style="margin-right: 20px;" align="left"/>MokoBot</h1>
 
 <p align="center">
 `` 
