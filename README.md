@@ -40,7 +40,7 @@ AI LLM 모델을 활용한 기능도 계획 중입니다.
 
 ## 📜 라이선스
 ```
-Designed and developed by 2023 shaper12340w
+Designed and developed by 2024 shaper12340w
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
