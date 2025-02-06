@@ -21,13 +21,15 @@ sealed class MediaTrack {
         val id          : String,
         val author      : String,
         var data        : MediaBehavior
-    ) : MediaTrack() {
+    ) : BaseTrack() {
 
         fun hyperlink(): String {
             return "[$title ($duration)]($url)"
         }
 
     }
+
+    abstract class BaseTrack : MediaTrack()
 
     data class Playlist(
         override val title      : String,
@@ -45,7 +47,7 @@ sealed class MediaTrack {
         override val url        : String?,
         override val thumbnail  : String?,
         override val source     : MediaPlatform,
-    ) :MediaTrack(){
+    ) :BaseTrack(){
 
         suspend fun toTrack(): Track? {
             return MediaUtils.implementTrack(this.url!!,source) as Track?

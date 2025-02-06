@@ -1,5 +1,7 @@
 package dev.shaper.rypolixy.command.types
 
+import dev.kord.rest.builder.interaction.ChatInputCreateBuilder
+
 interface CommandStructure{
 
     val name       :String
@@ -7,6 +9,7 @@ interface CommandStructure{
     val description:String
 
     val enabled    :Boolean?
+
 }
 
 /*

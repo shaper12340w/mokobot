@@ -1,8 +1,10 @@
 package dev.shaper.rypolixy.command.types
 
+import dev.kord.common.entity.Snowflake
 import dev.shaper.rypolixy.command.types.TextCommand.ResponseData
 import dev.shaper.rypolixy.config.Client
 import dev.kord.core.event.message.MessageCreateEvent
+import dev.shaper.rypolixy.config.Configs
 import dev.shaper.rypolixy.logger
 import us.jimschubert.kopper.Parser
 
@@ -53,16 +55,17 @@ class CommandManager(private val client: Client) {
 
 
     suspend fun registerInteractionCommand(){
-        interactionCommand.filterValues{ it.enabled ?: false }.forEach { (key,command) ->
-            client.kord.createGlobalChatInputCommand(command.name,command.description){
-                command.setup(this)
-            }
-        }
-
-        mutualCommand.filterValues{ it.enabled ?: false }.filterValues { it.isInteractive } .forEach { (key,command) ->
-            client.kord.createGlobalChatInputCommand(command.name,command.description){
-                command.setup(this)
-            }
+        suspend fun registerGlobal(command: CommandStructure)
+            = client.kord.createGlobalChatInputCommand(command.name,command.description){ (command as InteractionCommand).setup(this) }
+        suspend fun registerGuild(command: CommandStructure,guildId: Snowflake)
+            = client.kord.createGuildChatInputCommand(guildId,command.name,command.description){ (command as InteractionCommand).setup(this) }
+        val interactionCommands = interactionCommand.filterValues{ it.enabled ?: false }
+        val mutualCommands      = mutualCommand.filterValues{ it.enabled ?: false }.filterValues { it.isInteractive }
+        when(Configs.SETTINGS.register){
+            "GLOBAL" -> { mutualCommands.forEach { registerGlobal(it.value) }; interactionCommands.forEach { registerGlobal(it.value) } }
+            "SERVER" -> {}
+            "NONE"   -> Unit
+            else     -> throw Exception("Unknown Register Property")
         }
 
     }

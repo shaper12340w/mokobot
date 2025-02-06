@@ -22,6 +22,7 @@ object Register {
             )
         )
 
+
         client.commandManager.registerInteractionCommand()
     }
 }
