@@ -13,6 +13,7 @@ import dev.shaper.rypolixy.core.musicplayer.lavaplayer.LavaPlayerManager
 import dev.shaper.rypolixy.core.musicplayer.lavaplayer.LavaResult
 import dev.shaper.rypolixy.core.musicplayer.ytdlp.YtDlpInfo
 import dev.shaper.rypolixy.core.musicplayer.ytdlp.YtDlpManager
+import java.util.*
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -77,11 +78,12 @@ class MediaUtils {
     )
 
     data class QueueOptions(
-        var index:          Int = 0,
-        var subIndex:       Int = 0,
-        var position:       Long = 0,
-        var paused:         Boolean = false,
-        var terminated:     Boolean = false,
+        var index:                  Int     = 0,
+        var subIndex:               Int     = 0,
+        var paused:                 Boolean = false,
+        internal var position:      Long    = 0,
+        internal var terminated:    Boolean = false,
+        internal var timer:         Timer   = Timer(),
     )
 
     sealed class SearchType {

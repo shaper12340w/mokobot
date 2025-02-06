@@ -1,6 +1,7 @@
 package dev.shaper.rypolixy.command.types
 
 import dev.kord.core.event.message.MessageCreateEvent
+import dev.kord.rest.builder.interaction.ChatInputCreateBuilder
 import us.jimschubert.kopper.ArgumentCollection
 import us.jimschubert.kopper.Parser
 

@@ -5,6 +5,7 @@ import dev.kord.voice.VoiceConnection
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer
 import dev.kord.voice.AudioProvider
 import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils
+import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils.Companion.implementTrack
 
 data class MediaData @OptIn(KordVoice::class) constructor(
     val queue:          MutableList<MediaTrack>,
@@ -29,17 +30,31 @@ data class MediaData @OptIn(KordVoice::class) constructor(
         }
     }
 
-    fun currentData(): MediaBehavior? {
-        return when(val track = currentTrack()){
-            is MediaTrack.Track -> track.data
-            else                -> null
+    fun currentBaseTrack(): MediaTrack.BaseTrack? {
+        return when(current()){
+            is MediaTrack.Playlist,
+            is MediaTrack.Track     -> currentTrack() as MediaTrack.BaseTrack?
+            is MediaTrack.FlatTrack -> queue[options.index] as MediaTrack.BaseTrack?
+            else -> null
         }
     }
 
     fun update() {
-        currentTrack()?.data = currentData()?.clone()!!
+        currentTrack()?.data = currentTrack()?.data?.clone() ?: return
         player.startTrack(currentTrack()?.data?.audioTrack!!,true)
         currentTrack()?.data?.seek(options.position)
         options.terminated = false
+    }
+
+    suspend fun reload(){
+        val track = currentTrack() ?: return
+        val searchedData = implementTrack(track.url!!,track.source) ?: return
+        when(val current = queue[options.index]){
+            is MediaTrack.FlatTrack,
+            is MediaTrack.Track     -> queue[options.index] = searchedData
+            is MediaTrack.Playlist  -> current.tracks[options.subIndex] = searchedData
+            else                    -> Unit
+        }
+        update()
     }
 }

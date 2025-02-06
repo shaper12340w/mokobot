@@ -41,8 +41,9 @@ dependencies {
     // AudioPlayer
     implementation("dev.arbjerg:lavaplayer:2.2.2")
     implementation("dev.arbjerg:lavadsp:0.7.8")
-    implementation("xyz.gianlu.librespot:librespot-java:1.6.5")
     implementation("com.github.sapher:youtubedl-java:1.1")
+    implementation("xyz.gianlu.librespot:librespot-java:1.6.5")
+    implementation("xyz.gianlu.librespot:librespot-lib:1.6.5")
 
     // JSON/YAML Processing
     implementation("com.fasterxml.jackson.core:jackson-databind:2.17.1")

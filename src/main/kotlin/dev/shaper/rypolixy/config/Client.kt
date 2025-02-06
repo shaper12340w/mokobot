@@ -7,6 +7,7 @@ import dev.kord.gateway.Intent
 import dev.kord.gateway.PrivilegedIntent
 import dev.shaper.rypolixy.command.types.CommandManager
 import dev.shaper.rypolixy.core.musicplayer.MediaPlayer
+import dev.shaper.rypolixy.utils.io.database.Database
 import io.github.oshai.kotlinlogging.KLogger
 
 @OptIn(PrivilegedIntent::class)
@@ -48,7 +49,7 @@ class Client(internal val logger: KLogger, internal val kord:Kord) {
     }
 
     fun registerDatabase() = apply {
-        //Database.initTable()
+        Database.initTable()
     }
 
 }

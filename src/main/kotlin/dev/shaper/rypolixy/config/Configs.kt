@@ -1,6 +1,5 @@
 package dev.shaper.rypolixy.config
 
-import com.jfposton.ytdlp.YtDlp
 import dev.shaper.rypolixy.logger
 
 object Configs {
@@ -21,6 +20,10 @@ object Configs {
 
     data class ProgramConfig(
         var ytdlp: String,
+    )
+
+    data class AppConfig(
+        var register: String,
     )
 
     /*
@@ -59,5 +62,9 @@ object Configs {
             "Windows 11"    -> Properties.getProperty("program.windows.ytdlp")  ?: warn("program.windows.ytdlp")
             else            -> warn("program.unknown.ytdlp")
         }
+    )
+
+    val SETTINGS = AppConfig(
+        register = Properties.getProperty("app.register")               ?: warn("app.register"),
     )
 }
