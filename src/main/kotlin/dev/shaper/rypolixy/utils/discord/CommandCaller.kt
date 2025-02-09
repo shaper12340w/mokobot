@@ -16,7 +16,7 @@ object CommandCaller {
         vararg arguments: String
     ) {
         val manager = client.commandManager
-        val buildArg = build(arguments.asList().drop(1))
+        val buildArg = build(arguments.asList())
         val resData = TextCommand.ResponseData(if(arguments.isNotEmpty()) arguments[0] else "", buildArg)
         when (context) {
             is ChatInputCommandInteractionCreateEvent   -> manager.interactionCommand[name]?.execute(context)

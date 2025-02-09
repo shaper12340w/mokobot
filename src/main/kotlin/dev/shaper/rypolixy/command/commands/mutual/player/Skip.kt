@@ -1,4 +1,4 @@
-package dev.shaper.rypolixy.command.commands.mutual
+package dev.shaper.rypolixy.command.commands.mutual.player
 
 import dev.shaper.rypolixy.command.types.ContextType
 import dev.shaper.rypolixy.command.types.MutualCommand
@@ -9,11 +9,10 @@ import dev.shaper.rypolixy.utils.discord.EmbedFrame
 import dev.shaper.rypolixy.utils.discord.ResponseManager.Companion.sendRespond
 import dev.shaper.rypolixy.utils.discord.ResponseType
 
+class Skip(private val client: Client): MutualCommand {
 
-class Relate(private val client: Client): MutualCommand {
-
-    override val name           : String                    = "relate"
-    override val description    : String                    = "Get related track when play ended"
+    override val name           : String                    = "skip"
+    override val description    : String                    = "Skip to next track"
     override val enabled        : Boolean                   = true
     override val isInteractive  : Boolean                   = true
     override val commandType    : TextCommand.CommandType   = TextCommand.CommandType()
@@ -27,10 +26,12 @@ class Relate(private val client: Client): MutualCommand {
             )
         }
         else {
+            //TODO : Add option to skip Playlist
+            val track = client.lavaClient.next(context.guildId)
             context.sendRespond(
                 ResponseType.NORMAL,
-                EmbedFrame.info(if(client.lavaClient.related(context.guildId)!!) "트랙 추천 활성화됨" else "트랙 추천 비활성화됨",null) {
-                    footer { text = "[!] 현재 Youtube 와 Soundcloud 소스만 지원됩니다" }
+                EmbedFrame.info("다음 곡을 재생합니다",null) {
+                    footer { text = track?.title ?: "" }
                 }
             )
         }

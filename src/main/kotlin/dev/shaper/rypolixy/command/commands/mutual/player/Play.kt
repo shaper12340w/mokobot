@@ -1,4 +1,4 @@
-package dev.shaper.rypolixy.command.commands.mutual
+package dev.shaper.rypolixy.command.commands.mutual.player
 
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Permissions

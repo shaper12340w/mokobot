@@ -17,7 +17,7 @@ import java.sql.SQLTimeoutException
 
 object Database {
 
-    private val logger = KotlinLogging.logger{}
+    private val logger = KotlinLogging.logger {}
 
     private val hikariConfig = HikariConfig().apply {
         jdbcUrl         = Properties.getProperty("db.url")
@@ -38,8 +38,7 @@ object Database {
         CREATE TABLE IF NOT EXISTS guilds (
             id      BIGSERIAL PRIMARY KEY,    -- auto incrementing id
             did     BIGINT NOT NULL,          -- discord id  
-            name    VARCHAR(255) NOT NULL,    -- guild name
-            admin   VARCHAR(25)[] NOT NULL    -- admin list
+            name    VARCHAR(255) NOT NULL    -- guild name
         );
         CREATE TABLE IF NOT EXISTS users (
             id      BIGSERIAL PRIMARY KEY,      -- auto incrementing id
@@ -62,9 +61,12 @@ object Database {
     fun newGuild(guild:Guild) = runBlocking {
         @Language("postgresql")
         val query = """
-            INSERT INTO guilds VALUES (DEFAULT, ?, ? ,?)
+            INSERT INTO guilds VALUES (DEFAULT, ?, ? )
         """.trimIndent()
-        val result = execute(query,guild.id,guild.name,guild.members.filter { it.permissions!!.contains(Permission.Administrator) }.toList().toTypedArray())
+        val result = execute(
+            query,guild.id,         //id
+            guild.name,             //name
+        )
         if(result)
             logger.info { "User ${guild.name} added" }
         else

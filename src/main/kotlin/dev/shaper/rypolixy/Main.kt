@@ -12,10 +12,12 @@ val logger = KotlinLogging.logger {}
 val tokens = Configs.KEY.discord
 
 suspend fun main() {
-    Settings.errorHandler()
-//    SoundcloudScrapper.findRelated("1199207923")!!.forEach {
-//        logger.info { it.title }
-//    }
+
+    Settings.apply {
+        errorHandler()
+        printHandler()
+    }
+
     val kord = Kord(tokens)
     val bot = Client(logger, kord)
     bot.apply {
