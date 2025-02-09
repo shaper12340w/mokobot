@@ -1,11 +1,25 @@
-## Lavaplayer and Audio
- - LinkedBlockingDeque 사용하여 Queue 대기 시스템 만들기
- - ### Youtube 영상 재생을 위한 대책 -> O 
- - 1. Track 검색
- - 2. 동영상 URL 추출
- - 3. YT-DLP 정보 가져오기
- - 4. 정보에서 videoplayback URL 추출
- - 5. ffmpeg로 Opus 인코딩
- - 6. loadItem으로 Track으로 다시 wrapping
- - Timeout 추가 -> O
- - URL REGEX 포팅하기 [MediaRegex.kt](utils/musicplayer/utils/MediaRegex.kt) -> O
+## < MusicPlayer >
+- [ ] Show and Select track when play track trigger
+- [ ] Implement Spotify Player (librespot-java)
+- [ ] Get Player Setting data from Database
+- [ ] Fix player bugs
+  - [x] Playlist -> relate track processing (bug)
+  - [ ] Skip while track terminated.
+- [ ] Add option to skip Playlist
+- [ ] (Optional) Add stack or Deque to preload other tracks.
+- [ ] (Optional) Support other websites
+    - [ ] Play m3u8 stream
+
+## < Bot Management >
+- [ ] List page + button Ineraction
+- [ ] Database management
+    - [ ] Cache / Directly get Database infos
+    - [ ] Process to get Database infos to Other plugins
+- [ ] Bot Management
+    - [ ]  Poll requests
+    - [ ]  Bot announcement
+
+## < Extra Features >
+- [ ] Add Artiva Image generation
+- [ ] Server Management commands
+- [ ] Extra game or Enhancements

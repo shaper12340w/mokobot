@@ -37,6 +37,7 @@ class CommandManager(private val client: Client) {
                     }
                     textCommand[keyword]?.setup(parser)
                     textCommand[keyword]?.execute(event, ResponseData(command, parser.parse(options.toTypedArray())))
+                    logger.info { "[Message][ KEY :$keyword ] (guildId : ${event.guildId} / channelId : ${event.message.channelId})" }
                 }
 
                 if (mutualCommand[keyword] != null){
@@ -46,6 +47,7 @@ class CommandManager(private val client: Client) {
                     }
                     mutualCommand[keyword]?.setup(parser)
                     mutualCommand[keyword]?.execute(ContextType.Message(event), ResponseData(command, parser.parse(options.toTypedArray())))
+                    logger.info { "[Message][ KEY : $keyword ] (guildId : ${event.guildId} / channelId : ${event.message.channelId})" }
                 }
 
             }

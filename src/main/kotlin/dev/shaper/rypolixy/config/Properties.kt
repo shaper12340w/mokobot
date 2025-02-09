@@ -6,9 +6,9 @@ import java.io.FileReader
 import java.util.*
 
 object Properties {
-    private val file        = "src/main/resources/settings.properties"
-    private val tokens      = Properties()
-    private val configFile  = File(file)
+    private const val file          = "src/main/resources/settings.properties"
+    private val tokens              = Properties()
+    private val configFile          = File(file)
 
     init {
         if (!configFile.exists()) {

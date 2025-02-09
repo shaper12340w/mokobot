@@ -6,7 +6,7 @@ object ObjectAnalyzer {
     private val visited = mutableSetOf<Int>() // 순환 참조 방지용 Set
 
     // 객체를 재귀적으로 분석
-    fun analyze(obj: Any?, depth: Int = 0, maxDepth: Int = 5): String {
+    private fun analyze(obj: Any?, depth: Int = 0, maxDepth: Int = 5): String {
         if (obj == null) return "null"
 
         // 깊이 제한

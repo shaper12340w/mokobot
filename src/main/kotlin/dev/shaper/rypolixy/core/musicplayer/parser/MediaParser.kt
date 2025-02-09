@@ -38,7 +38,6 @@ object MediaParser {
                 }
             }
             MediaUtils.MediaPlatform.SOUNDCLOUD -> {
-                //TODO : extract track ID
                 val regex = Regex("tracks:(\\d+)")
                 val trackId = regex.find(id)?.value?.split(":")?.get(1) ?: throw IllegalArgumentException("Unknown track")
                 SoundcloudScrapper.findRelated(trackId, count)?.map {

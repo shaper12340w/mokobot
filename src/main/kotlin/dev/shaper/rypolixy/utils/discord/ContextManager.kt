@@ -1,17 +1,10 @@
 package dev.shaper.rypolixy.utils.discord
 
 import dev.kord.common.entity.Snowflake
-import dev.kord.core.cache.data.UserData
 import dev.kord.core.entity.Guild
 import dev.kord.core.entity.Member
 import dev.kord.core.entity.User
 import dev.shaper.rypolixy.command.types.ContextType
-import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.getMember
-import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.getUser
-import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.kord
-import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.user
-
-
 class ContextManager {
 
     companion object {

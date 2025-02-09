@@ -9,7 +9,6 @@ import dev.kord.core.entity.channel.VoiceChannel
 import dev.kord.voice.AudioFrame
 import dev.shaper.rypolixy.config.Settings
 import java.util.concurrent.ConcurrentHashMap
-import dev.shaper.rypolixy.logger
 import dev.shaper.rypolixy.utils.discord.EmbedFrame
 import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils.Companion.implementTrack
 import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils.Companion.lavaTrackBuilder
@@ -19,11 +18,16 @@ import dev.shaper.rypolixy.core.musicplayer.parser.MediaParser
 import dev.shaper.rypolixy.core.musicplayer.utils.MediaRegex
 import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils
 import dev.shaper.rypolixy.core.musicplayer.ytdlp.YtDlpManager
+import io.github.oshai.kotlinlogging.KotlinLogging
 import java.util.concurrent.TimeUnit
 
 
 @OptIn(KordVoice::class)
 class MediaPlayer {
+
+    companion object {
+        val logger = KotlinLogging.logger {}
+    }
 
     init {
         LavaPlayerManager.registerAllSources()
@@ -250,7 +254,7 @@ class MediaPlayer {
 
         fun playTrack(track: MediaTrack.Track): MediaTrack.Track {
             track.data.status = MediaBehavior.PlayStatus.PLAYING
-            logger.debug { "Play Track : $track" }
+            logger.info { "[Player][$guildId] Playing Track : $track" }
             track.data.playWith(sessions[guildId]!!.player)
             return track
         }
@@ -267,12 +271,12 @@ class MediaPlayer {
             val shuffle     = session.connector.options.shuffle
 
             if (tempQueue.isEmpty()) return null
-            logger.debug { "Playing Next Track.. / Data : $session" }
+            logger.info { "[Player][$guildId] Play Data Check | Data : $session" }
 
             if (session.connector.options.repeat == MediaUtils.PlayerOptions.RepeatType.ONCE){
                 session.update()
                 session.currentTrack()?.data?.playWith(sessions[guildId]!!.player)
-                logger.debug { "Play Track : ${session.currentTrack()}" }
+                logger.info { "[Player][$guildId] Playing Track : ${session.currentTrack()}" }
                 return session.currentTrack()
             }
 

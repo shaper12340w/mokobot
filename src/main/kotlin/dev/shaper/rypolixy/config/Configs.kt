@@ -4,6 +4,13 @@ import dev.shaper.rypolixy.logger
 
 object Configs {
 
+    data class DBConfig(
+        val url: String,
+        val name: String,
+        val username: String,
+        val password: String,
+    )
+
     data class KeyConfig(
         var discord: String,
         var youtube: String,
@@ -41,6 +48,13 @@ object Configs {
         logger.debug { "Missing environment variable: $property" }
         return ""
     }
+
+    val DB = DBConfig(
+        url         = Properties.getProperty("db.url")      ?: warn("db.url"),
+        name        = Properties.getProperty("db.name")     ?: warn("db.name"),
+        username    = Properties.getProperty("db.user")     ?: warn("db.user"),
+        password    = Properties.getProperty("db.password") ?: warn("db.password")
+    )
 
     val KEY = KeyConfig(
         discord     = Properties.getProperty("discord.key")     ?: warn("discord.key"),

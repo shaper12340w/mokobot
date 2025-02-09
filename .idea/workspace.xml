@@ -5,31 +5,30 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1e345269-ec05-4230-aaee-33753ef44a1d" name="Changes" comment="chore,fix - fix bugs, etc">
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Profile.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/MediaEvent.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/LogicalUtils.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/io/database/builder/DatabaseManager.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/io/database/DatabaseQuery.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/io/database/DatabaseResponse.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/Main.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Join.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/player/Join.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Leave.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/player/Leave.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Pause.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/player/Pause.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Play.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/player/Play.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Playing.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/player/Playing.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Relate.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/player/Relate.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Repeat.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/player/Repeat.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Resume.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/player/Resume.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Shuffle.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/player/Shuffle.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Skip.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/player/Skip.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/Volume.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/player/Volume.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/config/Register.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/config/Register.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/config/Settings.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/config/Settings.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/TODO.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/player/Play.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/player/Play.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/types/CommandManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/types/CommandManager.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/config/Client.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/config/Client.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/config/Configs.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/config/Configs.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/config/Properties.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/config/Properties.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/INFO.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/MediaData.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/MediaData.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/MediaPlayer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/MediaPlayer.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/discord/CommandCaller.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/discord/CommandCaller.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/parser/MediaParser.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/parser/MediaParser.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/utils/MediaFilter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/utils/MediaFilter.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/event/EventHandler.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/event/EventHandler.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/ObjectAnalyzer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/ObjectAnalyzer.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/discord/ContextManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/discord/ContextManager.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/discord/TextDesign.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/discord/TextDesign.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/discord/ResponseManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/discord/ResponseManager.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/io/database/Database.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/io/database/Database.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/io/database/DatabaseManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/io/database/DatabaseManager.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/io/database/builder/Create.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/io/database/builder/Insert.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/io/database/builder/Query.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/io/database/builder/SqlBuilder.kt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -83,8 +82,9 @@
       <list>
         <option value="Kotlin Interface" />
         <option value="Kotlin File" />
-        <option value="Kotlin Object" />
         <option value="Kotlin Class" />
+        <option value="Kotlin Object" />
+        <option value="package-info" />
       </list>
     </option>
   </component>
@@ -130,7 +130,7 @@
     <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/dev.arbjerg/lavaplayer/2.2.2/788baf568888d7d99aa3eda95494c51d9cfe76fa/lavaplayer-2.2.2-sources.jar!/com/sedmelluq/discord/lavaplayer/track/info/AudioTrackInfoProvider.java" root0="SKIP_INSPECTION" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
@@ -157,7 +157,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "#19 on master",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/shaper/Documents/librespot-js",
@@ -184,6 +184,7 @@
       <recent name="dev.shaper.rypolixy.utils.cmdflow" />
     </key>
     <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
+      <recent name="dev.shaper.rypolixy.utils.io.database" />
       <recent name="dev.shaper.rypolixy.command.commands.mutual.player" />
       <recent name="dev.shaper.rypolixy.utils.musicplayer.parser.youtube" />
       <recent name="dev.shaper.rypolixy.utils.musicplayer.utils" />
@@ -396,7 +397,15 @@
       <option name="project" value="LOCAL" />
       <updated>1738872817845</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="chore,fix - fix bugs, etc">
+      <option name="closed" value="true" />
+      <created>1739078887182</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1739078887182</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

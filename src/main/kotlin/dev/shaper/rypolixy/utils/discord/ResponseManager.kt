@@ -34,11 +34,11 @@ class ResponseManager{
                 is MessageInteractionResponseBehavior           -> return ReturnType.Interaction(this.edit(block))
                 is DeferredMessageInteractionResponseBehavior   -> {
                     if(this is ChatInputCommandInteractionCreateEvent){
-                        when(responseType) {
-                            ResponseType.NORMAL     -> return ReturnType.Interaction(this.respond(block))
-                            ResponseType.EPHEMERAL  -> return ReturnType.Interaction(this.interaction.respondEphemeral(block))
-                            ResponseType.NO_REPLY   -> return ReturnType.Message(this.interaction.channel.createMessage(block))
-                            else -> return ReturnType.Interaction(this.respond(block))
+                        return when(responseType) {
+                            ResponseType.NORMAL     -> ReturnType.Interaction(this.respond(block))
+                            ResponseType.EPHEMERAL  -> ReturnType.Interaction(this.interaction.respondEphemeral(block))
+                            ResponseType.NO_REPLY   -> ReturnType.Message(this.interaction.channel.createMessage(block))
+                            else -> ReturnType.Interaction(this.respond(block))
                         }
                     }
                     return ReturnType.Interaction(this.respond(block))
@@ -69,18 +69,18 @@ class ResponseManager{
         suspend fun ContextType.sendRespond(responseType: ResponseType? = ResponseType.NORMAL, block: MessageBuilder.()->Unit): ReturnType<InteractionResponseBehavior,Message>? {
             when(this){
                 is ContextType.Message -> {
-                    when(responseType){
-                        ResponseType.NORMAL     -> return this.value.message.sendRespond(block)
-                        ResponseType.NO_REPLY   -> return ReturnType.Message(this.value.message.channel.createMessage{ block() })
-                        else                    -> return this.value.message.sendRespond(block)
+                    return when(responseType){
+                        ResponseType.NORMAL     -> this.value.message.sendRespond(block)
+                        ResponseType.NO_REPLY   -> ReturnType.Message(this.value.message.channel.createMessage{ block() })
+                        else                    -> this.value.message.sendRespond(block)
                     }
                 }
                 is ContextType.Interaction -> {
-                    when(responseType){
-                        ResponseType.NORMAL     -> return ReturnType.Interaction(this.value.interaction.respondPublic(block))
-                        ResponseType.EPHEMERAL  -> return ReturnType.Interaction(this.value.interaction.respondEphemeral(block))
-                        ResponseType.NO_REPLY   -> return ReturnType.Message(this.value.interaction.channel.createMessage { block() })
-                        else                    -> return ReturnType.Interaction(this.value.interaction.respondPublic(block))
+                    return when(responseType){
+                        ResponseType.NORMAL     -> ReturnType.Interaction(this.value.interaction.respondPublic(block))
+                        ResponseType.EPHEMERAL  -> ReturnType.Interaction(this.value.interaction.respondEphemeral(block))
+                        ResponseType.NO_REPLY   -> ReturnType.Message(this.value.interaction.channel.createMessage { block() })
+                        else                    -> ReturnType.Interaction(this.value.interaction.respondPublic(block))
                     }
                 }
             }
