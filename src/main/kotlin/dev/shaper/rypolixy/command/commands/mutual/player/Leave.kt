@@ -1,4 +1,4 @@
-package dev.shaper.rypolixy.command.commands.mutual
+package dev.shaper.rypolixy.command.commands.mutual.player
 
 import dev.kord.core.entity.channel.VoiceChannel
 import dev.kord.rest.builder.message.EmbedBuilder

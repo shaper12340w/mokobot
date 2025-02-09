@@ -1,4 +1,4 @@
-package dev.shaper.rypolixy.command.commands.mutual
+package dev.shaper.rypolixy.command.commands.mutual.player
 
 import dev.shaper.rypolixy.command.types.ContextType
 import dev.shaper.rypolixy.command.types.MutualCommand

@@ -9,7 +9,7 @@ object TextDesign {
         }
         fun EmbedBuilder.description(text:String?){
             if(text != null)
-                this.description = "```\n$text\n```"
+                this.description = if(text.isBlank()) "" else "```\n$text\n```"
         }
     }
 }

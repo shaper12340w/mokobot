@@ -1,8 +1,15 @@
 package dev.shaper.rypolixy.utils.discord
 
+import dev.kord.common.entity.Snowflake
+import dev.kord.core.cache.data.UserData
 import dev.kord.core.entity.Guild
 import dev.kord.core.entity.Member
+import dev.kord.core.entity.User
 import dev.shaper.rypolixy.command.types.ContextType
+import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.getMember
+import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.getUser
+import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.kord
+import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.user
 
 
 class ContextManager {
@@ -10,33 +17,34 @@ class ContextManager {
     companion object {
         val ContextType.context
             get() = when (this) {
-                is ContextType.Interaction -> this.value.interaction
-                is ContextType.Message -> this.value.message
+                is ContextType.Interaction  -> this.value.interaction
+                is ContextType.Message      -> this.value.message
             }
         val ContextType.channel
             get() = when (this) {
-                is ContextType.Interaction -> this.value.interaction.channel
-                is ContextType.Message -> this.value.message.channel
+                is ContextType.Interaction  -> this.value.interaction.channel
+                is ContextType.Message      -> this.value.message.channel
             }
         val ContextType.channelId
             get() = when (this) {
-                is ContextType.Interaction -> this.value.interaction.channelId
-                is ContextType.Message -> this.value.message.channelId
+                is ContextType.Interaction  -> this.value.interaction.channelId
+                is ContextType.Message      -> this.value.message.channelId
             }
         val ContextType.id
             get() = when (this) {
-                is ContextType.Interaction -> this.value.interaction.id
-                is ContextType.Message -> this.value.message.id
+                is ContextType.Interaction  -> this.value.interaction.id
+                is ContextType.Message      -> this.value.message.id
             }
         val ContextType.guildId
             get() = when (this) {
-                is ContextType.Interaction -> this.value.interaction.data.guildId.value!!
-                is ContextType.Message -> this.value.message.data.guildId.value!!
+                is ContextType.Interaction  -> this.value.interaction.data.guildId.value!!
+                is ContextType.Message      -> this.value.message.data.guildId.value!!
             }
+        @Deprecated("Use getUser() instead", ReplaceWith("getUser()"))
         val ContextType.user
             get() = when (this) {
-                is ContextType.Interaction -> this.value.interaction.data.user.value
-                is ContextType.Message -> this.value.message.data.author
+                is ContextType.Interaction  -> this.value.interaction.data.user.value
+                is ContextType.Message      -> this.value.message.data.author
             }
         @Deprecated("Use getMember() instead", ReplaceWith("getMember()"))
         val ContextType.member
@@ -68,20 +76,19 @@ class ContextManager {
                 is ContextType.Interaction -> this.value.interaction.applicationId
                 is ContextType.Message -> this.value.message.applicationId
             }
-        suspend fun ContextType.getGuild(): Guild {
+        suspend fun ContextType.getGuild(id:Snowflake = guildId): Guild {
             return when (this){
-                is ContextType.Interaction -> this.value.kord.getGuild(guildId)
-                is ContextType.Message -> this.value.message.kord.getGuild(guildId)
+                is ContextType.Interaction  -> this.value.kord.getGuild(id)
+                is ContextType.Message      -> this.value.message.kord.getGuild(id)
             }
         }
 
-        suspend fun ContextType.getMember(): Member {
-            return when (this){
-                is ContextType.Interaction -> this.getGuild().getMember(this.user!!.id)
-                is ContextType.Message -> this.getGuild().getMember(this.user!!.id)
-            }
-        }
+        suspend fun ContextType.getUser(id:Snowflake = this.user!!.id): User
+            = this.kord.getUser(id)!!
+
+        suspend fun ContextType.getMember(id:Snowflake = this.user!!.id): Member
+            = this.getGuild().getMember(id)
+
     }
-
 
 }

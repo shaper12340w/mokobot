@@ -1,4 +1,4 @@
-package dev.shaper.rypolixy.command.commands.mutual
+package dev.shaper.rypolixy.command.commands.mutual.player
 
 import dev.kord.rest.builder.interaction.ChatInputCreateBuilder
 import dev.kord.rest.builder.interaction.string

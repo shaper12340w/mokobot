@@ -1,4 +1,4 @@
-package dev.shaper.rypolixy.command.commands.mutual
+package dev.shaper.rypolixy.command.commands.mutual.player
 
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Permissions
@@ -19,6 +19,8 @@ import dev.shaper.rypolixy.utils.discord.EmbedFrame
 import dev.shaper.rypolixy.utils.discord.ResponseManager.Companion.sendRespond
 import dev.shaper.rypolixy.utils.discord.ResponseType
 import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils
+import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.interaction
+import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.message
 import us.jimschubert.kopper.Parser
 
 
@@ -47,7 +49,11 @@ class Join(private val client: Client): MutualCommand {
 
     override suspend fun execute(context: ContextType, res: TextCommand.ResponseData?) {
 
-        suspend fun errorMessage(text:String) = context.sendRespond(ResponseType.NORMAL,EmbedFrame.error(text,null))
+        val silentFlag = res?.options?.flag("silent") == true
+        suspend fun errorMessage(text:String) {
+            val type = if (silentFlag) ResponseType.NO_REPLY else ResponseType.NORMAL
+            context.sendRespond(type,EmbedFrame.error(text,null))
+        }
         try {
             val state = context.getMember().getVoiceState()
             if (state.getChannelOrNull() == null) {
@@ -67,9 +73,9 @@ class Join(private val client: Client): MutualCommand {
                             options = MediaUtils.PlayerOptions()
                         )
                     )
-                    if (res?.options?.flag("silent") == true ||
+                    if (!silentFlag ||
                         (context is ContextType.Interaction
-                                && context.value.interaction.command.booleans["silent"] == true)
+                                && context.value.interaction.command.booleans["silent"] == false)
                     ) {
                         context.sendRespond(ResponseType.NORMAL, EmbedBuilder().apply {
                             title = "🔊 Join"
@@ -82,7 +88,9 @@ class Join(private val client: Client): MutualCommand {
                 }
             }
         }
-        catch (ex: Exception) { errorMessage("음성 채널에 입장해주세요") }
+        catch (ex: Exception) {
+            errorMessage("음성 채널에 입장해주세요")
+        }
 
     }
 

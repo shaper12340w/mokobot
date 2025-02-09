@@ -1,14 +1,13 @@
 package dev.shaper.rypolixy.core.musicplayer
 
-import com.sedmelluq.discord.lavaplayer.player.event.*
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
-import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason
 import dev.kord.common.annotation.KordVoice
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.connect
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.entity.channel.VoiceChannel
 import dev.kord.voice.AudioFrame
+import dev.shaper.rypolixy.config.Settings
 import java.util.concurrent.ConcurrentHashMap
 import dev.shaper.rypolixy.logger
 import dev.shaper.rypolixy.utils.discord.EmbedFrame
@@ -20,9 +19,6 @@ import dev.shaper.rypolixy.core.musicplayer.parser.MediaParser
 import dev.shaper.rypolixy.core.musicplayer.utils.MediaRegex
 import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils
 import dev.shaper.rypolixy.core.musicplayer.ytdlp.YtDlpManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
 
@@ -54,55 +50,6 @@ class MediaPlayer {
         }
         val provider    = connection.audioProvider
 
-        player.addListener {
-            CoroutineScope(Dispatchers.IO).launch {
-                when (it) {
-                    is TrackStuckEvent      -> {
-                        logger.warn { "Track is Stuck" }
-                    }
-                    is TrackEndEvent        -> {
-                        logger.debug { it.endReason }
-                        val session = sessions[guildId] ?: return@launch
-                        if(it.endReason == AudioTrackEndReason.CLEANUP && session.options.paused){
-                            logger.warn { "Track is terminated! "}
-                            session.options.terminated = true
-                        }
-                        else{
-                            session.currentTrack()?.data?.status = MediaBehavior.PlayStatus.END
-                            playNext(guildId)
-                        }
-
-                    }
-                    is TrackStartEvent      -> {
-                        val session = sessions[guildId] ?: return@launch
-                        session.player.volume = session.connector.options.volume.toInt()
-                    } //Todo : Add stack or deque to preload others
-                    is TrackExceptionEvent  -> {
-                        sendError(guildId,it.exception)
-                        logger.error { it.exception }
-                        disconnect(guildId)
-                    }
-                    is PlayerPauseEvent     -> {
-                        val session = sessions[guildId] ?: return@launch
-                        session.options.position    = session.currentTrack()?.data?.audioTrack?.position ?: 0
-                        session.options.paused      = true
-                    }
-                    is PlayerResumeEvent    -> {
-                        val session = sessions[guildId] ?: return@launch
-                        if(session.options.terminated){
-                            try { session.update() } //Try reload from saved url
-                            catch (e:Exception){
-                                try { session.reload() }  //Try re-search and reload
-                                catch (ex:Exception) { throw ex } //else fuc stop it
-                            }
-                        }
-                        session.options.paused = false
-                    }
-
-                }
-            }
-        }
-
         sessions[guildId] = MediaData(
             queue,
             player,
@@ -111,6 +58,8 @@ class MediaPlayer {
             options,
             MediaUtils.QueueOptions()
         )
+
+        player.addListener(MediaEvent(this,guildId))
     }
 
     suspend fun disconnect(guildId: Snowflake) {
@@ -251,10 +200,11 @@ class MediaPlayer {
         session.player.volume = volume
     }
 
-    private suspend fun sendError(guildId: Snowflake,e: Exception){
+    suspend fun sendError(guildId: Snowflake,e: Exception){
         if(!sessions.containsKey(guildId)) return
         val session = sessions[guildId]!!
         session.connector.channel.createMessage { embeds = mutableListOf(EmbedFrame.error("처리 도중 에러가 발생했습니다",e.message){ footer { text = "관리자에게 문의 바랍니다" } }) }
+        Settings.printException(Thread.currentThread(),e)
     }
 
     private suspend fun relateTrack(guildId: Snowflake){
@@ -296,7 +246,7 @@ class MediaPlayer {
         }
     }
 
-    private suspend fun playNext(guildId: Snowflake): MediaTrack.Track? {
+    suspend fun playNext(guildId: Snowflake): MediaTrack.Track? {
 
         fun playTrack(track: MediaTrack.Track): MediaTrack.Track {
             track.data.status = MediaBehavior.PlayStatus.PLAYING
@@ -425,7 +375,6 @@ class MediaPlayer {
         }
         catch (ex: Exception){
             sendError(guildId,ex)
-            logger.error (ex) { ex.message }
             disconnect(guildId)
             return null
         }
