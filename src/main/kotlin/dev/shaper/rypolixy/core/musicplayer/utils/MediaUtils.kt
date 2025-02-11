@@ -101,6 +101,15 @@ class MediaUtils {
 
     companion object{
 
+        fun checkPlatform(platform: String) : MediaPlatform {
+            return when(platform){
+                "YOUTUBE"       -> MediaPlatform.YOUTUBE
+                "SOUNDCLOUD"    -> MediaPlatform.SOUNDCLOUD
+                "SPOTIFY"       -> MediaPlatform.SPOTIFY
+                else            -> MediaPlatform.UNKNOWN
+            }
+        }
+
         /**
          * Convert MediaTrack(with no specific data) to implement it.
          * */

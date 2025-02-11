@@ -10,7 +10,8 @@ import dev.shaper.rypolixy.config.Configs
 import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils
 import java.sql.Connection
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.intellij.lang.annotations.Language
+import org.json.JSONObject
+import java.math.BigInteger
 import java.sql.SQLException
 import java.sql.SQLTimeoutException
 import java.util.UUID;
@@ -31,15 +32,31 @@ object Database {
 
     fun getConnection(): Connection = dataSource.connection
 
-    private fun handleMessage(type: String, name: String, response: DatabaseResponse.RawResponse){
+    private fun handleMessage(
+        type: DatabaseQueryManager.QueryType,
+        entity: DatabaseQueryManager.Entity,
+        response: DatabaseResponse.RawResponse
+    ){
+        val typeName = when (type) {
+            DatabaseQueryManager.QueryType.INSERT -> "INIT"
+            DatabaseQueryManager.QueryType.SELECT_INFO -> "INFO"
+            DatabaseQueryManager.QueryType.SELECT_UUID -> "UUID"
+            DatabaseQueryManager.QueryType.UPDATE -> "UPDATE"
+        }
+        val entityName = when (entity) {
+            DatabaseQueryManager.Entity.GUILD       -> "GUILD"
+            DatabaseQueryManager.Entity.COMMAND     -> "COMMAND"
+            DatabaseQueryManager.Entity.USER        -> "USER"
+            DatabaseQueryManager.Entity.PLAYER      -> "PLAYER"
+            DatabaseQueryManager.Entity.STATUS      -> "STATUS"
+        }
         if(response.status == DatabaseResponse.DatabaseStatus.SUCCESS)
-            logger.info { "[Database][$type] : Successfully add $name" }
+            logger.info { "[Database][$typeName] : Successfully executed $entityName" }
         else
-            logger.warn { "[Database][$type] : Cannot add $name" }
+            logger.warn { "[Database][$typeName] : Cannot execute $entityName" }
     }
 
     fun checkOwner(){
-
         val result = execute(DatabaseQuery.ownerQuery,Configs.DB.name)
         when(result.status){
             DatabaseResponse.DatabaseStatus.SUCCESS -> {
@@ -63,32 +80,36 @@ object Database {
             }
         }
     }
-
     fun initTable() {
         logger.info { "[Database] : Init tables" }
-        val result = execute(DatabaseQuery.initQuery)
-        handleMessage("Table","ALL",result)
+        execute(DatabaseQuery.initQuery)
     }
 
     fun initGuild(guild:Guild) {
+        val type    = DatabaseQueryManager.QueryType.INSERT
+        val entity  = DatabaseQueryManager.Entity.GUILD
+        val query   = DatabaseQueryManager.generateQuery(entity, type)
         val result = execute(
-            DatabaseQuery.guildQuery(DatabaseQuery.QueryType.INSERT),
+            query,
             newUUID(),
             guild.id.toString().toBigInteger(),               //id
             guild.name,                                     //name
         )
-        handleMessage("Guild",guild.name,result)
+        handleMessage(type,entity,result)
     }
-
     fun getGuild(guildId:UUID):DatabaseResponse.GuildResponse? {
 
-        val result = execute(DatabaseQuery.guildQuery(DatabaseQuery.QueryType.SELECT_INFO), guildId)
+        val type    = DatabaseQueryManager.QueryType.SELECT_INFO
+        val entity  = DatabaseQueryManager.Entity.GUILD
+        val query   = DatabaseQueryManager.generateQuery(entity, type)
+        val result = execute(query, guildId)
         return when (result.status) {
             DatabaseResponse.DatabaseStatus.SUCCESS -> {
                 if(result.data == null || result.data.size == 0)
                     throw SQLException("[Database] not found")
                 else
                 {
+                    handleMessage(type,entity,result)
                     val guildData = result.data[0]
                     DatabaseResponse.GuildResponse(
                         guildData["guild_id"] as UUID,
@@ -105,16 +126,19 @@ object Database {
             }
         }
     }
-
     fun getGuildUUID(guildId:Snowflake):UUID? {
 
-        val result = execute(DatabaseQuery.guildQuery(DatabaseQuery.QueryType.SELECT_UUID), guildId.toString().toBigInteger())
+        val type    = DatabaseQueryManager.QueryType.SELECT_UUID
+        val entity  = DatabaseQueryManager.Entity.GUILD
+        val query   = DatabaseQueryManager.generateQuery(entity, type)
+        val result = execute(query, guildId.toString().toBigInteger())
         return when (result.status) {
             DatabaseResponse.DatabaseStatus.SUCCESS -> {
                 if(result.data == null || result.data.size == 0)
                     null
                 else
                 {
+                    handleMessage(type,entity,result)
                     val guildData = result.data[0]
                     guildData["guild_id"] as UUID
                 }
@@ -125,28 +149,39 @@ object Database {
             }
         }
     }
+    fun setGuild(guildId:UUID,data: DatabaseResponse.GuildResponse){
+        val type    = DatabaseQueryManager.QueryType.UPDATE
+        val entity  = DatabaseQueryManager.Entity.GUILD
+        val query   = DatabaseQueryManager.generateQuery(entity, type)
+        val result  = execute(query, data.name, data.users, data.allowedCommands,data.id)
+        handleMessage(type,entity,result)
+    }
 
     fun initUser(user:User) {
-
+        val type    = DatabaseQueryManager.QueryType.INSERT
+        val entity  = DatabaseQueryManager.Entity.USER
+        val query   = DatabaseQueryManager.generateQuery(entity, type)
         val result = execute(
-            DatabaseQuery.userQuery(DatabaseQuery.QueryType.INSERT),
+            query,
             newUUID(),
             user.id.toString().toBigInteger(),
             user.username,
             "KR1"
         )
-       handleMessage("User",user.username,result)
+        handleMessage(type,entity,result)
     }
-
     fun getUser(userId:UUID):DatabaseResponse.UserResponse? {
-
-        val result = execute(DatabaseQuery.userQuery(DatabaseQuery.QueryType.SELECT_INFO), userId)
+        val type    = DatabaseQueryManager.QueryType.SELECT_INFO
+        val entity  = DatabaseQueryManager.Entity.USER
+        val query   = DatabaseQueryManager.generateQuery(entity, type)
+        val result = execute(query, userId)
         return when (result.status) {
             DatabaseResponse.DatabaseStatus.SUCCESS -> {
                 if(result.data == null || result.data.size == 0)
                     throw SQLException("[Database] not found")
                 else
                 {
+                    handleMessage(type,entity,result)
                     val userData = result.data[0]
                     DatabaseResponse.UserResponse(
                         userData["user_id"] as UUID,
@@ -164,15 +199,18 @@ object Database {
             }
         }
     }
-
     fun getUserUUID(userId:Snowflake):UUID? {
-        val result = execute(DatabaseQuery.userQuery(DatabaseQuery.QueryType.SELECT_UUID), userId.toString().toBigInteger())
+        val type    = DatabaseQueryManager.QueryType.SELECT_UUID
+        val entity  = DatabaseQueryManager.Entity.USER
+        val query   = DatabaseQueryManager.generateQuery(entity, type)
+        val result = execute(query, userId.toString().toBigInteger())
         return when (result.status) {
             DatabaseResponse.DatabaseStatus.SUCCESS -> {
                 if(result.data == null || result.data.size == 0)
                     null
                 else
                 {
+                    handleMessage(type,entity,result)
                     val guildData = result.data[0]
                     guildData["user_id"] as UUID
                 }
@@ -183,34 +221,124 @@ object Database {
             }
         }
     }
-
-    fun initPlayer(id:UUID,volume:Int,lyrics:Boolean,platform:MediaUtils.MediaPlatform) {
-        val result = execute(DatabaseQuery.playerQuery(DatabaseQuery.QueryType.INSERT),id,volume,lyrics,platform.toString())
-        handleMessage("Player",id.toString(),result)
+    fun setUser(userId: UUID,data:DatabaseResponse.UserResponse){
+        val type    = DatabaseQueryManager.QueryType.UPDATE
+        val entity  = DatabaseQueryManager.Entity.USER
+        val query   = DatabaseQueryManager.generateQuery(entity, type)
+        val result  = execute(query, data.name, data.email, data.language, data.permissions, data.id)
+        handleMessage(type,entity,result)
     }
 
+    fun initPlayer(userId:UUID,volume:Int,lyrics:Boolean,platform:MediaUtils.MediaPlatform) {
+        val type    = DatabaseQueryManager.QueryType.INSERT
+        val entity  = DatabaseQueryManager.Entity.PLAYER
+        val query   = DatabaseQueryManager.generateQuery(entity, type)
+        val result = execute(query,userId,volume,lyrics,platform.toString())
+        handleMessage(type,entity,result)
+    }
+    fun getPlayer(userId:UUID):DatabaseResponse.PlayerResponse? {
+        val type    = DatabaseQueryManager.QueryType.SELECT_INFO
+        val entity  = DatabaseQueryManager.Entity.PLAYER
+        val query   = DatabaseQueryManager.generateQuery(entity, type)
+        val result  = execute(query, userId)
+        return when (result.status) {
+            DatabaseResponse.DatabaseStatus.SUCCESS -> {
+                if(result.data == null || result.data.size == 0)
+                    throw SQLException("[Database] not found")
+                else
+                {
+                    handleMessage(type,entity,result)
+                    val playerData = result.data[0]
+                    DatabaseResponse.PlayerResponse(
+                        playerData["user_id"] as UUID,
+                        playerData["volume"] as Int,
+                        playerData["lyrics"] as Boolean,
+                        MediaUtils.checkPlatform(playerData["default_platform"] as String)
+                    )
+                }
+            }
+            DatabaseResponse.DatabaseStatus.FAILURE -> {
+                logger.error { result.message }
+                null
+            }
+        }
+    }
+    fun setPlayer(userId:UUID,data:DatabaseResponse.PlayerResponse){
+        val type    = DatabaseQueryManager.QueryType.UPDATE
+        val entity  = DatabaseQueryManager.Entity.PLAYER
+        val query   = DatabaseQueryManager.generateQuery(entity, type)
+        val result  = execute(query,data.volume,data.lyrics,data.platform,data.userId)
+        handleMessage(type,entity,result)
+    }
+
+    //TODO : Add process status and commands
     fun initStatus(id:UUID){
-        @Language("postgresql")
-        val query = """
-            INSERT INTO 
-                status
-            VALUES 
-                (?,?,?,?)
-        """.trimIndent()
+        val type    = DatabaseQueryManager.QueryType.INSERT
+        val entity  = DatabaseQueryManager.Entity.STATUS
+        val query   = DatabaseQueryManager.generateQuery(entity, type)
         val result = execute(query,id,0,100,null)
-        handleMessage("Status",id.toString(),result)
+        handleMessage(type,entity,result)
+    }
+    fun getStatus(userId:UUID):DatabaseResponse.StatusResponse? {
+        val type    = DatabaseQueryManager.QueryType.SELECT_INFO
+        val entity  = DatabaseQueryManager.Entity.STATUS
+        val query   = DatabaseQueryManager.generateQuery(entity, type)
+        val result  = execute(query, userId)
+        return when (result.status) {
+            DatabaseResponse.DatabaseStatus.SUCCESS -> {
+                if(result.data == null || result.data.size == 0)
+                    throw SQLException("[Database] not found")
+                else
+                {
+                    handleMessage(type,entity,result)
+                    val statusData = result.data[0]
+                    DatabaseResponse.StatusResponse(
+                        statusData["user_id"] as UUID,
+                        statusData["attend"] as Int,
+                        statusData["point"] as BigInteger,
+                        statusData["game"] as JSONObject,
+                    )
+                }
+            }
+            DatabaseResponse.DatabaseStatus.FAILURE -> {
+                logger.error { result.message }
+                null
+            }
+        }
     }
 
     fun initCommand(command:CommandStructure,pkg:String){
-        @Language("postgresql")
-        val query = """
-            INSERT INTO 
-                commands
-            VALUES 
-                (?,?,?)
-        """.trimIndent()
+        val type    = DatabaseQueryManager.QueryType.INSERT
+        val entity  = DatabaseQueryManager.Entity.COMMAND
+        val query   = DatabaseQueryManager.generateQuery(entity, type)
         val result = execute(query, newUUID(),command.name,pkg)
-        handleMessage("Command",command.name,result)
+        handleMessage(type,entity,result)
+    }
+    fun getCommand(commandID: UUID):DatabaseResponse.CommandResponse? {
+        val type    = DatabaseQueryManager.QueryType.SELECT_INFO
+        val entity  = DatabaseQueryManager.Entity.COMMAND
+        val query   = DatabaseQueryManager.generateQuery(entity, type)
+        val result  = execute(query, userId)
+        return when (result.status) {
+            DatabaseResponse.DatabaseStatus.SUCCESS -> {
+                if(result.data == null || result.data.size == 0)
+                    throw SQLException("[Database] not found")
+                else
+                {
+                    handleMessage(type,entity,result)
+                    val commandData = result.data[0]
+                    DatabaseResponse.CommandResponse(
+                        commandData["command_id"] as UUID,
+                        commandData["command_name"] as String,
+                        commandData["class"] as String
+                    )
+                }
+            }
+            DatabaseResponse.DatabaseStatus.FAILURE -> {
+                logger.error { result.message }
+                null
+            }
+        }
     }
 
     fun newUUID():UUID = UUID.randomUUID();

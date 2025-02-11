@@ -2,6 +2,8 @@ package dev.shaper.rypolixy.utils.io.database
 
 import dev.kord.common.entity.Snowflake
 import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils
+import org.json.JSONObject
+import java.math.BigInteger
 import java.util.UUID
 
 class DatabaseResponse {
@@ -40,6 +42,14 @@ class DatabaseResponse {
         val commandId:UUID,
         val commandName:String,
         val commandClass:String,
+    )
+
+    data class StatusResponse(
+        val userId:UUID,
+        val attendanceCount:Int,
+        val points:BigInteger,
+        val gameValue: JSONObject,
+        //TODO : Add process to handle game Value
     )
 
     enum class DatabaseStatus {

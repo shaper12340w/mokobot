@@ -1,3 +1,5 @@
+package dev.shaper.rypolixy.utils.structure
+
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.memberProperties
 

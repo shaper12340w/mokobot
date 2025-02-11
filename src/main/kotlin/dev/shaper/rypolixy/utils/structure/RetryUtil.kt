@@ -1,9 +1,9 @@
-package dev.shaper.rypolixy.utils
+package dev.shaper.rypolixy.utils.structure
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-object LogicalUtils {
+object RetryUtil {
 
     suspend fun <T> retry(
         retries: Int = 3,
