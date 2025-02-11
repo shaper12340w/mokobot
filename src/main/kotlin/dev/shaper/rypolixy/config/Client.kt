@@ -17,11 +17,11 @@ class Client(internal val logger: KLogger, internal val kord:Kord) {
     val lavaClient: MediaPlayer = MediaPlayer()
 
     init {
-        logger.info {"Bot started"}
+        logger.info {"[Client] : Bot started"}
     }
 
     suspend fun login() {
-        logger.info { "Logging in" }
+        logger.info { "[Client] : Logging in" }
         kord.login {
             @OptIn(PrivilegedIntent::class)
             intents {
@@ -42,6 +42,8 @@ class Client(internal val logger: KLogger, internal val kord:Kord) {
         kord.on(kord,handler::onReadyEvent)
         kord.on(kord,handler::onMessageEvent)
         kord.on(kord,handler::onCommandInteraction)
+        kord.on(kord,handler::onGuildCreate)
+        kord.on(kord,handler::onMemberJoin)
     }
 
     suspend fun registerCommands() = apply {
@@ -49,6 +51,7 @@ class Client(internal val logger: KLogger, internal val kord:Kord) {
     }
 
     fun registerDatabase() = apply {
+        Database.checkOwner()
         Database.initTable()
     }
 

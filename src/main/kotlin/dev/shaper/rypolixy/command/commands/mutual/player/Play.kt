@@ -72,10 +72,9 @@ class Play(private val client: Client): MutualCommand {
             }
 
         }
-        if(findPlayer == null){
+        if(findPlayer == null)
             CommandCaller.call(client,"join",context,"silent")
-            logger.info { "Called Joined command" }
-        }
+
 
         val searchedTrack: MediaUtils.SearchResult? = when(context){
             is ContextType.Message -> {

@@ -33,7 +33,7 @@ data class MediaData @OptIn(KordVoice::class) constructor(
     fun currentBaseTrack(): MediaTrack.BaseTrack? {
         return when(current()){
             is MediaTrack.Playlist,
-            is MediaTrack.Track     -> currentTrack() as MediaTrack.BaseTrack?
+            is MediaTrack.Track     -> currentTrack()
             is MediaTrack.FlatTrack -> queue[options.index] as MediaTrack.BaseTrack?
             else -> null
         }

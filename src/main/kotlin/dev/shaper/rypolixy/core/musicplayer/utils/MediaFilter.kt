@@ -34,7 +34,7 @@ class MediaFilter {
 
     data class Band(val band: Int, val gain: Float)
 
-    class EqualizerConfig(val bands: List<Band>) : FilterConfig() {
+    class EqualizerConfig(private val bands: List<Band>) : FilterConfig() {
         private val array = FloatArray(LavaplayerEqualizer.BAND_COUNT) { 0.0f }
 
         init {
@@ -49,10 +49,10 @@ class MediaFilter {
     }
 
     class KaraokeConfig(
-        val level: Float = 1.0f,
-        val monoLevel: Float = 1.0f,
-        val filterBand: Float = 220.0f,
-        val filterWidth: Float = 100.0f
+        private val level: Float = 1.0f,
+        private val monoLevel: Float = 1.0f,
+        private val filterBand: Float = 220.0f,
+        private val filterWidth: Float = 100.0f
     ) : FilterConfig() {
         override fun build(format: AudioDataFormat, output: FloatPcmAudioFilter): FloatPcmAudioFilter {
             return KaraokePcmAudioFilter(output, format.channelCount, format.sampleRate)
@@ -67,9 +67,9 @@ class MediaFilter {
     }
 
     class TimescaleConfig(
-        val speed: Double = 1.0,
-        val pitch: Double = 1.0,
-        val rate: Double = 1.0
+        private val speed: Double = 1.0,
+        private val pitch: Double = 1.0,
+        private val rate: Double = 1.0
     ) : FilterConfig() {
 
         override fun build(format: AudioDataFormat, output: FloatPcmAudioFilter): FloatPcmAudioFilter {
@@ -84,8 +84,8 @@ class MediaFilter {
     }
 
     class TremoloConfig(
-        val frequency: Float = 2.0f,
-        val depth: Float = 0.5f
+        private val frequency: Float = 2.0f,
+        private val depth: Float = 0.5f
     ) : FilterConfig() {
         override fun build(format: AudioDataFormat, output: FloatPcmAudioFilter): FloatPcmAudioFilter {
             return TremoloPcmAudioFilter(output, format.channelCount, format.sampleRate)
@@ -98,8 +98,8 @@ class MediaFilter {
     }
 
     class VibratoConfig(
-        val frequency: Float = 2.0f,
-        val depth: Float = 0.5f
+        private val frequency: Float = 2.0f,
+        private val depth: Float = 0.5f
     ) : FilterConfig() {
 
         override fun build(format: AudioDataFormat, output: FloatPcmAudioFilter): FloatPcmAudioFilter {
@@ -113,14 +113,14 @@ class MediaFilter {
     }
 
     class DistortionConfig(
-        val sinOffset: Float = 0.0f,
-        val sinScale: Float = 1.0f,
-        val cosOffset: Float = 0.0f,
-        val cosScale: Float = 1.0f,
-        val tanOffset: Float = 0.0f,
-        val tanScale: Float = 1.0f,
-        val offset: Float = 0.0f,
-        val scale: Float = 1.0f
+        private val sinOffset: Float = 0.0f,
+        private val sinScale: Float = 1.0f,
+        private val cosOffset: Float = 0.0f,
+        private val cosScale: Float = 1.0f,
+        private val tanOffset: Float = 0.0f,
+        private val tanScale: Float = 1.0f,
+        private val offset: Float = 0.0f,
+        private val scale: Float = 1.0f
     ) : FilterConfig() {
 
         override fun build(format: AudioDataFormat, output: FloatPcmAudioFilter): FloatPcmAudioFilter {
@@ -140,7 +140,7 @@ class MediaFilter {
     }
 
     class RotationConfig(
-        val rotationHz: Double = 0.0
+        private val rotationHz: Double = 0.0
     ) : FilterConfig() {
         override fun build(format: AudioDataFormat, output: FloatPcmAudioFilter): FloatPcmAudioFilter {
             return RotationPcmAudioFilter(output, format.sampleRate)
@@ -152,10 +152,10 @@ class MediaFilter {
     }
 
     class ChannelMixConfig(
-        val leftToLeft: Float = 1f,
-        val leftToRight: Float = 0f,
-        val rightToLeft: Float = 0f,
-        val rightToRight: Float = 1f
+        private val leftToLeft: Float = 1f,
+        private val leftToRight: Float = 0f,
+        private val rightToLeft: Float = 0f,
+        private val rightToRight: Float = 1f
     ) : FilterConfig() {
         override fun build(format: AudioDataFormat, output: FloatPcmAudioFilter): FloatPcmAudioFilter {
             return ChannelMixPcmAudioFilter(output)
@@ -170,7 +170,7 @@ class MediaFilter {
     }
 
     class LowPassConfig(
-        val smoothing: Float = 20.0f
+        private val smoothing: Float = 20.0f
     ) : FilterConfig() {
         override fun build(format: AudioDataFormat, output: FloatPcmAudioFilter): FloatPcmAudioFilter {
             return LowPassPcmAudioFilter(output, format.channelCount)

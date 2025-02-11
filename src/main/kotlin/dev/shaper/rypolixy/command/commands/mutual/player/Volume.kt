@@ -44,7 +44,7 @@ class Volume(private val client: Client): MutualCommand {
             when (context){
                 is ContextType.Interaction  -> {
                     val volume = context.value.interaction.command.integers["volume"]
-                    client.lavaClient.volume(context.guildId,volume!!.toInt())
+                    client.lavaClient.setVolume(context.guildId,volume!!.toInt())
                     context.sendRespond(
                         ResponseType.NORMAL,
                         EmbedFrame.info("음량이 $volume 으로 설정되었습니다",null)
@@ -63,7 +63,7 @@ class Volume(private val client: Client): MutualCommand {
                         )
                     }
                     else {
-                        client.lavaClient.volume(context.guildId,volume)
+                        client.lavaClient.setVolume(context.guildId,volume)
                         context.sendRespond(
                             ResponseType.NORMAL,
                             EmbedFrame.info("음량이 $volume 으로 설정되었습니다",null)

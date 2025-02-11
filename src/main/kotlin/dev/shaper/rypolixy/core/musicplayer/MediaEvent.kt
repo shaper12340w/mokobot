@@ -3,7 +3,7 @@ package dev.shaper.rypolixy.core.musicplayer
 import com.sedmelluq.discord.lavaplayer.player.event.*
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason
 import dev.kord.common.entity.Snowflake
-import dev.shaper.rypolixy.utils.LogicalUtils
+import dev.shaper.rypolixy.utils.structure.RetryUtil
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,11 +36,11 @@ class MediaEvent(
                     }
                 }
                 is TrackStartEvent -> {
-                    session.player.volume = session.connector.options.volume.toInt()
+                    session.player.volume = player.getVolume(guildId)
                 } //Todo : Add stack or deque to preload others
                 is TrackExceptionEvent -> {
                     try {
-                        LogicalUtils.retry { session.reload() }
+                        RetryUtil.retry { session.reload() }
                     } catch(e:Exception){
                         player.sendError(guildId,event.exception)
                         player.playNext(guildId)
