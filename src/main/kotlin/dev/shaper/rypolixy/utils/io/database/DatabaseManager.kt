@@ -3,13 +3,14 @@ package dev.shaper.rypolixy.utils.io.database
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.Guild
 import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils
+import dev.shaper.rypolixy.utils.io.database.Database.logger
 import dev.shaper.rypolixy.utils.structure.CacheSystem
 import kotlinx.coroutines.flow.toSet
 
 object DatabaseManager{
 
-    private val guildCache  = CacheSystem<Snowflake,DatabaseData.GuildData>(500,86400)    //24 hour
-    private val userCache   = CacheSystem<Snowflake,DatabaseData.UserData>(3000,3600)      //1 hour
+    private val guildCache  = CacheSystem<Snowflake,DatabaseData.GuildDataReturn>(500,86400)    //24 hour
+    private val userCache   = CacheSystem<Snowflake,DatabaseData.UserDataReturn>(3000,3600)      //1 hour
 
     private fun throwFailedGetter(): Nothing
             = throw NoSuchElementException("Cannot Get Data from Database")
@@ -17,11 +18,10 @@ object DatabaseManager{
     suspend fun registerAll(guild: Guild) {
         val users = guild.members.toSet()
         val userQuery   = DatabaseQueryManager.generateQuery(DatabaseQueryManager.Entity.USER, DatabaseQueryManager.QueryType.INSERT)
-        val playerQuery = DatabaseQueryManager.generateQuery(DatabaseQueryManager.Entity.GUILD, DatabaseQueryManager.QueryType.INSERT)
 
         // Guild 초기화
-        Database.initGuild(guild)
-
+        val guildUUID = Database.initGuild(guild)
+        Database.initPlayer(guildUUID,50,false,MediaUtils.MediaPlatform.YOUTUBE)
         // 사용자 등록
         Database.getConnection().use { connection ->
             connection.autoCommit = false // 트랜잭션 시작
@@ -37,32 +37,7 @@ object DatabaseManager{
                     statement.executeBatch() // 배치 실행
                 }
                 connection.commit() // 트랜잭션 커밋
-                connection.close()
-            } catch (e: Exception) {
-                connection.rollback() // 오류 발생 시 롤백
-                throw e // 예외 다시 던지기
-            }
-        }
-
-        // 등록된 사용자 ID 조회
-        val userList = Database.execute("SELECT user_id FROM users").data?.toList()?.map { it["user_id"] } ?: return
-
-        // 플레이어 등록
-        Database.getConnection().use { connection ->
-            connection.autoCommit = false // 트랜잭션 시작
-            try {
-                connection.prepareStatement(playerQuery).use { statement ->
-                    for (user in userList) {
-                        statement.setObject(1, user) // 사용자 ID
-                        statement.setObject(2, 50) // 초기 값
-                        statement.setObject(3, false) // 초기 값
-                        statement.setObject(4, MediaUtils.MediaPlatform.YOUTUBE.toString()) // 플랫폼
-                        statement.addBatch() // 배치에 추가
-                    }
-                    statement.executeBatch() // 배치 실행
-                }
-                connection.commit() // 트랜잭션 커밋
-                connection.close()
+                logger.info { "[Database][USER] : Successfully add ALL guild($guildUUID) users into Database" }
             } catch (e: Exception) {
                 connection.rollback() // 오류 발생 시 롤백
                 throw e // 예외 다시 던지기
@@ -70,29 +45,44 @@ object DatabaseManager{
         }
     }
 
-    fun getUserData(userId: Snowflake): DatabaseData.UserData {
-        return userCache.get(userId) {
-            val userUUID    = Database.getUserUUID(userId)  ?: throwFailedGetter()
-            val userData    = Database.getUser(userUUID)    ?: throwFailedGetter()
-            val playerData  = Database.getPlayer(userUUID)  ?: throwFailedGetter()
-            val statusData  = Database.getStatus(userUUID)  ?: throwFailedGetter()
-            DatabaseData.UserData(
-                userData, playerData, statusData
-            )
+    fun fetchUserData(userId: Snowflake): DatabaseData.UserDataReturn {
+        val userUUID    = Database.getUserUUID(userId)  ?: throwFailedGetter()
+        val userData    = Database.getUser(userUUID)    ?: throwFailedGetter()
+        val statusData  = Database.getStatus(userUUID)  ?: throwFailedGetter()
+        return DatabaseData.UserDataReturn(
+            userData, statusData
+        )
+    }
+    fun getUserData(userId: Snowflake): DatabaseData.UserDataReturn {
+        return userCache.get(userId) { fetchUserData(userId) }
+    }
+    fun setUserData(userId: Snowflake, data: DatabaseData.UserDataInput) {
+        when {
+            data.userData   != null -> Database.setUser(data.userData)
+            data.statusData != null -> Unit // TODO: Database.setStatus
         }
+        userCache.update(userId,fetchUserData(userId))
     }
 
-    fun getGuildData(guildId: Snowflake): DatabaseData.GuildData {
-        return guildCache.get(guildId) {
-            val guildUUID   = Database.getGuildUUID(guildId)    ?: throwFailedGetter()
-            val guildData   = Database.getGuild(guildUUID)      ?: throwFailedGetter()
-            DatabaseData.GuildData(
-                guildData
-            )
+    fun fetchGuildData(guildId: Snowflake): DatabaseData.GuildDataReturn {
+        val guildUUID   = Database.getGuildUUID(guildId)    ?: throwFailedGetter()
+        val guildData   = Database.getGuild(guildUUID)      ?: throwFailedGetter()
+        val playerData  = Database.getPlayer(guildUUID)     ?: throwFailedGetter()
+        return DatabaseData.GuildDataReturn(
+            guildData, playerData
+        )
+    }
+    fun getGuildData(guildId: Snowflake): DatabaseData.GuildDataReturn {
+        return guildCache.get(guildId) { fetchGuildData(guildId) }
+    }
+    fun setGuildData(guildId: Snowflake, data: DatabaseData.GuildDataInput) {
+        when {
+            data.guildData      != null -> Database.setGuild(data.guildData)
+            data.playerData     != null -> Database.setPlayer(data.playerData)
         }
+        guildCache.update(guildId, fetchGuildData(guildId))
     }
 
-    //SET~~Data
 }
 
 /*

@@ -18,6 +18,8 @@ import dev.shaper.rypolixy.core.musicplayer.parser.MediaParser
 import dev.shaper.rypolixy.core.musicplayer.utils.MediaRegex
 import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils
 import dev.shaper.rypolixy.core.musicplayer.ytdlp.YtDlpManager
+import dev.shaper.rypolixy.utils.io.database.DatabaseData
+import dev.shaper.rypolixy.utils.io.database.DatabaseManager
 import io.github.oshai.kotlinlogging.KotlinLogging
 import java.util.concurrent.TimeUnit
 
@@ -197,11 +199,21 @@ class MediaPlayer {
     fun related(guildId: Snowflake):Boolean?
         = baseOnOffFunction(guildId) { if (it != null) { connector.options.recommendation = it }; connector.options.recommendation }
 
-    fun volume(guildId: Snowflake, volume:Int){
+    fun setVolume(guildId: Snowflake, volume:Int){
         if(!sessions.containsKey(guildId)) return
         val session = sessions[guildId]!!
         session.connector.options.volume = volume.toDouble()
         session.player.volume = volume
+
+        val playerData = DatabaseManager.getGuildData(guildId).playerData.copy(volume = volume)
+        DatabaseManager.setGuildData(
+            guildId,
+            DatabaseData.GuildDataInput(null,playerData)
+        )
+    }
+
+    fun getVolume(guildId: Snowflake): Int {
+        return DatabaseManager.getGuildData(guildId).playerData.volume
     }
 
     suspend fun sendError(guildId: Snowflake,e: Exception){

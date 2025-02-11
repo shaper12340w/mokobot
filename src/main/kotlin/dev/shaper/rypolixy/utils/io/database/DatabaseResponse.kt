@@ -32,7 +32,7 @@ class DatabaseResponse {
     )
 
     data class PlayerResponse(
-        val userId:UUID,
+        val guildId:UUID,
         val volume:Int,
         val lyrics:Boolean,
         val platform: MediaUtils.MediaPlatform,

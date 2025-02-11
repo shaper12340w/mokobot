@@ -38,6 +38,20 @@ class CacheSystem<K,V>(
         }
     }
 
+    fun update(key: K, newValue: V) {
+        val currentTime = Instant.now().epochSecond
+        val expiryTime = currentTime + lifeTime
+
+        // 캐시에 값이 존재하는지 확인
+        if (cache.containsKey(key)) {
+            // 값이 존재하면 업데이트
+            cache[key] = newValue to expiryTime
+        } else {
+            // 값이 없으면 새로 추가 (put과 동일한 동작)
+            put(key, newValue)
+        }
+    }
+
     // 캐시에서 변수 제거
     fun remove(key: K) {
         cache.remove(key)

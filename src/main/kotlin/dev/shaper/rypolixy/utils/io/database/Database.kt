@@ -85,17 +85,19 @@ object Database {
         execute(DatabaseQuery.initQuery)
     }
 
-    fun initGuild(guild:Guild) {
+    fun initGuild(guild:Guild):UUID {
         val type    = DatabaseQueryManager.QueryType.INSERT
         val entity  = DatabaseQueryManager.Entity.GUILD
         val query   = DatabaseQueryManager.generateQuery(entity, type)
+        val uuid    = newUUID()
         val result = execute(
             query,
-            newUUID(),
+            uuid,
             guild.id.toString().toBigInteger(),               //id
             guild.name,                                     //name
         )
         handleMessage(type,entity,result)
+        return uuid
     }
     fun getGuild(guildId:UUID):DatabaseResponse.GuildResponse? {
 
@@ -149,7 +151,7 @@ object Database {
             }
         }
     }
-    fun setGuild(guildId:UUID,data: DatabaseResponse.GuildResponse){
+    fun setGuild(data: DatabaseResponse.GuildResponse){
         val type    = DatabaseQueryManager.QueryType.UPDATE
         val entity  = DatabaseQueryManager.Entity.GUILD
         val query   = DatabaseQueryManager.generateQuery(entity, type)
@@ -157,18 +159,20 @@ object Database {
         handleMessage(type,entity,result)
     }
 
-    fun initUser(user:User) {
+    fun initUser(user:User):UUID {
         val type    = DatabaseQueryManager.QueryType.INSERT
         val entity  = DatabaseQueryManager.Entity.USER
         val query   = DatabaseQueryManager.generateQuery(entity, type)
+        val uuid    = newUUID()
         val result = execute(
             query,
-            newUUID(),
+            uuid,
             user.id.toString().toBigInteger(),
             user.username,
             "KR1"
         )
         handleMessage(type,entity,result)
+        return uuid
     }
     fun getUser(userId:UUID):DatabaseResponse.UserResponse? {
         val type    = DatabaseQueryManager.QueryType.SELECT_INFO
@@ -221,7 +225,7 @@ object Database {
             }
         }
     }
-    fun setUser(userId: UUID,data:DatabaseResponse.UserResponse){
+    fun setUser(data:DatabaseResponse.UserResponse){
         val type    = DatabaseQueryManager.QueryType.UPDATE
         val entity  = DatabaseQueryManager.Entity.USER
         val query   = DatabaseQueryManager.generateQuery(entity, type)
@@ -229,18 +233,18 @@ object Database {
         handleMessage(type,entity,result)
     }
 
-    fun initPlayer(userId:UUID,volume:Int,lyrics:Boolean,platform:MediaUtils.MediaPlatform) {
+    fun initPlayer(guildId:UUID,volume:Int,lyrics:Boolean,platform:MediaUtils.MediaPlatform) {
         val type    = DatabaseQueryManager.QueryType.INSERT
         val entity  = DatabaseQueryManager.Entity.PLAYER
         val query   = DatabaseQueryManager.generateQuery(entity, type)
-        val result = execute(query,userId,volume,lyrics,platform.toString())
+        val result = execute(query,guildId,volume,lyrics,platform.toString())
         handleMessage(type,entity,result)
     }
-    fun getPlayer(userId:UUID):DatabaseResponse.PlayerResponse? {
+    fun getPlayer(guildId:UUID):DatabaseResponse.PlayerResponse? {
         val type    = DatabaseQueryManager.QueryType.SELECT_INFO
         val entity  = DatabaseQueryManager.Entity.PLAYER
         val query   = DatabaseQueryManager.generateQuery(entity, type)
-        val result  = execute(query, userId)
+        val result  = execute(query, guildId)
         return when (result.status) {
             DatabaseResponse.DatabaseStatus.SUCCESS -> {
                 if(result.data == null || result.data.size == 0)
@@ -250,7 +254,7 @@ object Database {
                     handleMessage(type,entity,result)
                     val playerData = result.data[0]
                     DatabaseResponse.PlayerResponse(
-                        playerData["user_id"] as UUID,
+                        playerData["guild_id"] as UUID,
                         playerData["volume"] as Int,
                         playerData["lyrics"] as Boolean,
                         MediaUtils.checkPlatform(playerData["default_platform"] as String)
@@ -263,11 +267,11 @@ object Database {
             }
         }
     }
-    fun setPlayer(userId:UUID,data:DatabaseResponse.PlayerResponse){
+    fun setPlayer(data:DatabaseResponse.PlayerResponse){
         val type    = DatabaseQueryManager.QueryType.UPDATE
         val entity  = DatabaseQueryManager.Entity.PLAYER
         val query   = DatabaseQueryManager.generateQuery(entity, type)
-        val result  = execute(query,data.volume,data.lyrics,data.platform,data.userId)
+        val result  = execute(query,data.volume,data.lyrics,data.platform.toString(),data.guildId)
         handleMessage(type,entity,result)
     }
 
@@ -318,7 +322,7 @@ object Database {
         val type    = DatabaseQueryManager.QueryType.SELECT_INFO
         val entity  = DatabaseQueryManager.Entity.COMMAND
         val query   = DatabaseQueryManager.generateQuery(entity, type)
-        val result  = execute(query, userId)
+        val result  = execute(query, commandID)
         return when (result.status) {
             DatabaseResponse.DatabaseStatus.SUCCESS -> {
                 if(result.data == null || result.data.size == 0)
@@ -415,7 +419,7 @@ object Database {
             }
         } catch (e: SQLException) {
             myConnection.close()
-            logger.error { "Error while executing $sql" }
+            logger.error { "Error while executing SQL : $sql" }
             logger.error { e.message }
             return DatabaseResponse.RawResponse(
                 status = DatabaseResponse.DatabaseStatus.FAILURE,

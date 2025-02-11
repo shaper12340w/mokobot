@@ -36,7 +36,7 @@ class MediaEvent(
                     }
                 }
                 is TrackStartEvent -> {
-                    session.player.volume = session.connector.options.volume.toInt()
+                    session.player.volume = player.getVolume(guildId)
                 } //Todo : Add stack or deque to preload others
                 is TrackExceptionEvent -> {
                     try {

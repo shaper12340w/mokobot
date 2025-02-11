@@ -31,7 +31,7 @@ sealed class DatabaseQuery {
             permission          INTEGER NOT NULL            -- permissions                                            
         );
         CREATE TABLE IF NOT EXISTS players (
-            user_id             uuid PRIMARY KEY,           -- uuid PRIMARY KEY
+            guild_id            uuid PRIMARY KEY,           -- uuid PRIMARY KEY
             volume              INTEGER NOT NULL,           -- volume
             lyrics              BOOLEAN NOT NULL,           -- lyrics
             default_platform    VARCHAR(255) NOT NULL       -- default platform
@@ -119,7 +119,7 @@ sealed class DatabaseQuery {
         override val initInsert = """
             INSERT INTO players 
             VALUES (?,?,?,?) 
-            ON CONFLICT (user_id) DO NOTHING;
+            ON CONFLICT (guild_id) DO NOTHING;
         """.trimIndent()
 
         @Language("postgresql")
@@ -129,12 +129,12 @@ sealed class DatabaseQuery {
                 volume = ?,
                 lyrics = ?,
                 default_platform = ?
-            WHERE user_id = ?;
+            WHERE guild_id = ?;
         """.trimIndent()
 
         @Language("postgresql")
         override val selectInfo = """
-            SELECT * FROM players WHERE user_id = ?;
+            SELECT * FROM players WHERE guild_id = ?;
         """.trimIndent()
 
 
