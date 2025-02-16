@@ -84,7 +84,6 @@ class ResponseManager{
                     }
                 }
             }
-            return null
         }
 
         suspend fun ApplicationCommandInteractionCreateEvent.createDefer() = createDefer(responseType = ResponseType.NORMAL)
