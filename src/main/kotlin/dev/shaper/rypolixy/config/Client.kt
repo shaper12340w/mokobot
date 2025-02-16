@@ -2,6 +2,14 @@ package dev.shaper.rypolixy.config
 
 import dev.shaper.rypolixy.event.EventHandler
 import dev.kord.core.Kord
+import dev.kord.core.entity.interaction.GuildModalSubmitInteraction
+import dev.kord.core.event.gateway.ReadyEvent
+import dev.kord.core.event.guild.GuildCreateEvent
+import dev.kord.core.event.guild.MemberJoinEvent
+import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
+import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
+import dev.kord.core.event.interaction.GuildModalSubmitInteractionCreateEvent
+import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.on
 import dev.kord.gateway.Intent
 import dev.kord.gateway.PrivilegedIntent
@@ -39,11 +47,13 @@ class Client(internal val logger: KLogger, internal val kord:Kord) {
 
     fun registerEvents() = apply {
         val handler = EventHandler(this)
-        kord.on(kord,handler::onReadyEvent)
-        kord.on(kord,handler::onMessageEvent)
-        kord.on(kord,handler::onCommandInteraction)
-        kord.on(kord,handler::onGuildCreate)
-        kord.on(kord,handler::onMemberJoin)
+        kord.on<ReadyEvent>                                 (kord,handler::onReadyEvent)
+        kord.on<MessageCreateEvent>                         (kord,handler::onMessageEvent)
+        kord.on<GuildCreateEvent>                           (kord,handler::onGuildCreate)
+        kord.on<MemberJoinEvent>                            (kord,handler::onMemberJoin)
+        kord.on<ButtonInteractionCreateEvent>               (kord,handler::onButtonInteraction)
+        kord.on<GuildModalSubmitInteractionCreateEvent>     (kord,handler::onModalSubmitInteraction)
+        kord.on<GuildChatInputCommandInteractionCreateEvent>(kord,handler::onCommandInteraction)
     }
 
     suspend fun registerCommands() = apply {

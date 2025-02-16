@@ -44,6 +44,7 @@ sealed class DatabaseQuery {
         );
         CREATE TABLE IF NOT EXISTS commands (
             command_id          uuid PRIMARY KEY,           -- uuid PRIMARY KEY
+            discord_id          BIGINT UNIQUE,              -- discord id
             command_name        VARCHAR(255) NOT NULL,      -- command name
             class               VARCHAR(255) NOT NULL       -- language classification      
         )
@@ -172,7 +173,7 @@ sealed class DatabaseQuery {
         @Language("postgresql")
         override val initInsert = """
             INSERT INTO commands 
-            VALUES (?,?,?) 
+            VALUES (?,?,?,?) 
             ON CONFLICT (command_id) DO NOTHING;
         """.trimIndent()
 

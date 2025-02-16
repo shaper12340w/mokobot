@@ -55,7 +55,6 @@ class CommandManager(private val client: Client) {
         }
     }
 
-
     suspend fun registerInteractionCommand(){
         suspend fun registerGlobal(command: CommandStructure)
             = client.kord.createGlobalChatInputCommand(command.name,command.description){ (command as InteractionCommand).setup(this) }
@@ -80,6 +79,7 @@ class CommandManager(private val client: Client) {
                 is MessageCommand       -> messageCommand      [command.name] = command
                 is InteractionCommand   -> interactionCommand  [command.name] = command
             }
+            //logger.debug { command::class.java.`package`?.name?.substringAfterLast("commands.") }
         }
     }
 

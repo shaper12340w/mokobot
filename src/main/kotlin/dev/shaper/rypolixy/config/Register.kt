@@ -11,6 +11,7 @@ object Register {
                 dev.shaper.rypolixy.command.commands.text.Info(client),
                 dev.shaper.rypolixy.command.commands.mutual.Ping(client),
                 dev.shaper.rypolixy.command.commands.mutual.Profile(client),
+                dev.shaper.rypolixy.command.commands.mutual.Test(client),
                 Join    (client),
                 Leave   (client),
                 Play    (client),

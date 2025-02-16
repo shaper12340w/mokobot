@@ -8,6 +8,7 @@ import dev.kord.core.entity.User
 import dev.shaper.rypolixy.command.types.CommandStructure
 import dev.shaper.rypolixy.config.Configs
 import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils
+import dev.shaper.rypolixy.utils.structure.ValueTransfer.toBigInteger
 import java.sql.Connection
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.json.JSONObject
@@ -311,11 +312,11 @@ object Database {
         }
     }
 
-    fun initCommand(command:CommandStructure,pkg:String){
+    fun initCommand(command:CommandStructure,id:Snowflake?,pkg:String){
         val type    = DatabaseQueryManager.QueryType.INSERT
         val entity  = DatabaseQueryManager.Entity.COMMAND
         val query   = DatabaseQueryManager.generateQuery(entity, type)
-        val result = execute(query, newUUID(),command.name,pkg)
+        val result = execute(query, newUUID(),id?.value?.toBigInteger(),command.name,pkg)
         handleMessage(type,entity,result)
     }
     fun getCommand(commandID: UUID):DatabaseResponse.CommandResponse? {
