@@ -103,6 +103,13 @@ object ActionRowManager {
     }
 
     class CreateModal(private val customId: UUID, private val modalData: ModalData) {
+
+        private val modalList = mutableListOf<TextInput>()
+
+        init {
+            modalList.addAll(modalData.inputs)
+        }
+
         private fun createTextInput(data: TextInput,index:Int): TextInputBuilder {
             val builder = TextInputBuilder(
                 style       = data.style,
@@ -118,11 +125,15 @@ object ActionRowManager {
             return builder
         }
 
+        fun addInput(input: TextInput) {
+            modalList.add(input)
+        }
+
         suspend fun show(
             interaction: ModalParentInteractionBehavior,
             execute     : suspend (ModalSubmitInteraction) -> Unit,
             ){
-            val inputs = modalData.inputs.mapIndexed { index, input ->
+            val inputs = modalList.mapIndexed { index, input ->
                 ActionRowBuilder().apply {
                     components.add(createTextInput(input, index))
                 }
@@ -176,13 +187,13 @@ object ActionRowManager {
         }
         //private fun createMentionableSelectMenu(){}
 
-        private fun listenerBuilder(menu: SelectMenu) : EventListener<SelectMenuEvent> {
+        private fun listenerBuilder(menu: SelectMenu,index:Int) : EventListener<SelectMenuEvent> {
             val listener = object : EventListener<SelectMenuEvent> {
                 fun kill() {
                     emitter.off(this)
                 }
                 override fun onEvent(event: SelectMenuEvent) {
-                    if(event.id == customId.toString()) {
+                    if(event.id == "$customId#$index") {
                         CoroutineScope(Dispatchers.IO).launch {
                             menu.execute(event.interaction,::kill)
                         }
@@ -221,9 +232,9 @@ object ActionRowManager {
                 }
 
                 if (selectMenu.isOnce)
-                    emitter.once(listenerBuilder(selectMenu))
+                    emitter.once(listenerBuilder(selectMenu,index))
                 else
-                    emitter.on(listenerBuilder(selectMenu))
+                    emitter.on(listenerBuilder(selectMenu,index))
             }
             return builder
         }

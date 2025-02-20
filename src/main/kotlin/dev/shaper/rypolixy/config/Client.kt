@@ -9,6 +9,7 @@ import dev.kord.core.event.guild.MemberJoinEvent
 import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
 import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.GuildModalSubmitInteractionCreateEvent
+import dev.kord.core.event.interaction.GuildSelectMenuInteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.on
 import dev.kord.gateway.Intent
@@ -16,13 +17,14 @@ import dev.kord.gateway.PrivilegedIntent
 import dev.shaper.rypolixy.command.types.CommandManager
 import dev.shaper.rypolixy.core.musicplayer.MediaPlayer
 import dev.shaper.rypolixy.utils.io.database.Database
+import dev.shaper.rypolixy.utils.io.database.DatabaseManager
 import io.github.oshai.kotlinlogging.KLogger
 
 @OptIn(PrivilegedIntent::class)
 class Client(internal val logger: KLogger, internal val kord:Kord) {
 
-    val commandManager: CommandManager = CommandManager(this)
-    val lavaClient: MediaPlayer = MediaPlayer()
+    val commandManager: CommandManager  = CommandManager(this)
+    val lavaClient: MediaPlayer         = MediaPlayer()
 
     init {
         logger.info {"[Client] : Bot started"}
@@ -54,6 +56,7 @@ class Client(internal val logger: KLogger, internal val kord:Kord) {
         kord.on<ButtonInteractionCreateEvent>               (kord,handler::onButtonInteraction)
         kord.on<GuildModalSubmitInteractionCreateEvent>     (kord,handler::onModalSubmitInteraction)
         kord.on<GuildChatInputCommandInteractionCreateEvent>(kord,handler::onCommandInteraction)
+        kord.on<GuildSelectMenuInteractionCreateEvent>      (kord,handler::onSelectMenuInteraction)
     }
 
     suspend fun registerCommands() = apply {
@@ -63,6 +66,7 @@ class Client(internal val logger: KLogger, internal val kord:Kord) {
     fun registerDatabase() = apply {
         Database.checkOwner()
         Database.initTable()
+        DatabaseManager.initValues()
     }
 
 }

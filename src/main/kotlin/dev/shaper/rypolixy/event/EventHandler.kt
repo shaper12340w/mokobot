@@ -10,6 +10,7 @@ import dev.kord.core.event.guild.MemberJoinEvent
 import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
 import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.GuildModalSubmitInteractionCreateEvent
+import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.shaper.rypolixy.command.types.ContextType
 import dev.shaper.rypolixy.logger
@@ -57,6 +58,14 @@ class EventHandler(private val client: Client) {
             event.interaction
         ))
         logger.info { "[Button] : Successfully executed with id ${event.interaction.modalId} / (guildId : ${event.interaction.data.guildId} | channelId : ${event.interaction.channelId})" }
+    }
+
+    suspend fun onSelectMenuInteraction(event: SelectMenuInteractionCreateEvent){
+        ActionRowManager.emitter.emit(ActionRowManager.SelectMenuEvent(
+            event.interaction.component.customId,
+            event.interaction
+        ))
+        logger.info { "[SelectMenu] : Successfully executed with id ${event.interaction.component.customId} / (guildId : ${event.interaction.data.guildId.value} | channelId : ${event.interaction.channelId})" }
     }
 
 }

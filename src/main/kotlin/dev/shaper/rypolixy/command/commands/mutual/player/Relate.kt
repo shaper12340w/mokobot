@@ -29,7 +29,7 @@ class Relate(private val client: Client): MutualCommand {
         else {
             context.sendRespond(
                 ResponseType.NORMAL,
-                EmbedFrame.info(if(client.lavaClient.related(context.guildId)!!) "트랙 추천 활성화됨" else "트랙 추천 비활성화됨",null) {
+                EmbedFrame.info(if(client.lavaClient.relate(context.guildId)!!) "트랙 추천 활성화됨" else "트랙 추천 비활성화됨",null) {
                     footer { text = "[!] 현재 Youtube 와 Soundcloud 소스만 지원됩니다" }
                 }
             )
