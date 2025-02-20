@@ -10,7 +10,7 @@ sealed class YtDlpInfo{
     abstract val id               : String
     abstract val title            : String
     abstract val description      : String?
-    abstract val viewCount        : Int?
+    abstract val viewCount        : Long?
     abstract val channel          : String?
     abstract val channelId        : String?
     abstract val channelUrl       : String?
@@ -61,7 +61,7 @@ sealed class YtDlpInfo{
         @Json(name = "id")              override val id             : String,
         @Json(name = "title")           override val title          : String,
         @Json(name = "description")     override val description    : String?,
-        @Json(name = "view_count")      override val viewCount      : Int?,
+        @Json(name = "view_count")      override val viewCount      : Long?,
         @Json(name = "channel")         override val channel        : String?,
         @Json(name = "channel_id")      override val channelId      : String?,
         @Json(name = "channel_url")     override val channelUrl     : String?,
@@ -86,7 +86,7 @@ sealed class YtDlpInfo{
         @Json(name = "id")              override val id             : String,
         @Json(name = "title")           override val title          : String,
         @Json(name = "description")     override val description    : String,
-        @Json(name = "view_count")      override val viewCount      : Int,
+        @Json(name = "view_count")      override val viewCount      : Long,
         @Json(name = "channel")         override val channel        : String,
         @Json(name = "channel_id")      override val channelId      : String,
         @Json(name = "channel_url")     override val channelUrl     : String,
@@ -107,7 +107,7 @@ sealed class YtDlpInfo{
         @Json(name = "id")              override val id             : String,
         @Json(name = "title")           override val title          : String,
         @Json(name = "description")     override val description    : String?,
-        @Json(name = "view_count")      override val viewCount      : Int?,
+        @Json(name = "view_count")      override val viewCount      : Long?,
         @Json(name = "channel")         override val channel        : String?,
         @Json(name = "channel_id")      override val channelId      : String?,
         @Json(name = "channel_url")     override val channelUrl     : String?,
@@ -129,7 +129,7 @@ sealed class YtDlpInfo{
         @Json(name = "id")              override val id             : String,
         @Json(name = "title")           override val title          : String,
         @Json(name = "description")     override val description    : String?,
-        @Json(name = "view_count")      override val viewCount      : Int?,
+        @Json(name = "view_count")      override val viewCount      : Long?,
         @Json(name = "channel")         override val channel        : String?,
         @Json(name = "channel_id")      override val channelId      : String?,
         @Json(name = "channel_url")     override val channelUrl     : String?,
@@ -148,7 +148,7 @@ sealed class YtDlpInfo{
         @Json(name = "id")              override val id             : String,
         @Json(name = "title")           override val title          : String,
         @Json(name = "description")     override val description    : String?,
-        @Json(name = "view_count")      override val viewCount      : Int?   ,
+        @Json(name = "view_count")      override val viewCount      : Long?   ,
         @Json(name = "channel")         override val channel        : String?,
         @Json(name = "channel_id")      override val channelId      : String?,
         @Json(name = "channel_url")     override val channelUrl     : String?,
@@ -164,7 +164,7 @@ sealed class YtDlpInfo{
         @Json(name = "id")              override val id             : String,
         @Json(name = "title")           override val title          : String,
         @Json(name = "description")     override val description    : String?,
-        @Json(name = "view_count")      override val viewCount      : Int?,
+        @Json(name = "view_count")      override val viewCount      : Long?,
         @Json(name = "channel")         override val channel        : String?,
         @Json(name = "channel_id")      override val channelId      : String?,
         @Json(name = "channel_url")     override val channelUrl     : String?,

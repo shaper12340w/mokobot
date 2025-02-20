@@ -3,14 +3,73 @@ package dev.shaper.rypolixy.utils.io.database
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.Guild
 import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils
+import dev.shaper.rypolixy.utils.io.database.Database.execute
 import dev.shaper.rypolixy.utils.io.database.Database.logger
 import dev.shaper.rypolixy.utils.structure.CacheSystem
 import kotlinx.coroutines.flow.toSet
+import org.intellij.lang.annotations.Language
+import java.sql.SQLException
+import java.util.UUID
 
 object DatabaseManager{
 
+    val guildUUIDs  = mutableMapOf<Snowflake,UUID>()
+    val userUUIDs   = mutableMapOf<Snowflake,UUID>()
+
     private val guildCache  = CacheSystem<Snowflake,DatabaseData.GuildDataReturn>(500,86400)    //24 hour
     private val userCache   = CacheSystem<Snowflake,DatabaseData.UserDataReturn>(3000,3600)      //1 hour
+
+    fun initValues(){
+        getGuildUUIDAll ()
+        getUserUUIDAll  ()
+    }
+
+    private fun getGuildUUIDAll (){
+        @Language("postgresql")
+        val query = """
+            SELECT guild_id,discord_id FROM guilds
+        """.trimIndent()
+        val result = execute(query)
+        when (result.status) {
+            DatabaseResponse.DatabaseStatus.SUCCESS -> {
+                if(result.data == null || result.data.size == 0)
+                    throw SQLException("[Database] not found")
+                else
+                {
+                    result.data.forEach { data ->
+                        val discordId   = Snowflake(data["discord_id"].toString())
+                        val uuid        = data["guild_id"] as UUID
+                        guildUUIDs[discordId] = uuid
+                    }
+                    logger.info { "[Database][GUILD] : Successfully get All UUIDs from Database" }
+                }
+            }
+            DatabaseResponse.DatabaseStatus.FAILURE -> logger.error { result.message }
+        }
+    }
+    private fun getUserUUIDAll  (){
+        @Language("postgresql")
+        val query = """
+            SELECT user_id,discord_id FROM users
+        """.trimIndent()
+        val result = execute(query)
+        when (result.status) {
+            DatabaseResponse.DatabaseStatus.SUCCESS -> {
+                if(result.data == null || result.data.size == 0)
+                    throw SQLException("[Database] not found")
+                else
+                {
+                    result.data.forEach { data ->
+                        val discordId   = Snowflake(data["discord_id"].toString())
+                        val uuid        = data["user_id"] as UUID
+                        userUUIDs[discordId] = uuid
+                    }
+                    logger.info { "[Database][USER] : Successfully get All UUIDs from Database" }
+                }
+            }
+            DatabaseResponse.DatabaseStatus.FAILURE -> logger.error { result.message }
+        }
+    }
 
     private fun throwFailedGetter(): Nothing
             = throw NoSuchElementException("Cannot Get Data from Database")
@@ -45,18 +104,23 @@ object DatabaseManager{
         }
     }
 
-    fun fetchUserData(userId: Snowflake): DatabaseData.UserDataReturn {
-        val userUUID    = Database.getUserUUID(userId)  ?: throwFailedGetter()
+    fun fetchUserUUID   (userId: Snowflake) : UUID? {
+        if(!userUUIDs.containsKey(userId))
+            userUUIDs[userId] = Database.getUserUUID(userId) ?: throwFailedGetter()
+        return userUUIDs[userId]
+    }
+    fun fetchUserData   (userId: Snowflake): DatabaseData.UserDataReturn {
+        val userUUID    = fetchUserUUID(userId)         ?: throwFailedGetter()
         val userData    = Database.getUser(userUUID)    ?: throwFailedGetter()
         val statusData  = Database.getStatus(userUUID)  ?: throwFailedGetter()
         return DatabaseData.UserDataReturn(
             userData, statusData
         )
     }
-    fun getUserData(userId: Snowflake): DatabaseData.UserDataReturn {
+    fun getUserData     (userId: Snowflake): DatabaseData.UserDataReturn {
         return userCache.get(userId) { fetchUserData(userId) }
     }
-    fun setUserData(userId: Snowflake, data: DatabaseData.UserDataInput) {
+    fun setUserData     (userId: Snowflake, data: DatabaseData.UserDataInput) {
         when {
             data.userData   != null -> Database.setUser(data.userData)
             data.statusData != null -> Unit // TODO: Database.setStatus
@@ -64,18 +128,23 @@ object DatabaseManager{
         userCache.update(userId,fetchUserData(userId))
     }
 
-    fun fetchGuildData(guildId: Snowflake): DatabaseData.GuildDataReturn {
-        val guildUUID   = Database.getGuildUUID(guildId)    ?: throwFailedGetter()
+    fun fetchGuildUUID  (guildId: Snowflake) : UUID? {
+        if(!guildUUIDs.containsKey(guildId))
+            guildUUIDs[guildId] = Database.getUserUUID(guildId) ?: throwFailedGetter()
+        return guildUUIDs[guildId]
+    }
+    fun fetchGuildData  (guildId: Snowflake): DatabaseData.GuildDataReturn {
+        val guildUUID   = fetchGuildUUID(guildId)           ?: throwFailedGetter()
         val guildData   = Database.getGuild(guildUUID)      ?: throwFailedGetter()
         val playerData  = Database.getPlayer(guildUUID)     ?: throwFailedGetter()
         return DatabaseData.GuildDataReturn(
             guildData, playerData
         )
     }
-    fun getGuildData(guildId: Snowflake): DatabaseData.GuildDataReturn {
+    fun getGuildData    (guildId: Snowflake): DatabaseData.GuildDataReturn {
         return guildCache.get(guildId) { fetchGuildData(guildId) }
     }
-    fun setGuildData(guildId: Snowflake, data: DatabaseData.GuildDataInput) {
+    fun setGuildData    (guildId: Snowflake, data: DatabaseData.GuildDataInput) {
         when {
             data.guildData      != null -> Database.setGuild(data.guildData)
             data.playerData     != null -> Database.setPlayer(data.playerData)

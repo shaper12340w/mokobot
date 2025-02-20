@@ -24,6 +24,10 @@ import dev.shaper.rypolixy.utils.discord.ResponseType
 import dev.shaper.rypolixy.utils.discord.ReturnType
 import dev.shaper.rypolixy.core.musicplayer.MediaTrack
 import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils
+import dev.shaper.rypolixy.utils.io.database.Database
+import dev.shaper.rypolixy.utils.io.database.DatabaseManager
+import dev.shaper.rypolixy.utils.io.database.DatabaseQuery
+import dev.shaper.rypolixy.utils.io.database.DatabaseQueryManager
 import us.jimschubert.kopper.Parser
 
 
@@ -75,7 +79,7 @@ class Play(private val client: Client): MutualCommand {
         if(findPlayer == null)
             CommandCaller.call(client,"join",context,"silent")
 
-
+        val defaultPlatform = DatabaseManager.getGuildData(context.guildId).playerData.platform
         val searchedTrack: MediaUtils.SearchResult? = when(context){
             is ContextType.Message -> {
                 if(res?.command == null){
@@ -92,7 +96,7 @@ class Play(private val client: Client): MutualCommand {
                             MediaUtils.MediaPlatform.SPOTIFY)
                         res.options.option("url") != null         -> client.lavaClient.search(res.options.option("url")!!,
                             MediaUtils.MediaPlatform.UNKNOWN)
-                        res.command.isNotBlank()                        -> client.lavaClient.search(res.command)
+                        res.command.isNotBlank()                        -> client.lavaClient.search(res.command, defaultPlatform)
                         res.options.unparsedArgs.isNotEmpty()           -> {
                             respond(EmbedFrame.error("잘못된 사용법입니다",null))
                             null
@@ -116,7 +120,7 @@ class Play(private val client: Client): MutualCommand {
                 if(platform!=null)
                     client.lavaClient.search(command.strings["search"]!!, platform)
                 else
-                    client.lavaClient.search(command.strings["search"]!!)
+                    client.lavaClient.search(command.strings["search"]!!,defaultPlatform)
 
             }
         }
@@ -137,9 +141,13 @@ class Play(private val client: Client): MutualCommand {
                         }
                         is MediaTrack.Playlist -> {
                             if(searchedTrack.data.isSeek){
-                                val test = searchedTrack.data.tracks[0]
-                                val track = client.lavaClient.play(test,context.guildId)
-                                respond(EmbedFrame.musicInfo(track!!,image))
+                                if(searchedTrack.data.tracks.isNotEmpty()){
+                                    val test = searchedTrack.data.tracks[0]
+                                    val track = client.lavaClient.play(test,context.guildId)
+                                    respond(EmbedFrame.musicInfo(track!!,image))
+                                } else {
+                                    EmbedFrame.warning("검색 결과가 없습니다",null)
+                                }
                             }
                             else{
                                 client.lavaClient.play(searchedTrack.data,context.guildId)

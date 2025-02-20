@@ -77,9 +77,24 @@ class MediaPlayer {
     }
 
 
-    suspend fun search(query: String, option: MediaUtils.MediaPlatform = MediaUtils.MediaPlatform.SOUNDCLOUD): MediaUtils.SearchResult {
+    suspend fun search(query: String, option: MediaUtils.MediaPlatform): MediaUtils.SearchResult {
 
         try{
+            val checkQuery = MediaRegex.checkAllRegex(query,MediaRegex.REGEX)
+            if (checkQuery.isNotEmpty()) {
+                val platform    = when(checkQuery.keys.toList().first().split(".")[0]){
+                    "youtube"       -> MediaUtils.MediaPlatform.YOUTUBE
+                    "spotify"       -> MediaUtils.MediaPlatform.SPOTIFY
+                    "soundcloud"    -> MediaUtils.MediaPlatform.SOUNDCLOUD
+                    else            -> MediaUtils.MediaPlatform.UNKNOWN
+                }
+                logger.debug { "Found matched regex keys : ${checkQuery.keys.toList()}" }
+                val track = implementTrack(query, platform) ?: return MediaUtils.SearchResult(MediaUtils.SearchType.NORESULTS,null)
+                return MediaUtils.SearchResult(
+                    status      = MediaUtils.SearchType.SUCCESS,
+                    data        = track
+                )
+            }
             when(option){
                 MediaUtils.MediaPlatform.YOUTUBE -> {
                     val dlpSearch   = YtDlpManager.getSearchData(query, option) ?: return MediaUtils.SearchResult(
@@ -104,28 +119,12 @@ class MediaPlayer {
                 }
                 MediaUtils.MediaPlatform.UNKNOWN -> { //URL
                     //TODO : Add process with other websites
-                    val checkQuery = MediaRegex.checkAllRegex(query,MediaRegex.REGEX)
-                    if (checkQuery.isNotEmpty()) {
-                        val platform    = when(checkQuery.keys.toList().first().split(".")[0]){
-                            "youtube"       -> MediaUtils.MediaPlatform.YOUTUBE
-                            "spotify"       -> MediaUtils.MediaPlatform.SPOTIFY
-                            "soundcloud"    -> MediaUtils.MediaPlatform.SOUNDCLOUD
-                            else            -> MediaUtils.MediaPlatform.UNKNOWN
-                        }
-                        logger.debug { "Found matched regex keys : ${checkQuery.keys.toList()}" }
-                        val track = implementTrack(query, platform) ?: return MediaUtils.SearchResult(MediaUtils.SearchType.NORESULTS,null)
-                        return MediaUtils.SearchResult(
-                            status      = MediaUtils.SearchType.SUCCESS,
-                            data        = track
-                        )
-                    } else {
-                        val ytdlpData   = YtDlpManager.getUrlData(query) ?: return MediaUtils.SearchResult(MediaUtils.SearchType.NORESULTS,null)
-                        val lavaData    = MediaUtils.ytDlpTrackBuilder(ytdlpData,option)
-                        return MediaUtils.SearchResult(
-                            status      = MediaUtils.SearchType.SUCCESS,
-                            data        = lavaData
-                        )
-                    }
+                    val ytdlpData   = YtDlpManager.getUrlData(query) ?: return MediaUtils.SearchResult(MediaUtils.SearchType.NORESULTS,null)
+                    val lavaData    = MediaUtils.ytDlpTrackBuilder(ytdlpData,option)
+                    return MediaUtils.SearchResult(
+                        status      = MediaUtils.SearchType.SUCCESS,
+                        data        = lavaData
+                    )
                 }
 
             }
@@ -196,7 +195,7 @@ class MediaPlayer {
     fun shuffle(guildId: Snowflake):Boolean?
         = baseOnOffFunction(guildId) { if (it != null) { connector.options.shuffle = it }; connector.options.shuffle }
 
-    fun related(guildId: Snowflake):Boolean?
+    fun relate(guildId: Snowflake):Boolean?
         = baseOnOffFunction(guildId) { if (it != null) { connector.options.recommendation = it }; connector.options.recommendation }
 
     fun setVolume(guildId: Snowflake, volume:Int){
