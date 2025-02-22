@@ -5,9 +5,9 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import dev.shaper.rypolixy.command.types.InteractionCommand
 import dev.shaper.rypolixy.config.Client
 import dev.shaper.rypolixy.utils.CheckNetwork
-import dev.shaper.rypolixy.utils.discord.ResponseManager.Companion.createDefer
-import dev.shaper.rypolixy.utils.discord.ResponseManager.Companion.sendRespond
-import dev.shaper.rypolixy.utils.discord.ResponseType
+import dev.shaper.rypolixy.utils.discord.context.ResponseManager.Companion.createDefer
+import dev.shaper.rypolixy.utils.discord.context.ResponseManager.Companion.sendRespond
+import dev.shaper.rypolixy.utils.discord.context.ResponseType
 import java.lang.management.ManagementFactory
 import kotlin.time.Duration.Companion.seconds
 

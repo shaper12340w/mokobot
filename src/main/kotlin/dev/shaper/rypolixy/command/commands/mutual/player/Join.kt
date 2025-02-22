@@ -10,17 +10,16 @@ import dev.shaper.rypolixy.command.types.ContextType
 import dev.shaper.rypolixy.command.types.MutualCommand
 import dev.shaper.rypolixy.command.types.TextCommand
 import dev.shaper.rypolixy.config.Client
+import dev.shaper.rypolixy.core.musicplayer.MediaOptions
 import dev.shaper.rypolixy.logger
-import dev.shaper.rypolixy.utils.discord.Colors
-import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.channel
-import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.getMember
-import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.guildId
-import dev.shaper.rypolixy.utils.discord.EmbedFrame
-import dev.shaper.rypolixy.utils.discord.ResponseManager.Companion.sendRespond
-import dev.shaper.rypolixy.utils.discord.ResponseType
-import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils
-import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.interaction
-import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.message
+import dev.shaper.rypolixy.utils.discord.embed.Colors
+import dev.shaper.rypolixy.utils.discord.context.ContextManager.Companion.channel
+import dev.shaper.rypolixy.utils.discord.context.ContextManager.Companion.getMember
+import dev.shaper.rypolixy.utils.discord.context.ContextManager.Companion.guildId
+import dev.shaper.rypolixy.utils.discord.embed.EmbedFrame
+import dev.shaper.rypolixy.utils.discord.context.ResponseManager.Companion.sendRespond
+import dev.shaper.rypolixy.utils.discord.context.ResponseType
+import dev.shaper.rypolixy.utils.io.database.DatabaseManager
 import us.jimschubert.kopper.Parser
 
 
@@ -52,13 +51,14 @@ class Join(private val client: Client): MutualCommand {
         val silentFlag = res?.options?.flag("silent") == true
         suspend fun errorMessage(text:String) {
             val type = if (silentFlag) ResponseType.NO_REPLY else ResponseType.NORMAL
-            context.sendRespond(type,EmbedFrame.error(text,null))
+            context.sendRespond(type, EmbedFrame.error(text,null))
         }
         try {
             val state = context.getMember().getVoiceState()
             if (state.getChannelOrNull() == null) {
                 errorMessage("음성 채널에 입장해주세요")
             } else {
+                val playerOption = DatabaseManager.getGuildData(context.guildId).playerData
                 val findPlayer = client.lavaClient.sessions[context.guildId]
                 val channel = state.getChannelOrNull()
                 val asChannel = channel?.asChannel()
@@ -67,10 +67,12 @@ class Join(private val client: Client): MutualCommand {
                 else {
                     //TODO: Get Player Setting data from Database
                     client.lavaClient.connect(
-                        MediaUtils.ConnectOptions(
-                            channel = context.channel.asChannelOf(),
-                            voiceChannel = channel!!.asChannelOf(),
-                            options = MediaUtils.PlayerOptions()
+                        MediaOptions.ChannelOptions(
+                            messageChannel  = context.channel.asChannelOf(),
+                            voiceChannel    = channel!!.asChannelOf(),
+                        ),
+                        MediaOptions.PlayerOptions(
+                            volume = playerOption.volume.toDouble(),
                         )
                     )
                     if (!silentFlag ||

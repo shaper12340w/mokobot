@@ -4,10 +4,10 @@ import dev.shaper.rypolixy.command.types.ContextType
 import dev.shaper.rypolixy.command.types.MutualCommand
 import dev.shaper.rypolixy.command.types.TextCommand
 import dev.shaper.rypolixy.config.Client
-import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.guildId
-import dev.shaper.rypolixy.utils.discord.EmbedFrame
-import dev.shaper.rypolixy.utils.discord.ResponseManager.Companion.sendRespond
-import dev.shaper.rypolixy.utils.discord.ResponseType
+import dev.shaper.rypolixy.utils.discord.context.ContextManager.Companion.guildId
+import dev.shaper.rypolixy.utils.discord.embed.EmbedFrame
+import dev.shaper.rypolixy.utils.discord.context.ResponseManager.Companion.sendRespond
+import dev.shaper.rypolixy.utils.discord.context.ResponseType
 
 class Playing(private val client: Client): MutualCommand {
 
@@ -28,7 +28,7 @@ class Playing(private val client: Client): MutualCommand {
         else {
             context.sendRespond(
                 ResponseType.NORMAL,
-                EmbedFrame.musicInfo(session.currentTrack()!!,"")
+                EmbedFrame.musicInfo(session.currentTrack(),"")
             )
         }
     }

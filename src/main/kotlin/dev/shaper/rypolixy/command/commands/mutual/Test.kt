@@ -1,25 +1,21 @@
 package dev.shaper.rypolixy.command.commands.mutual
 
 import dev.kord.common.entity.ButtonStyle
-import dev.kord.common.entity.DiscordPartialEmoji
 import dev.kord.common.entity.TextInputStyle
 import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.entity.interaction.ButtonInteraction
 import dev.kord.core.entity.interaction.ModalSubmitInteraction
 import dev.kord.core.entity.interaction.SelectMenuInteraction
-import dev.kord.core.entity.interaction.StringOptionValue
 import dev.kord.rest.builder.component.ActionRowBuilder
 import dev.kord.rest.builder.component.SelectOptionBuilder
-import dev.kord.rest.builder.message.actionRow
 import dev.shaper.rypolixy.command.types.ContextType
 import dev.shaper.rypolixy.command.types.MutualCommand
 import dev.shaper.rypolixy.command.types.TextCommand
 import dev.shaper.rypolixy.config.Client
-import dev.shaper.rypolixy.utils.discord.EmbedFrame
-import dev.shaper.rypolixy.utils.discord.ResponseManager.Companion.sendRespond
-import dev.shaper.rypolixy.utils.discord.ResponseType
+import dev.shaper.rypolixy.utils.discord.embed.EmbedFrame
+import dev.shaper.rypolixy.utils.discord.context.ResponseManager.Companion.sendRespond
+import dev.shaper.rypolixy.utils.discord.context.ResponseType
 import dev.shaper.rypolixy.utils.discord.actionrow.*
-import dev.shaper.rypolixy.utils.io.database.Database.logger
 import java.util.*
 
 class Test(private val client: Client): MutualCommand {
@@ -61,7 +57,6 @@ class Test(private val client: Client): MutualCommand {
         }
 
         val button  = ActionRowManager.CreateButton(UUID.randomUUID()).apply {
-            
             addButton(DefaultButton(
                 label = "OK",
                 style = ButtonStyle.Primary,

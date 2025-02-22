@@ -6,7 +6,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack
 class MediaBehavior (val audioTrack: AudioTrack){
 
     enum class PlayStatus{
-        IDLE,PLAYING,END,REMOVED
+        IDLE,PLAYING,END,REMOVED,EXCEPTION
     }
     var status = PlayStatus.IDLE
 

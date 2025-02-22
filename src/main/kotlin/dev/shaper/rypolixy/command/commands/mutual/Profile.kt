@@ -3,7 +3,6 @@ package dev.shaper.rypolixy.command.commands.mutual
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Permissions
 import dev.kord.common.entity.Snowflake
-import dev.kord.core.entity.Member
 import dev.kord.rest.Image
 import dev.kord.rest.builder.interaction.ChatInputCreateBuilder
 import dev.kord.rest.builder.interaction.user
@@ -13,12 +12,10 @@ import dev.shaper.rypolixy.command.types.ContextType
 import dev.shaper.rypolixy.command.types.MutualCommand
 import dev.shaper.rypolixy.command.types.TextCommand
 import dev.shaper.rypolixy.config.Client
-import dev.shaper.rypolixy.logger
-import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.getMember
-import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.getUser
-import dev.shaper.rypolixy.utils.discord.EmbedFrame
-import dev.shaper.rypolixy.utils.discord.ResponseManager.Companion.sendRespond
-import dev.shaper.rypolixy.utils.discord.ResponseType
+import dev.shaper.rypolixy.utils.discord.context.ContextManager.Companion.getMember
+import dev.shaper.rypolixy.utils.discord.context.ContextManager.Companion.getUser
+import dev.shaper.rypolixy.utils.discord.context.ResponseManager.Companion.sendRespond
+import dev.shaper.rypolixy.utils.discord.context.ResponseType
 
 class Profile (private val client: Client): MutualCommand {
 

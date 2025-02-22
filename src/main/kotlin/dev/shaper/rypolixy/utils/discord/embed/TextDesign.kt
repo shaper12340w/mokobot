@@ -1,4 +1,4 @@
-package dev.shaper.rypolixy.utils.discord
+package dev.shaper.rypolixy.utils.discord.embed
 
 import dev.kord.rest.builder.message.EmbedBuilder
 

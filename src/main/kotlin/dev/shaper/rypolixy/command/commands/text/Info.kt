@@ -5,7 +5,7 @@ import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.rest.builder.message.embed
 import dev.shaper.rypolixy.command.types.TextCommand
 import dev.shaper.rypolixy.utils.CheckNetwork
-import dev.shaper.rypolixy.utils.discord.ResponseManager.Companion.sendRespond
+import dev.shaper.rypolixy.utils.discord.context.ResponseManager.Companion.sendRespond
 import java.lang.management.ManagementFactory
 import kotlin.time.Duration.Companion.seconds
 

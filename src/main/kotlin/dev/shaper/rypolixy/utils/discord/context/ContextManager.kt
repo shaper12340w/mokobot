@@ -1,4 +1,4 @@
-package dev.shaper.rypolixy.utils.discord
+package dev.shaper.rypolixy.utils.discord.context
 
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.Guild
