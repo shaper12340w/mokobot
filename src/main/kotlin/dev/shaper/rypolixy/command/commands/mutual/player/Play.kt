@@ -14,20 +14,17 @@ import dev.shaper.rypolixy.command.types.ContextType
 import dev.shaper.rypolixy.command.types.MutualCommand
 import dev.shaper.rypolixy.command.types.TextCommand
 import dev.shaper.rypolixy.config.Client
-import dev.shaper.rypolixy.logger
+import dev.shaper.rypolixy.core.musicplayer.MediaOptions
 import dev.shaper.rypolixy.utils.discord.CommandCaller
-import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.getMember
-import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.guildId
-import dev.shaper.rypolixy.utils.discord.EmbedFrame
-import dev.shaper.rypolixy.utils.discord.ResponseManager.Companion.sendRespond
-import dev.shaper.rypolixy.utils.discord.ResponseType
-import dev.shaper.rypolixy.utils.discord.ReturnType
+import dev.shaper.rypolixy.utils.discord.context.ContextManager.Companion.getMember
+import dev.shaper.rypolixy.utils.discord.context.ContextManager.Companion.guildId
+import dev.shaper.rypolixy.utils.discord.embed.EmbedFrame
+import dev.shaper.rypolixy.utils.discord.context.ResponseManager.Companion.sendRespond
+import dev.shaper.rypolixy.utils.discord.context.ResponseType
+import dev.shaper.rypolixy.utils.discord.context.ReturnType
 import dev.shaper.rypolixy.core.musicplayer.MediaTrack
 import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils
-import dev.shaper.rypolixy.utils.io.database.Database
 import dev.shaper.rypolixy.utils.io.database.DatabaseManager
-import dev.shaper.rypolixy.utils.io.database.DatabaseQuery
-import dev.shaper.rypolixy.utils.io.database.DatabaseQueryManager
 import us.jimschubert.kopper.Parser
 
 
@@ -67,7 +64,9 @@ class Play(private val client: Client): MutualCommand {
 
     override suspend fun execute(context: ContextType, res: TextCommand.ResponseData?) {
         val findPlayer = client.lavaClient.sessions[context.guildId]
-        val waitMessage = context.sendRespond(ResponseType.NORMAL,EmbedFrame.loading("로딩중입니다. 잠시만 기다려 주세요",null).apply { footer = EmbedBuilder.Footer().apply { text = "유튜브의 경우 시간이 다소 소요될 수 있습니다"} })
+        val waitMessage = context.sendRespond(
+            ResponseType.NORMAL,
+            EmbedFrame.loading("로딩중입니다. 잠시만 기다려 주세요",null).apply { footer = EmbedBuilder.Footer().apply { text = "유튜브의 경우 시간이 다소 소요될 수 있습니다"} })
         suspend fun respond(emb: EmbedBuilder){
             when(waitMessage){
                 is ReturnType.Message        -> { waitMessage.data.edit { embeds = listOf(emb).toMutableList() } }
@@ -80,7 +79,7 @@ class Play(private val client: Client): MutualCommand {
             CommandCaller.call(client,"join",context,"silent")
 
         val defaultPlatform = DatabaseManager.getGuildData(context.guildId).playerData.platform
-        val searchedTrack: MediaUtils.SearchResult? = when(context){
+        val searchedTrack: MediaOptions.SearchResult? = when(context){
             is ContextType.Message -> {
                 if(res?.command == null){
                     respond(EmbedFrame.error("검색어를 입력해주세요",null))
@@ -127,7 +126,7 @@ class Play(private val client: Client): MutualCommand {
         if(searchedTrack != null) {
 
             when(searchedTrack.status){
-                is MediaUtils.SearchType.SUCCESS -> {
+                is MediaOptions.SearchType.SUCCESS -> {
                     val image = context.getMember().avatar?.cdnUrl?.toUrl {
                         CdnUrl.UrlFormatBuilder().apply {
                             format = Image.Format.WEBP
@@ -151,25 +150,26 @@ class Play(private val client: Client): MutualCommand {
                             }
                             else{
                                 client.lavaClient.play(searchedTrack.data,context.guildId)
-                                respond(EmbedFrame.list(searchedTrack.data.title,
+                                respond(
+                                    EmbedFrame.list(searchedTrack.data.title,
                                     searchedTrack.data.tracks.joinToString("\n") { it.title }) {
                                     thumbnail { url = searchedTrack.data.thumbnail ?: "" }
                                 })
                             }
                         }
-                        else -> context.sendRespond(ResponseType.NORMAL,EmbedFrame.warning("검색 결과가 없습니다",null))
+                        else -> context.sendRespond(ResponseType.NORMAL, EmbedFrame.warning("검색 결과가 없습니다",null))
 
                     }
 
                 }
-                is MediaUtils.SearchType.ERROR       -> respond(EmbedFrame.error("에러가 발생했습니다",searchedTrack.status.exception.message))
-                is MediaUtils.SearchType.NORESULTS   -> respond(EmbedFrame.warning("검색 결과가 없습니다",null))
+                is MediaOptions.SearchType.ERROR       -> respond(EmbedFrame.error("에러가 발생했습니다",searchedTrack.status.exception.message))
+                is MediaOptions.SearchType.NORESULTS   -> respond(EmbedFrame.warning("검색 결과가 없습니다",null))
             }
 
 
         }
         else
-            context.sendRespond(ResponseType.NORMAL,EmbedFrame.warning("검색 결과가 없습니다",null))
+            context.sendRespond(ResponseType.NORMAL, EmbedFrame.warning("검색 결과가 없습니다",null))
 
     }
 

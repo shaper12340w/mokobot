@@ -25,40 +25,56 @@ class MediaEvent(
             when (event) {
                 is TrackStuckEvent  -> logger.warn { "Track is Stuck" }
                 is TrackEndEvent    -> {
-                    logger.debug { event.endReason }
-                    if(event.endReason == AudioTrackEndReason.CLEANUP && session.options.paused){
-                        logger.warn { "Track is terminated! "}
-                        session.options.terminated = true
-                    }
-                    else{
-                        session.currentTrack()?.data?.status = MediaBehavior.PlayStatus.END
-                        player.playNext(guildId)
+                    logger.debug { "Track End Up With Reason : ${event.endReason}" }
+                    when (event.endReason) {
+                        AudioTrackEndReason.CLEANUP     -> {
+                            if(session.player.status == MediaOptions.PlayerStatus.PAUSED){
+                                logger.warn { "Track is terminated! "}
+                                session.player.status = MediaOptions.PlayerStatus.TERMINATED
+                            }
+                        }
+                        AudioTrackEndReason.FINISHED    -> {
+                            if(session.player.status != MediaOptions.PlayerStatus.ERROR) {
+                                session.currentTrack().data.status = MediaBehavior.PlayStatus.END
+                                player.next(guildId)
+                            } else {
+                                try {
+                                    session.currentTrack().data.status = MediaBehavior.PlayStatus.IDLE
+                                    session.queue.position  = player.getPosition(guildId)
+                                    RetryUtil.retry { session.reload() }
+                                } catch(e:Exception){
+                                    player.sendError(guildId,e)
+                                    player.next(guildId)
+                                }
+                            }
+                        }
+                        AudioTrackEndReason.LOAD_FAILED -> {
+                            logger.error { "Track load failed" }
+                            player.sendError(guildId,Exception("Track load failed"))
+                        }
+                        else -> Unit
                     }
                 }
                 is TrackStartEvent -> {
-                    session.player.volume = player.getVolume(guildId)
+                    session.options.volume = player.getVolume(guildId)
                 } //Todo : Add stack or deque to preload others
                 is TrackExceptionEvent -> {
-                    try {
-                        RetryUtil.retry { session.reload() }
-                    } catch(e:Exception){
-                        player.sendError(guildId,event.exception)
-                        player.playNext(guildId)
-                    }
+                    session.player.status = MediaOptions.PlayerStatus.ERROR
+                    player.sendError(guildId,event.exception)
                 }
                 is PlayerPauseEvent -> {
-                    session.options.position    = session.currentTrack()?.data?.audioTrack?.position ?: 0
-                    session.options.paused      = true
+                    session.queue.position    = player.getPosition(guildId)
+                    session.player.status     = MediaOptions.PlayerStatus.PAUSED
                 }
                 is PlayerResumeEvent -> {
-                    if(session.options.terminated){
+                    if(session.player.status == MediaOptions.PlayerStatus.TERMINATED){
                         try { session.update() } //Try reload from saved url
                         catch (e:Exception){
                             try { session.reload() }  //Try re-search and reload
                             catch (ex:Exception) { throw ex } //else fuc stop it
                         }
                     }
-                    session.options.paused = false
+                    session.player.status = MediaOptions.PlayerStatus.PLAYING
                 }
             }
         }

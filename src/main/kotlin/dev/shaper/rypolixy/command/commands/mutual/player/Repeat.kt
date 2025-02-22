@@ -6,11 +6,11 @@ import dev.shaper.rypolixy.command.types.ContextType
 import dev.shaper.rypolixy.command.types.MutualCommand
 import dev.shaper.rypolixy.command.types.TextCommand
 import dev.shaper.rypolixy.config.Client
-import dev.shaper.rypolixy.utils.discord.ContextManager.Companion.guildId
-import dev.shaper.rypolixy.utils.discord.EmbedFrame
-import dev.shaper.rypolixy.utils.discord.ResponseManager.Companion.sendRespond
-import dev.shaper.rypolixy.utils.discord.ResponseType
-import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils
+import dev.shaper.rypolixy.core.musicplayer.MediaOptions
+import dev.shaper.rypolixy.utils.discord.context.ContextManager.Companion.guildId
+import dev.shaper.rypolixy.utils.discord.embed.EmbedFrame
+import dev.shaper.rypolixy.utils.discord.context.ResponseManager.Companion.sendRespond
+import dev.shaper.rypolixy.utils.discord.context.ResponseType
 import us.jimschubert.kopper.Parser
 
 class Repeat(private val client: Client): MutualCommand {
@@ -47,26 +47,26 @@ class Repeat(private val client: Client): MutualCommand {
             )
         }
         else {
-            fun modeValue(option: String?): MediaUtils.PlayerOptions.RepeatType? {
+            fun modeValue(option: String?): MediaOptions.RepeatType? {
                 return when (option) {
-                    "a","all","ALL","All"                           -> MediaUtils.PlayerOptions.RepeatType.ALL
-                    "o","once","ONCE","Once"                        -> MediaUtils.PlayerOptions.RepeatType.ONCE
-                    "n","none","default","d","Default","DEFAULT"    -> MediaUtils.PlayerOptions.RepeatType.DEFAULT
+                    "a","all","ALL","All"                           -> MediaOptions.RepeatType.ALL
+                    "o","once","ONCE","Once"                        -> MediaOptions.RepeatType.ONCE
+                    "n","none","default","d","Default","DEFAULT"    -> MediaOptions.RepeatType.DEFAULT
                     else                                            -> null
                 }
             }
-            fun modeText(option: MediaUtils.PlayerOptions.RepeatType): String {
+            fun modeText(option: MediaOptions.RepeatType): String {
                 return when (option) {
-                    MediaUtils.PlayerOptions.RepeatType.ALL     -> "전체 반복"
-                    MediaUtils.PlayerOptions.RepeatType.ONCE    -> "한 곡 반복"
-                    MediaUtils.PlayerOptions.RepeatType.DEFAULT -> "반복 안함"
+                    MediaOptions.RepeatType.ALL     -> "전체 반복"
+                    MediaOptions.RepeatType.ONCE    -> "한 곡 반복"
+                    MediaOptions.RepeatType.DEFAULT -> "반복 안함"
                 }
             }
             when (context){
                 is ContextType.Interaction -> {
                     val option = context.value.interaction.command.strings["type"]
                     val mode    = modeValue(option)!!
-                    session.connector.options.repeat = mode
+                    session.options.repeat = mode
                     context.sendRespond(
                         ResponseType.NORMAL,
                         EmbedFrame.info("반복 모드가 **${modeText(mode)}** 으로 설정되었습니다",null)
@@ -86,7 +86,7 @@ class Repeat(private val client: Client): MutualCommand {
                         )
                     }
                     else {
-                        session.connector.options.repeat = mode
+                        session.options.repeat = mode
                         context.sendRespond(
                             ResponseType.NORMAL,
                             EmbedFrame.info("반복 모드가 **${modeText(mode)}** 으로 설정되었습니다",null)
