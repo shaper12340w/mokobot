@@ -33,7 +33,8 @@ object MediaParser {
                         duration    = parseTimeToSeconds(it.videoRenderer.lengthText.text)?.toDuration(DurationUnit.SECONDS) ?: (0).toDuration(DurationUnit.SECONDS),
                         url         = "${MediaRegex.REGEX.youtube.youtubeBaseUrl}/watch?v=${it.videoRenderer.videoId}",
                         thumbnail   = it.videoRenderer.thumbnail.thumbnails.firstOrNull()?.url ?: "",
-                        source      = source
+                        source      = source,
+                        artist      = it.videoRenderer.channelInfo.runs.firstOrNull()?.channelName ?: "Unknown"
                     )
                 }
             }
@@ -46,7 +47,8 @@ object MediaParser {
                         duration    = it.duration.toDuration(DurationUnit.SECONDS),
                         url         = it.permalinkUrl,
                         source      = source,
-                        thumbnail   = it.artworkUrl
+                        thumbnail   = it.artworkUrl,
+                        artist      = it.publisherMetadata?.artist ?: "Unknown"
                     )
                 }
             }

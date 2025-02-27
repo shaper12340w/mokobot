@@ -61,7 +61,7 @@ object EmbedFrame {
                 },
                 EmbedBuilder.Field().apply {
                     name    = "채널"
-                    value   = track.author
+                    value   = track.artist
                     inline  = true
                 },
                 EmbedBuilder.Field().apply {
@@ -81,10 +81,10 @@ object EmbedFrame {
         }
     }
 
-    fun list(title: String,des:String,builder:EmbedBuilder.() -> Unit = {}): EmbedBuilder {
+    fun list(title: String,des:String,count:Int = 0,builder:EmbedBuilder.() -> Unit = {}): EmbedBuilder {
         return EmbedBuilder().apply {
             title("",title)
-            description = des.split("\n").mapIndexed { index, s -> "${index+1}. $s"  }.joinToString("\n")
+            description = des.split("\n").mapIndexed { index, s -> "${index+count+1}. $s"  }.joinToString("\n")
         }.apply(builder)
     }
 

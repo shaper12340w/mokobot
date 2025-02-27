@@ -11,6 +11,7 @@ sealed class MediaTrack {
     abstract val url        : String?
     abstract val thumbnail  : String?
     abstract val source     : MediaPlatform
+    abstract val artist     : String
 
     data class Track(
         override val title      : String,
@@ -18,8 +19,8 @@ sealed class MediaTrack {
         override val url        : String?,
         override val source     : MediaPlatform,
         override val thumbnail  : String?,
+        override val artist     : String,
         val id          : String,
-        val author      : String,
         var data        : MediaBehavior
     ) : BaseTrack() {
 
@@ -37,6 +38,7 @@ sealed class MediaTrack {
         override val url        : String?,
         override val thumbnail  : String?,
         override val source     : MediaPlatform,
+        override val artist     : String,
         val isSeek: Boolean,
         val tracks: MutableList<MediaTrack>,
     ) : MediaTrack()
@@ -47,6 +49,7 @@ sealed class MediaTrack {
         override val url        : String?,
         override val thumbnail  : String?,
         override val source     : MediaPlatform,
+        override val artist     : String,
     ) :BaseTrack(){
 
         suspend fun toTrack(): Track? {

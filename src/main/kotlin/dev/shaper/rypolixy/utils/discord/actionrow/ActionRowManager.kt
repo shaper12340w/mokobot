@@ -27,6 +27,7 @@ object ActionRowManager {
     class CreateButton(private val customId: UUID, private val buttonData:ButtonData? = null) {
 
         private val buttonList = mutableListOf<ButtonInit>()
+        private val listeners = mutableListOf<EventListener<ButtonEvent>>()
 
         init {
             buttonList.addAll(buttonData?.buttons ?: emptyList())
@@ -35,6 +36,8 @@ object ActionRowManager {
         fun addButton(button: ButtonInit) {
             buttonList.add(button)
         }
+
+        fun getListeners(): List<EventListener<ButtonEvent>> = listeners
 
         fun build(): ActionRowBuilder {
             fun createButtonSet(buttons: List<Button>) : ActionRowBuilder {
@@ -63,6 +66,7 @@ object ActionRowManager {
                 }
                 return actionRow
             }
+
             buttonList.forEachIndexed { index, button ->
                 val listener = object : EventListener<ButtonEvent> {
                     override fun onEvent(event: ButtonEvent) {
@@ -92,11 +96,13 @@ object ActionRowManager {
                         return createButtonSet(buttonList)
                     }
 
-                    fun killButton() {
-                        emitter.off(this)
+                    fun killButton(isAll: Boolean = false) {
+                        if (isAll)  listeners.forEach { emitter.off(it) }
+                        else        emitter.off(this)
                     }
                 }
                 emitter.on(listener)
+                listeners.add(listener)
             }
             return createButtonSet(buttonList)
         }

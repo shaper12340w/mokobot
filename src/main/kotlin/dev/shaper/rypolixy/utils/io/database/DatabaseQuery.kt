@@ -20,7 +20,7 @@ sealed class DatabaseQuery {
             discord_id          BIGINT UNIQUE NOT NULL,     -- discord id  
             name                VARCHAR(255) NOT NULL,      -- guild name
             users               uuid[] NOT NULL,            -- users uuid
-            allowed_command     uuid[] NOT NULL             -- allowed_command
+            excluded_command    uuid[] NOT NULL             -- excluded_command
         );
         CREATE TABLE IF NOT EXISTS users (
             user_id             uuid PRIMARY KEY,           -- uuid PRIMARY KEY
@@ -70,7 +70,7 @@ sealed class DatabaseQuery {
             SET 
                 name = ?,
                 users = ?,
-                allowed_command = ?
+                excluded_command = ?
             WHERE guild_id = ?;
         """.trimIndent()
 

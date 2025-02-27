@@ -1,5 +1,6 @@
 package dev.shaper.rypolixy.command.commands.text
 
+import dev.kord.common.entity.Snowflake
 import dev.shaper.rypolixy.config.Client
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.rest.builder.message.embed

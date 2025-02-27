@@ -5,18 +5,17 @@ import dev.kord.common.entity.Permissions
 import dev.kord.core.behavior.edit
 import dev.kord.core.behavior.interaction.response.PublicMessageInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.response.edit
-import dev.kord.rest.Image
+import dev.kord.core.entity.Message
 import dev.kord.rest.builder.interaction.ChatInputCreateBuilder
 import dev.kord.rest.builder.interaction.string
 import dev.kord.rest.builder.message.EmbedBuilder
-import dev.kord.rest.route.CdnUrl
+import dev.kord.rest.builder.message.MessageBuilder
 import dev.shaper.rypolixy.command.types.ContextType
 import dev.shaper.rypolixy.command.types.MutualCommand
 import dev.shaper.rypolixy.command.types.TextCommand
 import dev.shaper.rypolixy.config.Client
 import dev.shaper.rypolixy.core.musicplayer.MediaOptions
 import dev.shaper.rypolixy.utils.discord.CommandCaller
-import dev.shaper.rypolixy.utils.discord.context.ContextManager.Companion.getMember
 import dev.shaper.rypolixy.utils.discord.context.ContextManager.Companion.guildId
 import dev.shaper.rypolixy.utils.discord.embed.EmbedFrame
 import dev.shaper.rypolixy.utils.discord.context.ResponseManager.Companion.sendRespond
@@ -24,6 +23,10 @@ import dev.shaper.rypolixy.utils.discord.context.ResponseType
 import dev.shaper.rypolixy.utils.discord.context.ReturnType
 import dev.shaper.rypolixy.core.musicplayer.MediaTrack
 import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils
+import dev.shaper.rypolixy.utils.discord.KordUtils.avatarUrl
+import dev.shaper.rypolixy.utils.discord.context.ContextManager.Companion.getUser
+import dev.shaper.rypolixy.utils.discord.context.DefaultMessageBuilder
+import dev.shaper.rypolixy.utils.discord.embed.PageEmbed
 import dev.shaper.rypolixy.utils.io.database.DatabaseManager
 import us.jimschubert.kopper.Parser
 
@@ -38,7 +41,7 @@ class Play(private val client: Client): MutualCommand {
 
     override fun setup(builder: ChatInputCreateBuilder) {
         builder.apply {
-            defaultMemberPermissions = Permissions(Permission.ManageMessages)
+            defaultMemberPermissions = Permissions(Permission.SendMessages)
             string("search","video or music url or to search"){
                 required = true
             }
@@ -67,13 +70,13 @@ class Play(private val client: Client): MutualCommand {
         val waitMessage = context.sendRespond(
             ResponseType.NORMAL,
             EmbedFrame.loading("로딩중입니다. 잠시만 기다려 주세요",null).apply { footer = EmbedBuilder.Footer().apply { text = "유튜브의 경우 시간이 다소 소요될 수 있습니다"} })
-        suspend fun respond(emb: EmbedBuilder){
-            when(waitMessage){
-                is ReturnType.Message        -> { waitMessage.data.edit { embeds = listOf(emb).toMutableList() } }
-                is ReturnType.Interaction    -> { (waitMessage.data as PublicMessageInteractionResponseBehavior).edit { embeds = listOf(emb).toMutableList() } }
-                else -> Unit
-            }
 
+        suspend fun respond(message: MessageBuilder.() -> Unit): Message? {
+            when(waitMessage){
+                is ReturnType.Message        -> { return waitMessage.data.edit (message) }
+                is ReturnType.Interaction    -> { return (waitMessage.data as PublicMessageInteractionResponseBehavior).edit (message).message }
+                else -> return null
+            }
         }
         if(findPlayer == null)
             CommandCaller.call(client,"join",context,"silent")
@@ -82,7 +85,7 @@ class Play(private val client: Client): MutualCommand {
         val searchedTrack: MediaOptions.SearchResult? = when(context){
             is ContextType.Message -> {
                 if(res?.command == null){
-                    respond(EmbedFrame.error("검색어를 입력해주세요",null))
+                    respond { embeds = mutableListOf(EmbedFrame.error("검색어를 입력해주세요",null)) }
                     null
                 }
                 else{
@@ -97,11 +100,11 @@ class Play(private val client: Client): MutualCommand {
                             MediaUtils.MediaPlatform.UNKNOWN)
                         res.command.isNotBlank()                        -> client.lavaClient.search(res.command, defaultPlatform)
                         res.options.unparsedArgs.isNotEmpty()           -> {
-                            respond(EmbedFrame.error("잘못된 사용법입니다",null))
+                            respond { embeds = mutableListOf(EmbedFrame.error("잘못된 사용법입니다",null)) }
                             null
                         }
                         else -> {
-                            respond(EmbedFrame.error("잘못된 사용법입니다",null))
+                            respond { embeds = mutableListOf(EmbedFrame.error("잘못된 사용법입니다",null)) }
                             null
                         }
                     }
@@ -127,34 +130,32 @@ class Play(private val client: Client): MutualCommand {
 
             when(searchedTrack.status){
                 is MediaOptions.SearchType.SUCCESS -> {
-                    val image = context.getMember().avatar?.cdnUrl?.toUrl {
-                        CdnUrl.UrlFormatBuilder().apply {
-                            format = Image.Format.WEBP
-                            size   = Image.Size.Size1024
-                        }
-                    }
+                    val image = context.getUser().avatarUrl()
                     when(searchedTrack.data){
                         is MediaTrack.Track -> {
                             client.lavaClient.play(searchedTrack.data,context.guildId)
-                            respond(EmbedFrame.musicInfo(searchedTrack.data,image))
+                            respond { embeds = mutableListOf(EmbedFrame.musicInfo(searchedTrack.data,image)) }
                         }
                         is MediaTrack.Playlist -> {
                             if(searchedTrack.data.isSeek){
                                 if(searchedTrack.data.tracks.isNotEmpty()){
                                     val test = searchedTrack.data.tracks[0]
                                     val track = client.lavaClient.play(test,context.guildId)
-                                    respond(EmbedFrame.musicInfo(track!!,image))
+                                    respond { embeds = mutableListOf(EmbedFrame.musicInfo(track!!,image)) }
                                 } else {
-                                    EmbedFrame.warning("검색 결과가 없습니다",null)
+                                    respond { embeds = mutableListOf(EmbedFrame.warning("검색 결과가 없습니다",null)) }
                                 }
                             }
                             else{
                                 client.lavaClient.play(searchedTrack.data,context.guildId)
-                                respond(
-                                    EmbedFrame.list(searchedTrack.data.title,
-                                    searchedTrack.data.tracks.joinToString("\n") { it.title }) {
-                                    thumbnail { url = searchedTrack.data.thumbnail ?: "" }
-                                })
+                                val pageBuilder = PageEmbed(searchedTrack.data.title)
+                                    .autoSplitEmbed(searchedTrack.data.tracks.joinToString("\n") { it.title })
+                                val page = pageBuilder.build()
+                                val response = respond {
+                                    embeds      = page.embeds
+                                    components  = page.components
+                                }
+                                pageBuilder.setMessage(response!!)
                             }
                         }
                         else -> context.sendRespond(ResponseType.NORMAL, EmbedFrame.warning("검색 결과가 없습니다",null))
@@ -162,8 +163,8 @@ class Play(private val client: Client): MutualCommand {
                     }
 
                 }
-                is MediaOptions.SearchType.ERROR       -> respond(EmbedFrame.error("에러가 발생했습니다",searchedTrack.status.exception.message))
-                is MediaOptions.SearchType.NORESULTS   -> respond(EmbedFrame.warning("검색 결과가 없습니다",null))
+                is MediaOptions.SearchType.ERROR       -> respond { embeds = mutableListOf(EmbedFrame.error("에러가 발생했습니다",searchedTrack.status.exception.message)) }
+                is MediaOptions.SearchType.NORESULTS   -> respond { embeds = mutableListOf(EmbedFrame.warning("검색 결과가 없습니다",null)) }
             }
 
 

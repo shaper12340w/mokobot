@@ -60,7 +60,6 @@ class MediaEvent(
                 } //Todo : Add stack or deque to preload others
                 is TrackExceptionEvent -> {
                     session.player.status = MediaOptions.PlayerStatus.ERROR
-                    player.sendError(guildId,event.exception)
                 }
                 is PlayerPauseEvent -> {
                     session.queue.position    = player.getPosition(guildId)

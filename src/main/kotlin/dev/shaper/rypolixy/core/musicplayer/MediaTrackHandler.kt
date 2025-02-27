@@ -52,6 +52,7 @@ class MediaTrackHandler(player: MediaPlayer, private val guildId: Snowflake) {
     }
 
     private fun resetSession() {
+        session.player.status = MediaOptions.PlayerStatus.IDLE
         session.queue.index     = 0
         session.queue.subIndex  = 0
     }
@@ -123,31 +124,25 @@ class MediaTrackHandler(player: MediaPlayer, private val guildId: Snowflake) {
         val currentTracks   = session.queue.tracks                 // Base Track List
         val availableTracks = mutableListOf<MediaTrack>()           // Shallow Copy
 
-        if(session.options.shuffle){
-            currentTracks.forEach { track ->
-                when (track) {
-                    is MediaTrack.FlatTrack,
-                    is MediaTrack.Track -> availableTracks.add(track)
-                    is MediaTrack.Playlist -> {
-                        availableTracks.add(
-                            track.copy(tracks = track.tracks.shuffled().toMutableList())
-                        )
-                    }
-                    else -> Unit
-                }
-            }
+        if(session.options.shuffle)
             availableTracks.shuffle()
-        }
-        else availableTracks.addAll(currentTracks)
+        availableTracks.addAll(currentTracks)
 
         while (availableTracks.isNotEmpty()) {
             val nextIndex = if (session.queue.subIndex > 0)
                 session.queue.index
             else 0
-            when (val nextMedia = availableTracks[nextIndex]) {
+            val nextMedia = availableTracks[nextIndex]
+            fun getIndex(): Int {
+                val index = currentTracks.indexOf(nextMedia)
+                if(index == -1)
+                    throw IndexOutOfBoundsException("Track not found")
+                return index
+            }
+            when (nextMedia) {
                 is MediaTrack.Track -> {
                     if(nextMedia.data.status == MediaBehavior.PlayStatus.IDLE) { //Check Track is Played
-                        session.queue.index = currentTracks.indexOf(nextMedia)
+                        session.queue.index = getIndex()
                         playTrack(nextMedia)
                         return false
                     }
@@ -155,7 +150,7 @@ class MediaTrackHandler(player: MediaPlayer, private val guildId: Snowflake) {
                 }
                 is MediaTrack.FlatTrack -> {
                     val convertedTrack  = nextMedia.toTrack() ?: throw Exception("Error occurred while converting track")
-                    val trackIndex      = currentTracks.indexOf(nextMedia)
+                    val trackIndex      = getIndex()
                     session.queue.tracks[trackIndex] = convertedTrack
                     session.queue.index = trackIndex
                     playTrack(convertedTrack)
@@ -167,10 +162,10 @@ class MediaTrackHandler(player: MediaPlayer, private val guildId: Snowflake) {
                             .filter { it.data.status == MediaBehavior.PlayStatus.IDLE }) // Collect Track Not Played
                     if (idleTracks.isNotEmpty()) {
                         val currentPlaylist = currentTracks[session.queue.index] as MediaTrack.Playlist
-                        val nextTrack = idleTracks.first()
+                        val nextTrack = if(session.options.shuffle) idleTracks.shuffled().first() else idleTracks.first()
                         var implementedTrack: MediaTrack.Track? = null
                         if(session.queue.subIndex == 0)
-                            session.queue.index = currentTracks.indexOf(nextMedia)
+                            session.queue.index = getIndex()
                         if(nextTrack is MediaTrack.FlatTrack){
                             implementedTrack = nextTrack.toTrack() ?: throw Exception("Error occurred while converting track")
                             currentPlaylist.tracks[session.queue.subIndex] = implementedTrack
@@ -186,6 +181,7 @@ class MediaTrackHandler(player: MediaPlayer, private val guildId: Snowflake) {
                 }
                 is MediaTrack.BaseTrack -> throw UnknownFormatFlagsException("${nextMedia::class.simpleName} is illegal class")
             }
+
         }
         return true
     }

@@ -1,5 +1,6 @@
 package dev.shaper.rypolixy.command.types
 
+import dev.kord.common.entity.Snowflake
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.rest.builder.interaction.ChatInputCreateBuilder
 import us.jimschubert.kopper.ArgumentCollection
@@ -12,7 +13,6 @@ interface TextCommand: CommandStructure {
     }
 
     val commandType: CommandType
-
 
     data class CommandType(
         val prefix:MutableList<String>? = null,
