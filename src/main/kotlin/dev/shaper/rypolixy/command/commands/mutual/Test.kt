@@ -28,7 +28,6 @@ class Test(private val client: Client): MutualCommand {
 
     override suspend fun execute(context: ContextType, res: TextCommand.ResponseData?) {
 
-
         suspend fun selectMenuExecute(interaction: SelectMenuInteraction, kill: () -> Unit) {
             interaction.respondPublic { content = interaction.values.firstOrNull() ?: "응애" }
         }
@@ -52,6 +51,7 @@ class Test(private val client: Client): MutualCommand {
                     interaction.respondPublic { content = values?.value?.value + " | " + values?.key }
                 }
                 show(interaction,::execute)
+                interaction.channel.createMessage(interaction.componentId)
             }
 
         }

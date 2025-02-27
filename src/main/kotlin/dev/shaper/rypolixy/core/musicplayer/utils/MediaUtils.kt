@@ -112,14 +112,15 @@ class MediaUtils {
                 is AudioTrack       -> trackfy(track)
                 is AudioPlaylist    -> {
                     return MediaTrack.Playlist(
-                        track.name,
-                        track.tracks.fold(0L) { acc, audioTrack -> acc + audioTrack.duration }
-                            .toDuration(DurationUnit.MINUTES),
-                        track.selectedTrack?.info?.uri,
-                        track.selectedTrack?.info?.artworkUrl,
-                        source,
-                        track.isSearchResult,
-                        track.tracks.map { trackfy(it) }.toMutableList(),
+                        title       = track.name,
+                        duration    = track.tracks.fold(0L) { acc, audioTrack -> acc + audioTrack.duration }
+                                        .toDuration(DurationUnit.MINUTES),
+                        url         = track.selectedTrack?.info?.uri,
+                        thumbnail   = track.selectedTrack?.info?.artworkUrl,
+                        source      = source,
+                        artist      = track.selectedTrack?.info?.author ?: "Unknown",
+                        isSeek      = track.isSearchResult,
+                        tracks      = track.tracks.map { trackfy(it) }.toMutableList(),
                     )
                 }
                 else -> null
@@ -134,14 +135,14 @@ class MediaUtils {
             ) : MediaTrack.Track
             {
                 return MediaTrack.Track(
-                    source = source,
-                    title = track.title,
-                    duration = track.duration?.toDuration(DurationUnit.SECONDS) ?: Duration.ZERO,
-                    url = track.pageUrl,
-                    id = track.id,
-                    author = track.channel ?: "Unknown",
-                    thumbnail = track.thumbnail,
-                    data = (lavaTrackBuilder(lavaInfo.track, source) as MediaTrack.Track).data
+                    source      = source,
+                    title       = track.title,
+                    duration    = track.duration?.toDuration(DurationUnit.SECONDS) ?: Duration.ZERO,
+                    url         = track.pageUrl,
+                    id          = track.id,
+                    artist      = track.channel ?: "Unknown",
+                    thumbnail   = track.thumbnail,
+                    data        = (lavaTrackBuilder(lavaInfo.track, source) as MediaTrack.Track).data
                 )
             }
 
@@ -149,11 +150,12 @@ class MediaUtils {
                 track : YtDlpInfo.FlatTrackInfo
             ) : MediaTrack.FlatTrack {
                 return MediaTrack.FlatTrack(
-                    title = track.title,
-                    duration = track.duration?.toDuration(DurationUnit.SECONDS) ?: Duration.ZERO,
-                    url = track.pageUrl,
-                    thumbnail = track.thumbnails.getOrNull(0)?.url,
-                    source = source
+                    title       = track.title,
+                    duration    = track.duration?.toDuration(DurationUnit.SECONDS) ?: Duration.ZERO,
+                    url         = track.pageUrl,
+                    thumbnail   = track.thumbnails.getOrNull(0)?.url,
+                    source      = source,
+                    artist      = track.uploader ?: "Unknown",
                 )
             }
 
@@ -177,7 +179,8 @@ class MediaUtils {
                     url         = url,
                     isSeek      = isSearch,
                     thumbnail   = thumbnail,
-                    tracks      = entries.toMutableList()
+                    tracks      = entries.toMutableList(),
+                    artist      = info.uploader ?: "Unknown",
                 )
             }
 

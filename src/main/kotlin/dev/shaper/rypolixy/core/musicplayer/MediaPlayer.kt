@@ -192,12 +192,10 @@ class MediaPlayer {
         when (session.player.status) {
             MediaOptions.PlayerStatus.TERMINATED,
             MediaOptions.PlayerStatus.PAUSED -> {
-                session.player.status = MediaOptions.PlayerStatus.PLAYING
                 session.player.audio.isPaused = false
                 return false
             }
             MediaOptions.PlayerStatus.PLAYING -> {
-                session.player.status = MediaOptions.PlayerStatus.PAUSED
                 session.player.audio.isPaused = true
                 return true
             }
@@ -219,7 +217,7 @@ class MediaPlayer {
     fun setVolume(guildId: Snowflake, volume:Int){
         val session = getSession(guildId)
         session.options.volume = volume.toDouble()
-
+        session.player.audio.volume = volume
         val playerData = DatabaseManager.getGuildData(guildId).playerData.copy(volume = volume)
         DatabaseManager.setGuildData(
             guildId,

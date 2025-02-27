@@ -1,5 +1,6 @@
 package dev.shaper.rypolixy.command.types
 
+import dev.kord.common.entity.Snowflake
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
 

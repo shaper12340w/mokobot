@@ -39,7 +39,7 @@ class Join(private val client: Client): MutualCommand {
 
     override fun setup(builder: ChatInputCreateBuilder) {
         builder.apply {
-            defaultMemberPermissions = Permissions(Permission.ManageMessages)
+            defaultMemberPermissions = Permissions(Permission.SendMessages)
             boolean("silent","join voice room silently"){
                 required = false
             }

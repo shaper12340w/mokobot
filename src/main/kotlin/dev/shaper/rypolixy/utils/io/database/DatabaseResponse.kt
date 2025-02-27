@@ -19,7 +19,7 @@ class DatabaseResponse {
         val discordId: Snowflake,
         val name: String,
         val users: List<UUID>,
-        val allowedCommands: List<UUID>
+        val excludedCommands: List<UUID>
     )
 
     data class UserResponse(

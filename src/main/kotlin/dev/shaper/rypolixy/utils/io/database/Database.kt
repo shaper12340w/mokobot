@@ -119,7 +119,7 @@ object Database {
                         Snowflake(guildData["discord_id"].toString()),
                         guildData["name"] as String,
                         ((guildData["users"] as org.postgresql.jdbc.PgArray).array as Array<*>).map { it as UUID },
-                        ((guildData["allowed_command"] as org.postgresql.jdbc.PgArray).array as Array<*>).map { it as UUID }
+                        ((guildData["excluded_command"] as org.postgresql.jdbc.PgArray).array as Array<*>).map { it as UUID }
                     )
                 }
             }
@@ -156,7 +156,7 @@ object Database {
         val type    = DatabaseQueryManager.QueryType.UPDATE
         val entity  = DatabaseQueryManager.Entity.GUILD
         val query   = DatabaseQueryManager.generateQuery(entity, type)
-        val result  = execute(query, data.name, data.users, data.allowedCommands,data.id)
+        val result  = execute(query, data.name, data.users, data.excludedCommands,data.id)
         handleMessage(type,entity,result)
     }
 

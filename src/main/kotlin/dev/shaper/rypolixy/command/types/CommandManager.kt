@@ -1,11 +1,15 @@
 package dev.shaper.rypolixy.command.types
 
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.behavior.ChatInputCommandBehavior
 import dev.shaper.rypolixy.command.types.TextCommand.ResponseData
 import dev.shaper.rypolixy.config.Client
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.shaper.rypolixy.config.Configs
 import dev.shaper.rypolixy.logger
+import dev.shaper.rypolixy.utils.io.database.Database
+import dev.shaper.rypolixy.utils.io.database.DatabaseManager
+import kotlinx.coroutines.flow.onEach
 import us.jimschubert.kopper.Parser
 
 class CommandManager(private val client: Client) {
@@ -55,32 +59,61 @@ class CommandManager(private val client: Client) {
         }
     }
 
-    suspend fun registerInteractionCommand(){
+    suspend fun registerInteractionCommand() : MutableMap<CommandStructure, ChatInputCommandBehavior> {
+        //client.kord.rest.interaction.getGlobalApplicationCommands(client.kord.selfId).forEach { command -> client.kord.rest.interaction.deleteGlobalApplicationCommand(client.kord.selfId,command.id) }
+        val commands = mutableMapOf<CommandStructure,ChatInputCommandBehavior>()
         suspend fun registerGlobal(command: CommandStructure)
-            = client.kord.createGlobalChatInputCommand(command.name,command.description){ (command as InteractionCommand).setup(this) }
+            = commands.put(command,client.kord.createGlobalChatInputCommand(command.name,command.description){ (command as InteractionCommand).setup(this) })
         suspend fun registerGuild(command: CommandStructure,guildId: Snowflake)
-            = client.kord.createGuildChatInputCommand(guildId,command.name,command.description){ (command as InteractionCommand).setup(this) }
+            = commands.put(command,client.kord.createGuildChatInputCommand(guildId,command.name,command.description){ (command as InteractionCommand).setup(this) })
+
         val interactionCommands = interactionCommand.filterValues{ it.enabled ?: false }
-        val mutualCommands      = mutualCommand.filterValues{ it.enabled ?: false }.filterValues { it.isInteractive }
+        val mutualCommands      = mutualCommand     .filterValues{ it.enabled ?: false }.filterValues { it.isInteractive }
         when(Configs.SETTINGS.register){
-            "GLOBAL" -> { mutualCommands.forEach { registerGlobal(it.value) }; interactionCommands.forEach { registerGlobal(it.value) } }
-            "SERVER" -> {}
+            "GLOBAL" -> {
+                mutualCommands.forEach      { registerGlobal(it.value) }
+                interactionCommands.forEach { registerGlobal(it.value) }
+            }
+            "SERVER" -> {
+                //val commandUUIDs = Database.
+                client.kord.guilds.onEach { guild ->
+                    val guildData = DatabaseManager.getGuildData(guild.id)
+                    mutualCommands.forEach { command ->
+                        if(commands[command as CommandStructure] !=null){
+//                            if(guildData.guildData.excludedCommands)
+                            registerGuild(command,guild.id)
+
+                        }
+                    }
+                }
+            }
             "NONE"   -> Unit
             else     -> throw Exception("Unknown Register Property")
         }
-
+        return commands
     }
 
-    fun collectCommands(commands:Iterable<CommandStructure>){
+    fun collectCommands(commands:Iterable<CommandStructure>) : MutableMap<CommandStructure, String> {
+        val commandCollector = mutableMapOf<CommandStructure, String>()
         commands.forEach{ command ->
+            val pkgName = command::class.java.`package`?.name?.substringAfterLast("commands.")
             when(command) {
                 is MutualCommand        -> mutualCommand       [command.name] = command
                 is TextCommand          -> textCommand         [command.name] = command
                 is MessageCommand       -> messageCommand      [command.name] = command
                 is InteractionCommand   -> interactionCommand  [command.name] = command
             }
-            //logger.debug { command::class.java.`package`?.name?.substringAfterLast("commands.") }
+            commandCollector[command] = pkgName!!
         }
+        return commandCollector
+    }
+
+    fun databaseRegister(
+        commandId : Snowflake,
+        commandStruct: CommandStructure,
+        pkg:String
+    ){
+        Database.initCommand(commandStruct,commandId,pkg)
     }
 
 }

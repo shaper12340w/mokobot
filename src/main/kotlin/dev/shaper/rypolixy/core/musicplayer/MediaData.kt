@@ -1,6 +1,7 @@
 package dev.shaper.rypolixy.core.musicplayer
 
 import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils.Companion.implementTrack
+import dev.shaper.rypolixy.core.musicplayer.MediaPlayer.Companion.logger
 
 data class MediaData(
     val queue       : MediaOptions.QueueOptions,
@@ -18,6 +19,10 @@ data class MediaData(
                 val trackData =  (queue.tracks[queue.index] as MediaTrack.Playlist).tracks[queue.subIndex]
                 if(trackData is MediaTrack.Track) trackData
                 else null
+            }
+            is MediaTrack.FlatTrack -> {
+                logger.warn { "Attepmting Get Track from FlatTrack" }
+                null
             }
             else -> null
         }
