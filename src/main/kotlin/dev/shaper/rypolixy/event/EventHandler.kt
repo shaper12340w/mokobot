@@ -17,6 +17,7 @@ import dev.shaper.rypolixy.logger
 import dev.shaper.rypolixy.utils.discord.actionrow.ActionRowManager
 import dev.shaper.rypolixy.utils.io.database.Database
 import dev.shaper.rypolixy.utils.io.database.DatabaseManager
+import kotlinx.coroutines.flow.forEach
 
 class EventHandler(private val client: Client) {
 
@@ -36,8 +37,12 @@ class EventHandler(private val client: Client) {
     }
 
     suspend fun onGuildCreate(event: GuildCreateEvent){
-        if(Database.getGuildUUID(event.guild.id) == null)
-            DatabaseManager.registerAll(event.guild)
+        try {
+            if(Database.getGuildUUID(event.guild.id) == null)
+                DatabaseManager.registerAll(event.guild)
+        } catch (e:Exception){
+            Database.initGuild(event.guild)
+        }
     }
 
     suspend fun onMemberJoin(event: MemberJoinEvent){

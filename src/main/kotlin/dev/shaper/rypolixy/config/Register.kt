@@ -24,6 +24,7 @@ object Register {
                 Shuffle (client),
                 Relate  (client),
                 Volume  (client),
+                Search  (client),
             )
         )
         val registeredCommands = client.commandManager.registerInteractionCommand()

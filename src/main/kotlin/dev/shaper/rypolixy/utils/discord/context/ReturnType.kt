@@ -1,6 +1,10 @@
 package dev.shaper.rypolixy.utils.discord.context
 
-sealed class ReturnType<out T,out U> {
-    data class Interaction<out T>(val data: T) : ReturnType<T, Nothing>()
-    data class Message<out U>    (val data: U) : ReturnType<Nothing, U>()
+import dev.kord.core.behavior.interaction.response.MessageInteractionResponseBehavior
+import dev.kord.core.entity.interaction.response.MessageInteractionResponse
+import dev.kord.core.entity.Message as KordMessage
+
+sealed class ReturnType {
+    data class Interaction  (val data: MessageInteractionResponseBehavior) : ReturnType()
+    data class Message      (val data: KordMessage)                 : ReturnType()
 }

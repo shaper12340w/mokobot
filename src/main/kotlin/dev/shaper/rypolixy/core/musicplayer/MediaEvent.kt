@@ -36,6 +36,7 @@ class MediaEvent(
                         AudioTrackEndReason.FINISHED    -> {
                             if(session.player.status != MediaOptions.PlayerStatus.ERROR) {
                                 session.currentTrack().data.status = MediaBehavior.PlayStatus.END
+                                session.queue.position = 0
                                 player.next(guildId)
                             } else {
                                 try {
@@ -60,6 +61,8 @@ class MediaEvent(
                 } //Todo : Add stack or deque to preload others
                 is TrackExceptionEvent -> {
                     session.player.status = MediaOptions.PlayerStatus.ERROR
+                    try { session.reload() }
+                    catch (ex:Exception) { throw ex }
                 }
                 is PlayerPauseEvent -> {
                     session.queue.position    = player.getPosition(guildId)

@@ -6,9 +6,10 @@ import dev.shaper.rypolixy.core.musicplayer.MediaPlayer.Companion.logger
 import dev.shaper.rypolixy.core.musicplayer.parser.MediaParser
 import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils
 import dev.shaper.rypolixy.utils.discord.embed.EmbedFrame
+import dev.shaper.rypolixy.utils.structure.RetryUtil
 import java.util.*
 
-class MediaTrackHandler(player: MediaPlayer, private val guildId: Snowflake) {
+class MediaTrackHandler(private val player: MediaPlayer, private val guildId: Snowflake) {
 
     val session = player.sessions[guildId] ?: throw Exception("Session not found")
     val tracks  = session.queue.tracks
@@ -91,11 +92,18 @@ class MediaTrackHandler(player: MediaPlayer, private val guildId: Snowflake) {
                 return playNextTrack()
             }
         }
-        if(handleNextTrack()){
-            resetSession()
+        try {
+            if(handleNextTrack()){
+                resetSession()
+                return null
+            }
+            else return session.currentTrack()
+        } catch (e:Exception) {
+            player.sendError(guildId,e)
+            RetryUtil.retry { handleNextTrack() }
             return null
         }
-        else return session.currentTrack()
+
     }
 
     private fun playableTrack(): List<MediaTrack> {
@@ -149,11 +157,14 @@ class MediaTrackHandler(player: MediaPlayer, private val guildId: Snowflake) {
                     else availableTracks.removeAt(nextIndex)
                 }
                 is MediaTrack.FlatTrack -> {
-                    val convertedTrack  = nextMedia.toTrack() ?: throw Exception("Error occurred while converting track")
+                    val convertedTrack  = nextMedia.toTrack()
                     val trackIndex      = getIndex()
-                    session.queue.tracks[trackIndex] = convertedTrack
-                    session.queue.index = trackIndex
-                    playTrack(convertedTrack)
+                    if (convertedTrack != null) {
+                        session.queue.tracks[trackIndex] = convertedTrack
+                        session.queue.index = trackIndex
+                        playTrack(convertedTrack)
+                    }
+                    else availableTracks.removeAt(nextIndex)
                     return false
                 }
                 is MediaTrack.Playlist -> {
@@ -161,16 +172,24 @@ class MediaTrackHandler(player: MediaPlayer, private val guildId: Snowflake) {
                         .plus(nextMedia.tracks.filterIsInstance<MediaTrack.Track>()
                             .filter { it.data.status == MediaBehavior.PlayStatus.IDLE }) // Collect Track Not Played
                     if (idleTracks.isNotEmpty()) {
+                        session.queue.index = getIndex()
                         val currentPlaylist = currentTracks[session.queue.index] as MediaTrack.Playlist
                         val nextTrack = if(session.options.shuffle) idleTracks.shuffled().first() else idleTracks.first()
                         var implementedTrack: MediaTrack.Track? = null
-                        if(session.queue.subIndex == 0)
-                            session.queue.index = getIndex()
                         if(nextTrack is MediaTrack.FlatTrack){
-                            implementedTrack = nextTrack.toTrack() ?: throw Exception("Error occurred while converting track")
-                            currentPlaylist.tracks[session.queue.subIndex] = implementedTrack
+                            val currentSubIndex = currentPlaylist.tracks.indexOf(nextTrack)
+                            val convertedTrack  = nextTrack.toTrack()
+                            if(convertedTrack != null) {
+                                implementedTrack = convertedTrack
+                                currentPlaylist.tracks[currentSubIndex] = implementedTrack
+                                session.queue.subIndex = currentSubIndex
+                            }
+                            else {
+                                currentPlaylist.tracks.remove(nextTrack)
+                                return false
+                            }
                         }
-                        session.queue.subIndex = currentPlaylist.tracks.indexOf(implementedTrack ?: nextTrack)
+                        else session.queue.subIndex = currentPlaylist.tracks.indexOf(nextTrack)
                         playTrack(implementedTrack ?: nextTrack as MediaTrack.Track)
                         return false
                     }

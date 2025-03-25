@@ -39,6 +39,30 @@ sealed class YtDlpInfo{
     )
 
     @JsonClass(generateAdapter = true)
+    data class Format(
+        @Json(name = "asr")                 val audioSampleRate: Int?,
+        @Json(name = "file_size")           val fileSize: Int?,
+        @Json(name = "format_id")           val formatId : String,
+        @Json(name = "format_note")         val formatNote : String?,
+        @Json(name = "source_preference")   val sourcePreference : Int,
+        @Json(name = "fps")                 val fps: Int?,
+        @Json(name = "audio_channels")      val audioChannels: Int?,
+        @Json(name = "width")               val width: Int?,
+        @Json(name = "height")              val height: Int?,
+        @Json(name = "quality")             val quality: Double?,
+        @Json(name = "has_drm")             val isDrm : Boolean,
+        @Json(name = "filesize_approx")     val filesizeApproximation: Int?,
+        @Json(name = "url")                 val url : String,
+        @Json(name = "language")            val language: String?,
+        @Json(name = "ext")                 val ext: String?,
+        @Json(name = "vcodec")              val videoCodec: String?,
+        @Json(name = "acodec")              val audioCodec: String?,
+        @Json(name = "protocol")            val protocol: String?,
+        @Json(name = "abr")                 val audioBitrate: Double,
+        @Json(name = "vbr")                 val videoBitrate: Double,
+    )
+
+    @JsonClass(generateAdapter = true)
     data class TrackInfo(
         //@Deprecated("formats have too many data and have to process") //videoFormat.. etc
         @Json(name = "thumbnail")                val thumbnail       : String?,  //nullable
@@ -53,7 +77,8 @@ sealed class YtDlpInfo{
         @Json(name = "comment_count")            val commentCount    : Int?,
         @Json(name = "channel_follower_count")   val followerCount   : Int?,
         @Json(name = "chapters")                 val chapters        : List<Chapter>?,
-        @Json(name = "url")                      val streamUrl       : String,
+        @Json(name = "url")                      val streamUrl       : String?,
+        @Json(name = "requested_formats")        val streams         : List<Format>?,
         @Json(name = "is_live")                  val isLive          : Boolean?,
         @Json(name = "was_live")                 val wasLive         : Boolean?,
         @Json(name = "thumbnails")               val thumbnails     : List<Thumbnail>?,

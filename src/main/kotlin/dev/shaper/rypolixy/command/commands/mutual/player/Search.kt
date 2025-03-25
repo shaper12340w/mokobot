@@ -3,6 +3,8 @@ package dev.shaper.rypolixy.command.commands.mutual.player
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Permissions
 import dev.kord.core.behavior.channel.createMessage
+import dev.kord.core.behavior.interaction.response.InteractionResponseBehavior
+import dev.kord.core.entity.Message
 import dev.kord.core.entity.interaction.SelectMenuInteraction
 import dev.kord.rest.builder.component.SelectOptionBuilder
 import dev.kord.rest.builder.interaction.ChatInputCreateBuilder
@@ -23,8 +25,11 @@ import dev.shaper.rypolixy.utils.discord.context.ContextManager.Companion.channe
 import dev.shaper.rypolixy.utils.discord.context.ContextManager.Companion.guildId
 import dev.shaper.rypolixy.utils.discord.context.ResponseManager.Companion.createDefer
 import dev.shaper.rypolixy.utils.discord.context.ResponseManager.Companion.deferReply
+import dev.shaper.rypolixy.utils.discord.context.ResponseManager.Companion.delete
 import dev.shaper.rypolixy.utils.discord.context.ResponseManager.Companion.deleteAfter
+import dev.shaper.rypolixy.utils.discord.context.ResponseManager.Companion.getMessage
 import dev.shaper.rypolixy.utils.discord.context.ResponseType
+import dev.shaper.rypolixy.utils.discord.context.ReturnType
 import dev.shaper.rypolixy.utils.discord.embed.EmbedFrame
 import dev.shaper.rypolixy.utils.io.database.DatabaseManager
 import kotlinx.coroutines.CoroutineScope
@@ -116,9 +121,13 @@ class Search(private val client: Client): MutualCommand {
                             val playlist = searchedData!!.data!! as MediaTrack.Playlist
                             if (playlist.isSeek){
                                 if(playlist.tracks.isNotEmpty()){
+                                    var selectMessage: ReturnType? = null
                                     suspend fun selectMenuExecute(interaction: SelectMenuInteraction, kill: () -> Unit){
+                                        interaction.deferEphemeralMessageUpdate()
                                         val track = client.lavaClient.play(playlist.tracks[interaction.values.first().toInt()],context.guildId)
                                         context.channel.createMessage { embeds = mutableListOf(EmbedFrame.musicInfo(track!!)) }
+                                        selectMessage?.delete()
+                                        kill()
                                     }
                                     val optionList = mutableListOf<SelectOptionBuilder>()
                                         .apply { playlist.tracks.forEachIndexed{ index,track -> add(SelectOptionBuilder(track.title,index.toString()).apply { description = track.artist })} }
@@ -132,7 +141,7 @@ class Search(private val client: Client): MutualCommand {
                                             ))
                                         )
                                     ).build()
-                                    deferResponse.deferReply {
+                                    selectMessage = deferResponse.deferReply {
                                         embeds      = mutableListOf(EmbedFrame.list("재생할 곡을 골라주세요",playlist.tracks.joinToString("\n") { it.title }))
                                         components  = mutableListOf(selectMenu)
                                     }

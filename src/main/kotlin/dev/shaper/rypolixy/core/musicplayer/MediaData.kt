@@ -33,6 +33,7 @@ data class MediaData(
 
 
     fun update() {
+        logger.debug { "Updating current track" }
         val track = currentTrack()
         track.data = track.data.clone()
         player.audio.startTrack(track.data.audioTrack,true)
