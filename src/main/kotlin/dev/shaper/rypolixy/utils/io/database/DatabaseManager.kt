@@ -1,6 +1,7 @@
 package dev.shaper.rypolixy.utils.io.database
 
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.Kord
 import dev.kord.core.entity.Guild
 import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils
 import dev.shaper.rypolixy.utils.io.database.Database.execute
@@ -19,12 +20,12 @@ object DatabaseManager{
     private val guildCache  = CacheSystem<Snowflake,DatabaseData.GuildDataReturn>(500,86400)    //24 hour
     private val userCache   = CacheSystem<Snowflake,DatabaseData.UserDataReturn>(3000,3600)      //1 hour
 
-    fun initValues(){
-        getGuildUUIDAll ()
+    suspend fun initValues(kord:Kord){
+        getGuildUUIDAll (kord)
         getUserUUIDAll  ()
     }
 
-    private fun getGuildUUIDAll (){
+    private suspend fun getGuildUUIDAll (kord:Kord){
         @Language("postgresql")
         val query = """
             SELECT guild_id,discord_id FROM guilds
@@ -33,7 +34,7 @@ object DatabaseManager{
         when (result.status) {
             DatabaseResponse.DatabaseStatus.SUCCESS -> {
                 if(result.data == null || result.data.size == 0)
-                    throw SQLException("[Database] not found")
+                    kord.guilds.collect { registerAll(it) }
                 else
                 {
                     result.data.forEach { data ->

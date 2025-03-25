@@ -3,6 +3,7 @@ package dev.shaper.rypolixy.utils.io.database
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.Kord
 import dev.kord.core.entity.Guild
 import dev.kord.core.entity.User
 import dev.shaper.rypolixy.command.types.CommandStructure

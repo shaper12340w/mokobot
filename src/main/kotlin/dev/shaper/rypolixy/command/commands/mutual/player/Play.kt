@@ -149,9 +149,10 @@ class Play(private val client: Client): MutualCommand {
                             else{
                                 client.lavaClient.play(searchedTrack.data,context.guildId)
                                 val pageBuilder = PageEmbed(searchedTrack.data.title)
-                                    .autoSplitEmbed(searchedTrack.data.tracks.joinToString("\n") { it.title })
+                                    .autoSplitEmbed(searchedTrack.data.tracks.joinToString("\n") { "[${it.title}](${it.url})" })
                                 val page = pageBuilder.build()
                                 val response = respond {
+                                    content     = "``재생목록을 재생합니다``"
                                     embeds      = page.embeds
                                     components  = page.components
                                 }

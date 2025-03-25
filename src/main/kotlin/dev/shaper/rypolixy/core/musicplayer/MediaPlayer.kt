@@ -53,13 +53,13 @@ class MediaPlayer {
             audioProvider {
                 if(
                     sessions[guildId] != null &&
-                    sessions[guildId]?.player?.status == MediaOptions.PlayerStatus.PAUSED
+                    sessions[guildId]!!.player.status == MediaOptions.PlayerStatus.PAUSED
                     )
-                    return@audioProvider null
+                    return@audioProvider AudioFrame.SILENCE
                 player.provide(1, TimeUnit.SECONDS)?.let {
                     return@audioProvider AudioFrame.fromData(it.data)
                 }
-                return@audioProvider AudioFrame.SILENCE
+                return@audioProvider null
             }
         }
         val provider    = connection.audioProvider
@@ -192,11 +192,13 @@ class MediaPlayer {
         when (session.player.status) {
             MediaOptions.PlayerStatus.TERMINATED,
             MediaOptions.PlayerStatus.PAUSED -> {
-                session.player.audio.isPaused = false
+                session.player.audio.isPaused   = false
+
                 return false
             }
             MediaOptions.PlayerStatus.PLAYING -> {
-                session.player.audio.isPaused = true
+                session.player.audio.isPaused   = true
+
                 return true
             }
             else -> return null

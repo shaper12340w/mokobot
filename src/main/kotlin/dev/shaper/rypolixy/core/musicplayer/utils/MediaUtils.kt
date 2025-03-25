@@ -85,8 +85,8 @@ class MediaUtils {
                     lavaTrackBuilder(lavaResult.track,source)
                 }
                 else -> {
-                    val dlpResult = YtDlpManager.getUrlData(url)
-                    ytDlpTrackBuilder(dlpResult!!,source)
+                    val dlpResult = YtDlpManager.getUrlData(url) ?: return null
+                    ytDlpTrackBuilder(dlpResult,source)
                 }
             }
         }
@@ -97,14 +97,14 @@ class MediaUtils {
         fun lavaTrackBuilder(track: AudioItem, source: MediaPlatform): MediaTrack? {
             fun trackfy(track: AudioTrack): MediaTrack.Track {
                 return MediaTrack.Track(
-                    track.info.title,
-                    track.info.length.toDuration(DurationUnit.MILLISECONDS),
-                    track.info.uri,
-                    source,
-                    track.info.artworkUrl,
-                    track.info.identifier,
-                    track.info.author,
-                    track.toTrack()
+                    title       = track.info.title,
+                    duration    = track.info.length.toDuration(DurationUnit.MILLISECONDS),
+                    url         = track.info.uri,
+                    source      = source,
+                    thumbnail   = track.info.artworkUrl,
+                    artist      = track.info.author,
+                    id          = track.info.identifier,
+                    data        = track.toTrack()
                 )
             }
 
@@ -186,7 +186,8 @@ class MediaUtils {
 
             return when(info){
                 is YtDlpInfo.TrackInfo          -> {
-                    val lavaResult = LavaPlayerManager.load(info.streamUrl)
+                    val url = info.streamUrl ?: info.streams?.first { it.audioChannels != null }?.url ?: throw Exception("Stream URL not found")
+                    val lavaResult = LavaPlayerManager.load(url)
                     if(lavaResult !is LavaResult.Success)
                         throw RuntimeException("Cannot get source from lavaplayer URL : ${info.pageUrl}")
                     dlpTrackInfoToTrack(info,lavaResult)

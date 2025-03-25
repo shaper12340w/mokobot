@@ -63,10 +63,10 @@ class Client(internal val logger: KLogger, internal val kord:Kord) {
         Register.register(this)
     }
 
-    fun registerDatabase() = apply {
+    suspend fun registerDatabase() = apply {
         Database.checkOwner()
         Database.initTable()
-        DatabaseManager.initValues()
+        DatabaseManager.initValues(kord)
     }
 
 }
