@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <!-- Define properties -->
+
     <property name="LOG_DATEFORMAT_PATTERN" value="yyyy-MM-dd' 'HH:mm:ss.SSSXXX" />
     <property name="CONSOLE_LOG_CHARSET" value="UTF-8"/>
-
+    <logger name="com.zaxxer.hikari" level="WARN"/>
     <!-- Console Appender with Custom Format -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>DEBUG</level>
         </filter>

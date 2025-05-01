@@ -58,8 +58,8 @@ sealed class YtDlpInfo{
         @Json(name = "vcodec")              val videoCodec: String?,
         @Json(name = "acodec")              val audioCodec: String?,
         @Json(name = "protocol")            val protocol: String?,
-        @Json(name = "abr")                 val audioBitrate: Double,
-        @Json(name = "vbr")                 val videoBitrate: Double,
+        @Json(name = "abr")                 val audioBitrate: Double?,
+        @Json(name = "vbr")                 val videoBitrate: Double?,
     )
 
     @JsonClass(generateAdapter = true)

@@ -186,7 +186,7 @@ class MediaUtils {
 
             return when(info){
                 is YtDlpInfo.TrackInfo          -> {
-                    val url = info.streamUrl ?: info.streams?.first { it.audioChannels != null }?.url ?: throw Exception("Stream URL not found")
+                    val url = info.streamUrl ?: info.streams?.firstOrNull { it.audioChannels != null }?.url ?: throw Exception("Stream URL not found")
                     val lavaResult = LavaPlayerManager.load(url)
                     if(lavaResult !is LavaResult.Success)
                         throw RuntimeException("Cannot get source from lavaplayer URL : ${info.pageUrl}")

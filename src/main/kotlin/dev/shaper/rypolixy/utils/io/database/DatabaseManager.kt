@@ -131,7 +131,7 @@ object DatabaseManager{
 
     fun fetchGuildUUID  (guildId: Snowflake) : UUID? {
         if(!guildUUIDs.containsKey(guildId))
-            guildUUIDs[guildId] = Database.getUserUUID(guildId) ?: throwFailedGetter()
+            guildUUIDs[guildId] = Database.getGuildUUID(guildId) ?: throwFailedGetter()
         return guildUUIDs[guildId]
     }
     fun fetchGuildData  (guildId: Snowflake): DatabaseData.GuildDataReturn {
