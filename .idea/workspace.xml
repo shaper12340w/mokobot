@@ -4,24 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1e345269-ec05-4230-aaee-33753ef44a1d" name="Changes" comment="fix - fix Bugs(Ytdlp struct change)">
+    <list default="true" id="1e345269-ec05-4230-aaee-33753ef44a1d" name="Changes" comment="fix - fix Bugs">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/TODO.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/player/Play.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/player/Play.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/player/Search.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/mutual/player/Search.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/config/Client.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/config/Client.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/config/Register.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/config/Register.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/MediaData.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/MediaData.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/MediaEvent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/MediaEvent.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/MediaPlayer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/MediaPlayer.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/MediaTrackHandler.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/MediaTrackHandler.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/interaction/Info.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/command/commands/interaction/Info.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/parser/spotify/SpotifySession.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/parser/spotify/SpotifySession.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/utils/MediaUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/utils/MediaUtils.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/ytdlp/YtDlpInfo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/core/musicplayer/ytdlp/YtDlpInfo.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/event/EventHandler.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/event/EventHandler.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/discord/context/ResponseManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/discord/context/ResponseManager.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/discord/context/ReturnType.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/discord/context/ReturnType.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/io/database/Database.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/io/database/Database.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/io/database/DatabaseManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/dev/shaper/rypolixy/utils/io/database/DatabaseManager.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/logback.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/logback.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -263,7 +254,12 @@
       <workItem from="1739700844752" duration="8887000" />
       <workItem from="1740621007711" duration="51201000" />
       <workItem from="1741616545893" duration="17291000" />
-      <workItem from="1742099048166" duration="18923000" />
+      <workItem from="1742099048166" duration="23669000" />
+      <workItem from="1743185919141" duration="2143000" />
+      <workItem from="1743950744986" duration="572000" />
+      <workItem from="1744452578703" duration="7735000" />
+      <workItem from="1745813041086" duration="2671000" />
+      <workItem from="1745977867711" duration="618000" />
     </task>
     <task id="LOCAL-00001" summary="Make it Playable">
       <option name="closed" value="true" />
@@ -433,7 +429,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740636859988</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="fix - fix Bugs">
+      <option name="closed" value="true" />
+      <created>1742893460429</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1742893460429</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -468,7 +472,8 @@
     <MESSAGE value="feat - Add ActionRowManager" />
     <MESSAGE value="feat,fix - Add PageButton,fix Bugs" />
     <MESSAGE value="fix - fix Bugs(Ytdlp struct change)" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix - fix Bugs(Ytdlp struct change)" />
+    <MESSAGE value="fix - fix Bugs" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix - fix Bugs" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

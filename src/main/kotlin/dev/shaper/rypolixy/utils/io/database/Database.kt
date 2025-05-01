@@ -23,11 +23,16 @@ object Database {
     val logger = KotlinLogging.logger {}
 
     private val hikariConfig = HikariConfig().apply {
-        jdbcUrl         = Configs.DB.url+"/"+Configs.DB.name
-        username        = Configs.DB.username
-        password        = Configs.DB.password
-        driverClassName = "org.postgresql.Driver"  // 사용하는 DB 드라이버에 맞게 설정
-        maximumPoolSize = 10  // 최대 연결 수 설정
+        jdbcUrl             = Configs.DB.url+"/"+Configs.DB.name
+        username            = Configs.DB.username
+        password            = Configs.DB.password
+        driverClassName     = "org.postgresql.Driver"
+        connectionTestQuery = "SELECT 1"
+        maxLifetime         = 177000L
+        idleTimeout         = 60000L
+        keepaliveTime       = 100000L
+        minimumIdle         = 1
+        maximumPoolSize     = 20
     }
 
     private val dataSource = HikariDataSource(hikariConfig)
@@ -110,7 +115,7 @@ object Database {
         return when (result.status) {
             DatabaseResponse.DatabaseStatus.SUCCESS -> {
                 if(result.data == null || result.data.size == 0)
-                    throw SQLException("[Database] not found")
+                    throw SQLException("[Database] Data Not found\nStatus : ${result.status} | Message : ${result.message}")
                 else
                 {
                     handleMessage(type,entity,result)
@@ -184,7 +189,7 @@ object Database {
         return when (result.status) {
             DatabaseResponse.DatabaseStatus.SUCCESS -> {
                 if(result.data == null || result.data.size == 0)
-                    throw SQLException("[Database] not found")
+                    throw SQLException("[Database] Data Not found\nStatus : ${result.status} | Message : ${result.message}")
                 else
                 {
                     handleMessage(type,entity,result)
@@ -250,7 +255,7 @@ object Database {
         return when (result.status) {
             DatabaseResponse.DatabaseStatus.SUCCESS -> {
                 if(result.data == null || result.data.size == 0)
-                    throw SQLException("[Database] not found")
+                    throw SQLException("[Database] Data Not found\nStatus : ${result.status} | Message : ${result.message}")
                 else
                 {
                     handleMessage(type,entity,result)
@@ -293,7 +298,7 @@ object Database {
         return when (result.status) {
             DatabaseResponse.DatabaseStatus.SUCCESS -> {
                 if(result.data == null || result.data.size == 0)
-                    throw SQLException("[Database] not found")
+                    throw SQLException("[Database] Data Not found\nStatus : ${result.status} | Message : ${result.message}")
                 else
                 {
                     handleMessage(type,entity,result)
@@ -328,7 +333,7 @@ object Database {
         return when (result.status) {
             DatabaseResponse.DatabaseStatus.SUCCESS -> {
                 if(result.data == null || result.data.size == 0)
-                    throw SQLException("[Database] not found")
+                    throw SQLException("[Database] Data Not found\nStatus : ${result.status} | Message : ${result.message}")
                 else
                 {
                     handleMessage(type,entity,result)
