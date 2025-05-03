@@ -1,8 +1,5 @@
 package dev.shaper.rypolixy.event
 
-import dev.kord.core.Kord
-import dev.kord.core.entity.interaction.GuildModalSubmitInteraction
-import dev.kord.core.entity.interaction.ModalSubmitInteraction
 import dev.shaper.rypolixy.config.Client
 import dev.kord.core.event.gateway.ReadyEvent
 import dev.kord.core.event.guild.GuildCreateEvent
@@ -17,7 +14,6 @@ import dev.shaper.rypolixy.logger
 import dev.shaper.rypolixy.utils.discord.actionrow.ActionRowManager
 import dev.shaper.rypolixy.utils.io.database.Database
 import dev.shaper.rypolixy.utils.io.database.DatabaseManager
-import kotlinx.coroutines.flow.forEach
 
 class EventHandler(private val client: Client) {
 
@@ -38,18 +34,19 @@ class EventHandler(private val client: Client) {
 
     suspend fun onGuildCreate(event: GuildCreateEvent){
         try {
-            if(Database.getGuildUUID(event.guild.id) == null)
+            if(DatabaseManager.fetchGuildUUID(event.guild.id) == null)
                 DatabaseManager.registerAll(event.guild)
         } catch (e:Exception){
             Database.initGuild(event.guild)
+            DatabaseManager.registerAll(event.guild)
         }
     }
 
-    suspend fun onMemberJoin(event: MemberJoinEvent){
+    fun onMemberJoin(event: MemberJoinEvent){
         Database.initUser(event.member)
     }
 
-    suspend fun onButtonInteraction(event: ButtonInteractionCreateEvent){
+    fun onButtonInteraction(event: ButtonInteractionCreateEvent){
         ActionRowManager.emitter.emit(ActionRowManager.ButtonEvent(
             event.interaction.component.customId!!,
             event.interaction
@@ -57,7 +54,7 @@ class EventHandler(private val client: Client) {
         logger.info { "[Button] : Successfully executed with id ${event.interaction.component.customId} / (guildId : ${event.interaction.data.guildId.value} | channelId : ${event.interaction.channelId})" }
     }
 
-    suspend fun onModalSubmitInteraction(event: GuildModalSubmitInteractionCreateEvent) {
+    fun onModalSubmitInteraction(event: GuildModalSubmitInteractionCreateEvent) {
         ActionRowManager.emitter.emit(ActionRowManager.ModalEvent(
             event.interaction.modalId,
             event.interaction
@@ -65,7 +62,7 @@ class EventHandler(private val client: Client) {
         logger.info { "[Button] : Successfully executed with id ${event.interaction.modalId} / (guildId : ${event.interaction.data.guildId} | channelId : ${event.interaction.channelId})" }
     }
 
-    suspend fun onSelectMenuInteraction(event: SelectMenuInteractionCreateEvent){
+    fun onSelectMenuInteraction(event: SelectMenuInteractionCreateEvent){
         ActionRowManager.emitter.emit(ActionRowManager.SelectMenuEvent(
             event.interaction.component.customId,
             event.interaction

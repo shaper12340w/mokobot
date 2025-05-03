@@ -2,7 +2,6 @@ package dev.shaper.rypolixy.config
 
 import dev.shaper.rypolixy.event.EventHandler
 import dev.kord.core.Kord
-import dev.kord.core.entity.interaction.GuildModalSubmitInteraction
 import dev.kord.core.event.gateway.ReadyEvent
 import dev.kord.core.event.guild.GuildCreateEvent
 import dev.kord.core.event.guild.MemberJoinEvent
@@ -45,6 +44,7 @@ class Client(internal val logger: KLogger, internal val kord:Kord) {
                 +Intent.MessageContent
             }
         }
+        logger.info { "[Client] : Login finished. Done." }
     }
 
     fun registerEvents() = apply {

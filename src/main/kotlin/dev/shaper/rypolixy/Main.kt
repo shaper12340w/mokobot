@@ -5,11 +5,9 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import dev.kord.core.Kord
 import dev.shaper.rypolixy.config.Configs
 import dev.shaper.rypolixy.config.Settings
-import dev.shaper.rypolixy.core.musicplayer.parser.soundcloud.SoundcloudScrapper
-
 
 val logger = KotlinLogging.logger {}
-val tokens = Configs.KEY.discord
+val config = Configs().loadConfig()
 
 suspend fun main() {
 
@@ -18,7 +16,7 @@ suspend fun main() {
         printHandler()
     }
 
-    val kord = Kord(tokens)
+    val kord = Kord(config.auth.key.discord)
     val bot = Client(logger, kord)
     bot.apply {
         registerEvents()

@@ -1,8 +1,30 @@
 package dev.shaper.rypolixy.config
 
-import dev.shaper.rypolixy.logger
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import java.io.File
+import java.nio.file.Paths
 
-object Configs {
+class Configs {
+
+    private val mapper = ObjectMapper(YAMLFactory()).registerKotlinModule()
+
+    data class YamlConfig(
+        val io: IOConfig,
+        val auth: AuthConfig,
+        val app: AppConfig,
+    )
+
+    data class AuthConfig(
+        val key: KeyConfig,
+        val id: IdConfig,
+    )
+
+    data class IOConfig(
+        val database: DBConfig,
+        val cache: CacheConfig,
+    )
 
     data class DBConfig(
         val url: String,
@@ -11,74 +33,49 @@ object Configs {
         val password: String,
     )
 
+    data class CacheConfig(
+        val file: String,
+        val expire: ULong,
+        val enabled: Boolean,
+    )
+
     data class KeyConfig(
-        var discord: String,
-        var youtube: String,
-        var soundcloud: String,
-        var spotify: String,
-        var artiva: String
+        val discord: String,
+        val youtube: String,
+        val spotify: String,
+        var soundcloud: String?,
+        val artiva: String
     )
 
     data class IdConfig(
-        var discord: String,
-        var spotify: String,
-        var server: String
-    )
-
-    data class ProgramConfig(
-        var ytdlp: String,
+        val spotify: String,
     )
 
     data class AppConfig(
-        var register: String,
+        val register: String,
+        val client: String,
+        val server: String
     )
 
-    /*
-    * If setting variable is important
-    * */
-    private fun warn(property: String):String{
-        logger.warn { "Missing environment variable: $property" }
-        return ""
-    }
-
-    /*
-    * If setting variable is not important
-    * */
-    private fun debug(property: String):String{
-        logger.debug { "Missing environment variable: $property" }
-        return ""
-    }
-
-    val DB = DBConfig(
-        url         = Properties.getProperty("db.url")      ?: warn("db.url"),
-        name        = Properties.getProperty("db.name")     ?: warn("db.name"),
-        username    = Properties.getProperty("db.user")     ?: warn("db.user"),
-        password    = Properties.getProperty("db.password") ?: warn("db.password")
-    )
-
-    val KEY = KeyConfig(
-        discord     = Properties.getProperty("discord.key")     ?: warn("discord.key"),
-        youtube     = Properties.getProperty("youtube.key")     ?: debug("youtube.key"),
-        soundcloud  = Properties.getProperty("soundcloud.key")  ?: debug("soundcloud.key"),
-        spotify     = Properties.getProperty("spotify.key")     ?: warn("spotify.key"),
-        artiva      = Properties.getProperty("artiva.key")      ?: warn("artiva.key")
-    )
-
-    val ID = IdConfig(
-        discord = Properties.getProperty("discord.client.id")         ?: debug("client.id"), //can get from kord
-        server  = Properties.getProperty("discord.guild.id")          ?: debug("guild.id"),  //not essential
-        spotify = Properties.getProperty("spotify.id")                ?: warn("spotify.id"),
-    )
-
-    val PROGRAMS = ProgramConfig(
-        ytdlp   = when(System.getProperty("os.name")){
-            "Linux"         -> Properties.getProperty("program.linux.ytdlp")    ?: warn("program.linux.ytdlp")
-            "Windows 11"    -> Properties.getProperty("program.windows.ytdlp")  ?: warn("program.windows.ytdlp")
-            else            -> warn("program.unknown.ytdlp")
+    fun loadConfig(): YamlConfig {
+        val paths = listOf(
+            Paths.get("config.yaml").toAbsolutePath(),
+            Paths.get("src", "main", "resources", "config.yaml").toAbsolutePath(),
+        )
+        for (path in paths) {
+            if (path.toFile().exists())
+                return mapper.readValue(path.toFile(), YamlConfig::class.java)
         }
-    )
+        throw IllegalArgumentException("config.yaml not found")
+    }
 
-    val SETTINGS = AppConfig(
-        register = Properties.getProperty("app.register")               ?: warn("app.register"),
-    )
+//    val PROGRAMS = ProgramConfig(
+//        ytdlp   = when(System.getProperty("os.name")){
+//            "Linux"         -> Properties.getProperty("program.linux.ytdlp")    ?: warn("program.linux.ytdlp")
+//            "Windows 11"    -> Properties.getProperty("program.windows.ytdlp")  ?: warn("program.windows.ytdlp")
+//            else            -> warn("program.unknown.ytdlp")
+//        }
+//    )
+
+
 }

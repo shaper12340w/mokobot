@@ -2,8 +2,8 @@ package dev.shaper.rypolixy.core.musicplayer.parser.soundcloud
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import dev.shaper.rypolixy.config.Configs
 import dev.shaper.rypolixy.logger
+import dev.shaper.rypolixy.config
 import dev.shaper.rypolixy.core.musicplayer.utils.MediaRegex
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
@@ -36,7 +36,7 @@ object SoundcloudScrapper {
      * 주어진 URL의 HTML을 가져옵니다.
      * options를 추가로 사용하려면 OkHttp Request.Builder에 적용하세요.
      */
-    private fun parseHtml(url: String, options: Map<String, String>? = null): String {
+    private fun parseHtml(url: String): String {
         return try {
             // options 적용 예시: 헤더 추가 등 (프로젝트에 맞게 수정)
             fetchUrl(url)
@@ -90,15 +90,15 @@ object SoundcloudScrapper {
      suspend fun findRelated(trackId: String,limit:Int = 10): List<SoundcloudParseInfo.SoundCloudTrack>? {
         try{
             return withTimeout(60000L) {
-                if (Configs.KEY.soundcloud.isBlank()) {
-                    Configs.KEY.soundcloud = keygen() ?: ""
+                if (config.auth.key.soundcloud.isNullOrBlank()) {
+                    config.auth.key.soundcloud= keygen() ?: ""
                 }
-                logger.debug { "Generated new Soundcloud Key : ${Configs.KEY.soundcloud}" }
+                logger.debug { "Generated new Soundcloud Key : ${config.auth.key.soundcloud}" }
                 val baseUrl = "https://api-v2.soundcloud.com/tracks/$trackId/related"
                 val httpUrlBuilder = baseUrl.toHttpUrlOrNull()?.newBuilder() ?: return@withTimeout null
 
                 httpUrlBuilder.apply {
-                    addQueryParameter("client_id", Configs.KEY.soundcloud)
+                    addQueryParameter("client_id", config.auth.key.soundcloud)
                     addQueryParameter("limit", limit.toString())
                     addQueryParameter("offset", "0")
                     addQueryParameter("linked_partitioning", "1")
