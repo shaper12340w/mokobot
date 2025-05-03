@@ -5,7 +5,7 @@ import dev.kord.core.behavior.ChatInputCommandBehavior
 import dev.shaper.rypolixy.command.types.TextCommand.ResponseData
 import dev.shaper.rypolixy.config.Client
 import dev.kord.core.event.message.MessageCreateEvent
-import dev.shaper.rypolixy.config.Configs
+import dev.shaper.rypolixy.config
 import dev.shaper.rypolixy.logger
 import dev.shaper.rypolixy.utils.io.database.Database
 import dev.shaper.rypolixy.utils.io.database.DatabaseManager
@@ -69,7 +69,7 @@ class CommandManager(private val client: Client) {
 
         val interactionCommands = interactionCommand.filterValues{ it.enabled ?: false }
         val mutualCommands      = mutualCommand     .filterValues{ it.enabled ?: false }.filterValues { it.isInteractive }
-        when(Configs.SETTINGS.register){
+        when(config.app.register){
             "GLOBAL" -> {
                 mutualCommands.forEach      { registerGlobal(it.value) }
                 interactionCommands.forEach { registerGlobal(it.value) }

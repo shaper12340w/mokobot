@@ -67,3 +67,5 @@ hs_err_pid*
 replay_pid*
 
 /src/main/resources/settings.properties
+/src/main/resources/config.yaml
+/lib/*

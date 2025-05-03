@@ -39,7 +39,7 @@ dependencies {
     implementation("org.fusesource.jansi:jansi:2.4.1")
 
     // AudioPlayer
-    implementation("dev.arbjerg:lavaplayer:2.2.2")
+    implementation("dev.arbjerg:lavaplayer:2.2.3")
     implementation("dev.arbjerg:lavadsp:0.7.8")
     implementation("com.github.sapher:youtubedl-java:1.1")
     implementation("xyz.gianlu.librespot:librespot-java:1.6.5")

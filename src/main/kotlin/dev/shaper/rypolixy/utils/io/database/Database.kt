@@ -3,11 +3,10 @@ package dev.shaper.rypolixy.utils.io.database
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import dev.kord.common.entity.Snowflake
-import dev.kord.core.Kord
+import dev.shaper.rypolixy.config
 import dev.kord.core.entity.Guild
 import dev.kord.core.entity.User
 import dev.shaper.rypolixy.command.types.CommandStructure
-import dev.shaper.rypolixy.config.Configs
 import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils
 import dev.shaper.rypolixy.utils.structure.ValueTransfer.toBigInteger
 import java.sql.Connection
@@ -16,16 +15,16 @@ import org.json.JSONObject
 import java.math.BigInteger
 import java.sql.SQLException
 import java.sql.SQLTimeoutException
-import java.util.UUID;
+import java.util.UUID
 
 object Database {
 
     val logger = KotlinLogging.logger {}
 
     private val hikariConfig = HikariConfig().apply {
-        jdbcUrl             = Configs.DB.url+"/"+Configs.DB.name
-        username            = Configs.DB.username
-        password            = Configs.DB.password
+        jdbcUrl             = config.io.database.url+"/"+config.io.database.name
+        username            = config.io.database.username
+        password            = config.io.database.password
         driverClassName     = "org.postgresql.Driver"
         connectionTestQuery = "SELECT 1"
         maxLifetime         = 177000L
@@ -57,14 +56,20 @@ object Database {
             DatabaseQueryManager.Entity.PLAYER      -> "PLAYER"
             DatabaseQueryManager.Entity.STATUS      -> "STATUS"
         }
-        if(response.status == DatabaseResponse.DatabaseStatus.SUCCESS)
+        if(response.status == DatabaseResponse.DatabaseStatus.SUCCESS) {
+            val trace = Throwable().stackTrace
+            if (trace.size >= 3) {
+                val caller = trace[1]
+                val host = trace[2]
+                logger.debug { "[Database][$typeName] : Called from: ${host.methodName} -> ${caller.methodName} " }
+            }
             logger.info { "[Database][$typeName] : Successfully executed $entityName" }
-        else
+        } else
             logger.warn { "[Database][$typeName] : Cannot execute $entityName" }
     }
 
     fun checkOwner(){
-        val result = execute(DatabaseQuery.ownerQuery,Configs.DB.name)
+        val result = execute(DatabaseQuery.ownerQuery,config.io.database.name)
         when(result.status){
             DatabaseResponse.DatabaseStatus.SUCCESS -> {
                 if(
@@ -352,7 +357,7 @@ object Database {
         }
     }
 
-    fun newUUID():UUID = UUID.randomUUID();
+    fun newUUID():UUID = UUID.randomUUID()
 
     fun execute(sql: String, vararg values: Any?): DatabaseResponse.RawResponse {
         val myConnection = getConnection()

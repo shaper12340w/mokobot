@@ -4,18 +4,20 @@ import com.jfposton.ytdlp.YtDlp
 import com.jfposton.ytdlp.YtDlpException
 import com.jfposton.ytdlp.YtDlpRequest
 import com.jfposton.ytdlp.mapper.VideoInfo
-import dev.shaper.rypolixy.config.Configs
-import dev.shaper.rypolixy.config.Properties
 import dev.shaper.rypolixy.logger
 import dev.shaper.rypolixy.utils.io.json.JsonManager
 import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
+import java.nio.file.Paths
 
 object YtDlpManager {
 
     init {
-        YtDlp.setExecutablePath(Configs.PROGRAMS.ytdlp)
+        when(System.getProperty("os.name")){
+            "Linux"         -> YtDlp.setExecutablePath(Paths.get("lib","yt-dlp").toAbsolutePath().toString())
+            "Windows 11"    -> YtDlp.setExecutablePath(Paths.get("lib","yt-dlp.exe").toAbsolutePath().toString())
+        }
     }
 
     enum class DataType(val value: String?){
