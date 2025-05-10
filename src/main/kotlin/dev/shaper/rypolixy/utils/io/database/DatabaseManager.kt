@@ -3,7 +3,7 @@ package dev.shaper.rypolixy.utils.io.database
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.entity.Guild
-import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils
+import dev.shaper.rypolixy.core.music.utils.MediaUtils
 import dev.shaper.rypolixy.utils.io.database.Database.execute
 import dev.shaper.rypolixy.utils.io.database.Database.logger
 import dev.shaper.rypolixy.utils.structure.CacheSystem

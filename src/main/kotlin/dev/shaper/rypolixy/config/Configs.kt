@@ -3,8 +3,7 @@ package dev.shaper.rypolixy.config
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import java.io.File
-import java.nio.file.Paths
+import dev.shaper.rypolixy.utils.io.file.FileManager
 
 class Configs {
 
@@ -58,24 +57,11 @@ class Configs {
     )
 
     fun loadConfig(): YamlConfig {
-        val paths = listOf(
-            Paths.get("config.yaml").toAbsolutePath(),
-            Paths.get("src", "main", "resources", "config.yaml").toAbsolutePath(),
-        )
-        for (path in paths) {
-            if (path.toFile().exists())
-                return mapper.readValue(path.toFile(), YamlConfig::class.java)
-        }
-        throw IllegalArgumentException("config.yaml not found")
+        val path = FileManager.checkFile("config.yaml")
+        if(path != null)
+            return mapper.readValue(path.toFile(), YamlConfig::class.java)
+        throw IllegalArgumentException("config.yaml file not found")
     }
-
-//    val PROGRAMS = ProgramConfig(
-//        ytdlp   = when(System.getProperty("os.name")){
-//            "Linux"         -> Properties.getProperty("program.linux.ytdlp")    ?: warn("program.linux.ytdlp")
-//            "Windows 11"    -> Properties.getProperty("program.windows.ytdlp")  ?: warn("program.windows.ytdlp")
-//            else            -> warn("program.unknown.ytdlp")
-//        }
-//    )
 
 
 }

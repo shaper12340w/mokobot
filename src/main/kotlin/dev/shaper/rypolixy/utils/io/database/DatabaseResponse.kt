@@ -1,7 +1,7 @@
 package dev.shaper.rypolixy.utils.io.database
 
 import dev.kord.common.entity.Snowflake
-import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils
+import dev.shaper.rypolixy.core.music.utils.MediaUtils
 import org.json.JSONObject
 import java.math.BigInteger
 import java.util.UUID

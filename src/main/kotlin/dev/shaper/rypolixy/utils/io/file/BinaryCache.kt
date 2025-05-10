@@ -6,17 +6,18 @@ import java.io.ObjectOutputStream
 
 object BinaryCache {
 
-    fun saveBinaryCache(cache: Map<String, String>, file: File) {
+    fun <K,T>saveBinaryCache(cache: Map<K, T>, file: File) {
         ObjectOutputStream(file.outputStream()).use {
             it.writeObject(cache)
         }
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun loadBinaryCache(file: File): Map<String, String> {
+    fun <K,T>loadBinaryCache(file: File): Map<K, T> {
         if (!file.exists()) return emptyMap()
+        else if(file.length() == 0L) return emptyMap()
         ObjectInputStream(file.inputStream()).use {
-            return it.readObject() as Map<String, String>
+            return it.readObject() as Map<K, T>
         }
     }
 
