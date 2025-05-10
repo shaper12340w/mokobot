@@ -6,7 +6,7 @@ import dev.shaper.rypolixy.command.types.ContextType
 import dev.shaper.rypolixy.command.types.MutualCommand
 import dev.shaper.rypolixy.command.types.TextCommand
 import dev.shaper.rypolixy.config.Client
-import dev.shaper.rypolixy.core.musicplayer.MediaOptions
+import dev.shaper.rypolixy.core.music.MediaOptions
 import dev.shaper.rypolixy.utils.discord.context.ContextManager.Companion.guildId
 import dev.shaper.rypolixy.utils.discord.embed.EmbedFrame
 import dev.shaper.rypolixy.utils.discord.context.ResponseManager.Companion.sendRespond

@@ -3,7 +3,7 @@ package dev.shaper.rypolixy.utils.discord.embed
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.shaper.rypolixy.utils.discord.embed.TextDesign.Embed.description
 import dev.shaper.rypolixy.utils.discord.embed.TextDesign.Embed.title
-import dev.shaper.rypolixy.core.musicplayer.MediaTrack
+import dev.shaper.rypolixy.core.music.MediaTrack
 import kotlinx.datetime.Clock
 
 object EmbedFrame {

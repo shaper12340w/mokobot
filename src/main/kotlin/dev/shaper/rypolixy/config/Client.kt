@@ -14,7 +14,7 @@ import dev.kord.core.on
 import dev.kord.gateway.Intent
 import dev.kord.gateway.PrivilegedIntent
 import dev.shaper.rypolixy.command.types.CommandManager
-import dev.shaper.rypolixy.core.musicplayer.MediaPlayer
+import dev.shaper.rypolixy.core.music.MediaPlayer
 import dev.shaper.rypolixy.utils.io.database.Database
 import dev.shaper.rypolixy.utils.io.database.DatabaseManager
 import io.github.oshai.kotlinlogging.KLogger

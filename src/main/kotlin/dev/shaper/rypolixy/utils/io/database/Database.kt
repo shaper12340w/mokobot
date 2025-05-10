@@ -7,7 +7,7 @@ import dev.shaper.rypolixy.config
 import dev.kord.core.entity.Guild
 import dev.kord.core.entity.User
 import dev.shaper.rypolixy.command.types.CommandStructure
-import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils
+import dev.shaper.rypolixy.core.music.utils.MediaUtils
 import dev.shaper.rypolixy.utils.structure.ValueTransfer.toBigInteger
 import java.sql.Connection
 import io.github.oshai.kotlinlogging.KotlinLogging

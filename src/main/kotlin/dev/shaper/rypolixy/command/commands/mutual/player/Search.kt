@@ -3,8 +3,6 @@ package dev.shaper.rypolixy.command.commands.mutual.player
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Permissions
 import dev.kord.core.behavior.channel.createMessage
-import dev.kord.core.behavior.interaction.response.InteractionResponseBehavior
-import dev.kord.core.entity.Message
 import dev.kord.core.entity.interaction.SelectMenuInteraction
 import dev.kord.rest.builder.component.SelectOptionBuilder
 import dev.kord.rest.builder.interaction.ChatInputCreateBuilder
@@ -13,9 +11,9 @@ import dev.shaper.rypolixy.command.types.ContextType
 import dev.shaper.rypolixy.command.types.MutualCommand
 import dev.shaper.rypolixy.command.types.TextCommand
 import dev.shaper.rypolixy.config.Client
-import dev.shaper.rypolixy.core.musicplayer.MediaOptions
-import dev.shaper.rypolixy.core.musicplayer.MediaTrack
-import dev.shaper.rypolixy.core.musicplayer.utils.MediaUtils
+import dev.shaper.rypolixy.core.music.MediaOptions
+import dev.shaper.rypolixy.core.music.MediaTrack
+import dev.shaper.rypolixy.core.music.utils.MediaUtils
 import dev.shaper.rypolixy.utils.discord.CommandCaller
 import dev.shaper.rypolixy.utils.discord.actionrow.ActionRowManager
 import dev.shaper.rypolixy.utils.discord.actionrow.DefaultSelectMenu
@@ -27,7 +25,6 @@ import dev.shaper.rypolixy.utils.discord.context.ResponseManager.Companion.creat
 import dev.shaper.rypolixy.utils.discord.context.ResponseManager.Companion.deferReply
 import dev.shaper.rypolixy.utils.discord.context.ResponseManager.Companion.delete
 import dev.shaper.rypolixy.utils.discord.context.ResponseManager.Companion.deleteAfter
-import dev.shaper.rypolixy.utils.discord.context.ResponseManager.Companion.getMessage
 import dev.shaper.rypolixy.utils.discord.context.ResponseType
 import dev.shaper.rypolixy.utils.discord.context.ReturnType
 import dev.shaper.rypolixy.utils.discord.embed.EmbedFrame
